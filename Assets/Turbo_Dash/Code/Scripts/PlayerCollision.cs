@@ -1,3 +1,4 @@
+using TurboDash.Research;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +42,8 @@ public class PlayerCollision : MonoBehaviour
     {
         // ^^^^^^^^^^^^^ RĘCZNE USTAWIANIE EFEKTÓW ^^^^^^^^^^^^^
 #if UNITY_EDITOR
+        if (!ResearchMode.Active)
+        {
         if (Input.GetKeyDown(KeyCode.T)) gameManager.TurboEffect();
         if (Input.GetKeyDown(KeyCode.B)) gameManager.BoostEffect();
         if (Input.GetKeyDown(KeyCode.S)) gameManager.ShieldEffect();
@@ -49,6 +52,7 @@ public class PlayerCollision : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P)) gameManager.DiamondEffect();
         if (Input.GetKeyDown(KeyCode.L)) gameManager.GameLevelUp();
         if (Input.GetKeyDown(KeyCode.O)) gameManager.playerLives = 1000;
+        }
 #endif
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -77,6 +81,13 @@ public class PlayerCollision : MonoBehaviour
         String inputValueTag = collision.GetComponent<Collider>().tag;
         detectedObject = collision.gameObject;
 
+        if (!gameManager.gameHasEnded && ResearchSegment.IsHazard(collision))
+        {
+            ResearchEvents.Emit(ResearchEventType.Collision);
+            var segment = collision.GetComponentInParent<ResearchSegment>();
+            if (ResearchMode.Running && segment) segment.Contact(collision);
+        }
+
         if (!gameManager.gameHasEnded) switch (inputValueTag)
         {
             // -------------- STRUCTURES --------------
@@ -102,6 +113,7 @@ public class PlayerCollision : MonoBehaviour
 
             // ----------------- GEMS -----------------
             case "Boost":
+                ResearchEvents.Emit(ResearchEventType.BoostCollected);
                 Debug.Log("Boost gem collected.");
                 DestroyDetectedObject();
                 PlayVisualEffect(boostCollectedEffect);
@@ -109,6 +121,7 @@ public class PlayerCollision : MonoBehaviour
                 break;
 
             case "Heart":
+                ResearchEvents.Emit(ResearchEventType.HeartCollected);
                 Debug.Log("Heart gem collected.");
                 DestroyDetectedObject();
                 PlayVisualEffect(heartCollectedEffect);
@@ -116,6 +129,7 @@ public class PlayerCollision : MonoBehaviour
                 break;
 
             case "Shield":
+                ResearchEvents.Emit(ResearchEventType.ShieldCollected);
                 Debug.Log("Shield gem collected.");
                 DestroyDetectedObject();
                 PlayVisualEffect(shieldCollectedEffect);
@@ -123,6 +137,7 @@ public class PlayerCollision : MonoBehaviour
                 break;
 
             case "Gold":
+                ResearchEvents.Emit(ResearchEventType.GoldCollected);
                 Debug.Log("Gold gem collected.");
                 DestroyDetectedObject();
                 PlayVisualEffect(coinCollectedEffect);
@@ -130,6 +145,7 @@ public class PlayerCollision : MonoBehaviour
                 break;
 
             case "Diamond":
+                ResearchEvents.Emit(ResearchEventType.DiamondCollected);
                 Debug.Log("Diamond gem collected.");
                 DestroyDetectedObject();
                 PlayVisualEffect(diamondCollectedEffect);
@@ -163,6 +179,7 @@ public class PlayerCollision : MonoBehaviour
             PlayVisualEffect(shieldCollectedEffect);
             AudioSystem.Instance.PlaySound(AudioSystem.Instance.sfxDestroyShield);
             gameManager.playerShield = false;
+            ResearchEvents.Emit(ResearchEventType.ShieldConsumed);
             Debug.Log("Tarcza zniszczona");
         }
         // Sprawdzenie czy gracz ma życia i traci jedno
@@ -173,6 +190,7 @@ public class PlayerCollision : MonoBehaviour
             AudioSystem.Instance.PlaySound(AudioSystem.Instance.sfxDestroyObject);
             gameManager.ImmortalityEffect();
             gameManager.playerLives--;
+            ResearchEvents.Emit(ResearchEventType.LifeLost);
             Debug.Log("Aktualne życia: " + gameManager.playerLives);
         }
         // Jak gracz już nie ma żyć to przegrywa gre
@@ -187,6 +205,7 @@ public class PlayerCollision : MonoBehaviour
         AudioSystem.Instance.PlaySound(AudioSystem.Instance.sfxGameOver);
         PlayExplosionEffect();
         gameManager.playerLives = 0;
+        ResearchEvents.Emit(ResearchEventType.LifeLost);
         gameManager.GameOver();
     }
 
@@ -212,15 +231,31 @@ public class PlayerCollision : MonoBehaviour
 
         // Stwórz eksplozje w odpowiednim miejscu
         if (gameManager.gameLocation == GameManager.Location.Inside)
-        Instantiate(explosion, destroyedObjectPositionInside, Quaternion.identity);
-        else Instantiate(explosion, destroyedObjectPositionOutside, Quaternion.identity);
+        ResearchMode.TrackEffect(Instantiate(explosion, destroyedObjectPositionInside, Quaternion.identity));
+        else ResearchMode.TrackEffect(Instantiate(explosion, destroyedObjectPositionOutside, Quaternion.identity));
     }
 
     private void PlayVisualEffect(GameObject effect)
     {
         // Stwórz eksplozje w odpowiednim miejscu
         if (gameManager.gameLocation == GameManager.Location.Inside)
-            Instantiate(effect, destroyedObjectPositionInside, Quaternion.identity);
-        else Instantiate(effect, destroyedObjectPositionOutside, Quaternion.identity);
+            ResearchMode.TrackEffect(Instantiate(effect, destroyedObjectPositionInside, Quaternion.identity));
+        else ResearchMode.TrackEffect(Instantiate(effect, destroyedObjectPositionOutside, Quaternion.identity));
     }
+    public void ResetEpisode()
+    {
+        StopAllCoroutines(); CancelInvoke();
+        gameManager = GameManager.Instance;
+        detectedObject = null;
+        transform.localPosition = new Vector3(0, -4, 0);
+        playerRenderer = GetComponent<Renderer>();
+        playerRenderer.enabled = true;
+        environmentMovement.enabled = true;
+        if (TryGetComponent<Rigidbody>(out var body))
+        {
+            body.velocity = Vector3.zero; body.angularVelocity = Vector3.zero;
+            body.position = transform.position; body.rotation = transform.rotation;
+        }
+    }
+
 }

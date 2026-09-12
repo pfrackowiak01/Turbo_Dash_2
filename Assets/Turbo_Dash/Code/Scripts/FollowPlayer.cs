@@ -99,4 +99,13 @@ public class FollowPlayer : MonoBehaviour
 
         GameManager.Instance.isFOVChanging = false;
     }
+    public void ResetEpisode()
+    {
+        StopAllCoroutines(); CancelInvoke();
+        Start();
+        changeTimer = changeDuration;
+        startFOV = targetFOV = defaultFOV;
+        startOffset = defaultOffset;
+    }
+
 }

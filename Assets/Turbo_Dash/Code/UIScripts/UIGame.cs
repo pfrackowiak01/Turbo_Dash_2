@@ -1,3 +1,4 @@
+using TurboDash.Research;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -72,6 +73,16 @@ public class UIGame : MonoBehaviour
 
     void Start()
     {
+        ResetEpisodeUI();
+        AudioSystem.Instance.StartPlayGameMusic();
+    }
+
+    public void ResetEpisodeUI()
+    {
+        StopAllCoroutines(); CancelInvoke();
+        elapsedTime = 0; _showNewHighScoreOnce = true;
+        foreach (var panel in new[] { gameScreen, gameStartScreen, gamePausedScreen, gameOverScreen, levelUP, newHighScore, gainedShield, gainedLife })
+            panel.SetActive(false);
         speed = 0;
         baseSpeed = 20;
         maxSpeed = 20;
@@ -89,12 +100,15 @@ public class UIGame : MonoBehaviour
 
         // Ukrycie guzika TurboButton na starcie
         turboButton.gameObject.SetActive(false);
-
-        AudioSystem.Instance.StartPlayGameMusic();
     }
 
     void Update()
     {
+        if (ResearchMode.Active)
+        {
+            if (ResearchMode.Running) TickTurbo();
+            return;
+        }
         // ==============> EKRAN STARTOWY GRY <=============
         if (GameManager.Instance.gameStart)
         {
@@ -193,28 +207,7 @@ public class UIGame : MonoBehaviour
         // =================================================
 
 
-        // =============> SYSTEM OBS£UGI TURBO <============
-        // Wyœwietlenie iloœci Turbo w postaci procentów
-        turboText.text = (turboSlider.value * 100).ToString("0") + "%";
-
-        // Slider NIE osi¹gn¹³ 100% wype³nienia
-        if (turboSlider.value < 1f)
-        {
-            // Pasywne uzupe³nianie slidera o 1% co 1 sekundê
-            turboSlider.value += passiveFillRate * Time.deltaTime;
-
-            // Ukrycie guzika TurboButton
-            turboButton.gameObject.SetActive(false);
-        }
-        else // Slider osi¹gn¹³ ju¿ 100% wype³nienia
-        {
-            // Wyœwietlenie guzika TurboButton
-            turboButton.gameObject.SetActive(true);
-
-            turboText.text = "READY!";
-        }
-        // =================================================
-
+        TickTurbo();
 
         // ============> EKRAN ROZGRYWANEJ GRY <============
         // Wyœwietlanie uzyskanego wyniku
@@ -242,6 +235,35 @@ public class UIGame : MonoBehaviour
         if (GameManager.Instance.playerShield) shield.enabled = true;
         else shield.enabled = false;
         // =================================================
+    }
+
+    private void TickTurbo()
+    {
+        // =============> SYSTEM OBS£UGI TURBO <============
+        // Wyœwietlenie iloœci Turbo w postaci procentów
+        turboText.text = (turboSlider.value * 100).ToString("0") + "%";
+
+        // Slider NIE osi¹gn¹³ 100% wype³nienia
+        if (turboSlider.value < 1f)
+        {
+            // Pasywne uzupe³nianie slidera o 1% co 1 sekundê
+            turboSlider.value += passiveFillRate * Time.deltaTime;
+
+            // Ukrycie guzika TurboButton
+            turboButton.gameObject.SetActive(false);
+        }
+        else // Slider osi¹gn¹³ ju¿ 100% wype³nienia
+        {
+            // Wyœwietlenie guzika TurboButton
+            turboButton.gameObject.SetActive(true);
+
+            turboText.text = "READY!";
+        }
+        // =================================================
+
+
+        if (ResearchMode.Running && turboSlider.value >= 1f && !GameManager.Instance.turboEffectEnable)
+            GameManager.Instance.TurboEffect();
     }
 
     private IEnumerator WaitAndExecute()

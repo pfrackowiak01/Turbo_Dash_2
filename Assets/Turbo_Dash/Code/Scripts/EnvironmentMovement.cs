@@ -1,136 +1,51 @@
-using JetBrains.Annotations;
-using System.Collections;
-using System.Collections.Generic;
+ï»¿using TurboDash.Research;
 using UnityEngine;
 
+[DefaultExecutionOrder(-9000)]
 public class EnvironmentMovement : MonoBehaviour
 {
-    public float rotationSpeed = 12f;     // Prêdkoœæ poruszania siê gracza na boki
-    public float maxRotationSpeed = 22f;  // Maxymalna prêdkoœæ poruszania siê gracza na boki
+    // Existing serialized fields retain their names and values.
+    public float rotationSpeed = 12f;
+    public float maxRotationSpeed = 22f;
+    public float ResearchDegreesPerSecond => rotationSpeed * rotationSpeed;
+    private HumanController human;
 
-    private float directionOfMovement;    // Decyduje w któr¹ stronê porusza siê gracz (-1 lewo, 1 prawo, 0 do przodu)
-    private float screenWidth;            // Szerokoœæ ekranu
-
-    private bool leftClicked;
-    private bool rightClicked;
-
-    void Start()
+    private void Start() { human = new HumanController(); }
+    private void Update()
     {
-        // Pobiera szerokoœæ ekranu
-        screenWidth = Screen.width;
-
-        // Ustawia pocz¹tkowy kierunek obrotu;
-        directionOfMovement = 0f;
+        if (!ResearchMode.Active) ApplyDegreesPerSecond(human.ReadDegreesPerSecond(this), Time.deltaTime);
     }
-
-    void Update()
+    private void FixedUpdate()
     {
-        // ===================> STEROWANIE RÊCZNE <===================
-        if (SaveAndLoadManager.Instance.usedGameMode.Index == 1)
+        if (ResearchMode.Running)
         {
-            // Reset flag kierunków
-            leftClicked = false;
-            rightClicked = false;
-
-            // Ustawienie flagi kierunków za pomoc¹ wciœniêtych strza³ek
-            SetFlagsByKeyboard();
-
-            // Ustawienie flagi kierunków za pomoc¹ doktniêæ ekranu
-            SetFlagsByTouchscreen();
-
-            // Obliczenie wartoœci obrotu z ustawionych flag i wykonanie go
-            PlayerMovementByDirections();
-        }
-        // -----------------------------------------------------------
-
-
-        // =================> STEROWANIE ¯YROSKOPEM <=================
-        if (SaveAndLoadManager.Instance.usedGameMode.Index == 0)
-        {
-            // Obliczenie wartoœci obrotu ze ¿yroskopu i wykonanie go
-            PlayerMovementByGyroscope();
-        }  
-        // -----------------------------------------------------------
-    }
-
-    private void SetFlagsByKeyboard()
-    {
-        if (Input.GetKey(KeyCode.LeftArrow)) leftClicked = true;
-        if (Input.GetKey(KeyCode.RightArrow)) rightClicked = true;
-    }
-
-    private void SetFlagsByTouchscreen()
-    {
-        // Pobieranie wejœcia ruchu gracza z telefonu (lewa/prawa stron ekranu)
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.touchCount > 0)
-        {
-            // Dla ka¿dego klikniêcia/doktniêcia sprawdza pozycje (czy by³o po lewej czy po prawej)
-            foreach (Touch touch in Input.touches)
+            try
             {
-                // Sprawdza pozycje klikniêcia na ekranie (lewo/prawo) i zaznacza odpowiedni¹ flagê
-                if (touch.position.x < screenWidth / 2) leftClicked = true;
-                else rightClicked = true;
+                var mode = ResearchMode.Instance;
+                Physics.SyncTransforms();
+                var action = mode.Controller.Decide(mode.Observations.Capture());
+                if (mode.Controller.ActionSpaceType == ActionSpaceType.Discrete && action.Value != -1 && action.Value != 0 && action.Value != 1)
+                    throw new System.InvalidOperationException("A discrete controller must return LEFT, NONE or RIGHT.");
+                ApplyAction(action, Time.fixedDeltaTime);
             }
+            catch (System.Exception exception) { ResearchMode.Instance.Fail(exception); }
         }
     }
-
-    private void PlayerMovementByDirections()
+    public void ApplyAction(SteeringAction action, float deltaTime)
+        => ApplyDegreesPerSecond(action.Value * ResearchDegreesPerSecond, deltaTime);
+    public void ApplyDegreesPerSecond(float degreesPerSecond, float deltaTime)
     {
-        // Ustawienie odpowiednich flag obrotu po klikniêciach
-        if (leftClicked && rightClicked || !leftClicked && !rightClicked)
-        {
-            //Debug.Log("Klikniêto obie czêœci ekranu LUB nic.");
-            directionOfMovement = 0f;
-        }
-        else if (leftClicked)
-        {
-            //Debug.Log("Klikniêto lew¹ czêœæ ekranu.");
-            directionOfMovement = rotationSpeed;
-        }
-        else if (rightClicked)
-        {
-            //Debug.Log("Klikniêto praw¹ czêœæ ekranu.");
-            directionOfMovement = -rotationSpeed;
-        }
-
-        // Oblicz wartoœæ obrotu na podstawie wartoœci osi poziomej
-        GameManager.Instance.rotationAmount = directionOfMovement * rotationSpeed * Time.deltaTime;
-
-        // Wykonanie odpowiedniego obrotu
-        MakeTheProperRotate();
+        var game = GameManager.Instance;
+        game.rotationAmount = degreesPerSecond * deltaTime;
+        if (game.gamePaused) return;
+        float locationSign = game.gameLocation == GameManager.Location.Inside ? 1 : -1;
+        transform.Rotate(0, 0, game.rotationAmount * locationSign);
     }
-
-    private void PlayerMovementByGyroscope()
+    public void ResetEpisode(Quaternion initialRotation)
     {
-        // Pobierz wartoœæ przechylenia telefonu
-        Quaternion currentRotation = Quaternion.Inverse(GameManager.Instance.initialRotation) * Input.gyro.attitude;
-
-        // Ogranicz przechylenie do osi Z (lewo/prawo)
-        float tiltAngle = Mathf.Clamp(currentRotation.z * Mathf.Rad2Deg, -maxRotationSpeed, maxRotationSpeed);
-
-        // Oblicz k¹t obrotu na podstawie przechylenia
-        GameManager.Instance.rotationAmount = tiltAngle * rotationSpeed * Time.deltaTime;
-
-        // Wykonanie odpowiedniego obrotu
-        MakeTheProperRotate();
-    }
-
-    private void MakeTheProperRotate()
-    {
-        // SprawdŸ czy gra NIE jest zapauzowana
-        if (!GameManager.Instance.gamePaused)
-        {
-            // SprawdŸ w której lokacji znajduje siê gracz
-            if (GameManager.Instance.gameLocation == GameManager.Location.Inside)
-            {
-                // Obróæ rurê o obliczon¹ wartoœæ wokó³ osi Z dla gracza w œrodku rury
-                transform.Rotate(0, 0, GameManager.Instance.rotationAmount);
-            }
-            else
-            {
-                // Obróæ rurê o obliczon¹ wartoœæ wokó³ osi Z dla gracza na zewn¹trz rury
-                transform.Rotate(0, 0, -GameManager.Instance.rotationAmount);
-            }
-        }
+        StopAllCoroutines(); CancelInvoke();
+        transform.localRotation = initialRotation;
+        GameManager.Instance.rotationAmount = 0;
+        enabled = true;
     }
 }

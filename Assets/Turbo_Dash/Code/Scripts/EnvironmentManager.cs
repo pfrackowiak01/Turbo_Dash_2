@@ -1,3 +1,4 @@
+using TurboDash.Research;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class EnvironmentManager : MonoBehaviour
 
     void Start()
     {
+        if (ResearchMode.Active) return;
         locationNow = GameManager.Instance.gameLocation;
         locationBefore = GameManager.Instance.gameLocation;
         RestartEnvironment();
@@ -21,6 +23,7 @@ public class EnvironmentManager : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (ResearchMode.Active && !ResearchMode.Running) return;
         locationNow = GameManager.Instance.gameLocation;
 
         if (locationNow != locationBefore) RestartEnvironment();
@@ -43,12 +46,12 @@ public class EnvironmentManager : MonoBehaviour
         if (!GameManager.Instance.isPortalGoingToSpawn)
         {
             // Tworzenie nowej instancji rury z prefabu
-             Instantiate(tube, new Vector3(0f, 0f, z), parrent.rotation, parrent);
+             CreateTube(z);
         }
         else
         {
             // Tworzenie nowej instancji rury z prefabu
-            if (!spawnBlock) Instantiate(tube, new Vector3(0f, 0f, z), parrent.rotation, parrent);
+            if (!spawnBlock) CreateTube(z);
             spawnBlock = true;
         }
     }
@@ -60,7 +63,11 @@ public class EnvironmentManager : MonoBehaviour
 
         // Zniszczenie wszystkich rur
         GameObject[] tubes = GameObject.FindGameObjectsWithTag("Tube");
-        if (tubes != null) foreach (GameObject tube in tubes) Destroy(tube);
+        if (tubes != null) foreach (GameObject tube in tubes)
+        {
+            if (ResearchMode.Active) tube.SetActive(false);
+            Destroy(tube);
+        }
 
         // Zespawnowanie nowych rur odpowiednich do lokacji
         for (int i = 0; i < 5; i++)
@@ -69,4 +76,25 @@ public class EnvironmentManager : MonoBehaviour
         }
         timer = 0;
     }
+    private void CreateTube(float z)
+    {
+        var spawned = Instantiate(tube, new Vector3(0, 0, z), parrent.rotation, parrent);
+        ResearchMode.RegisterTube(spawned);
+    }
+
+    public void ClearResearchEnvironment()
+    {
+        foreach (var oldTube in GameObject.FindGameObjectsWithTag("Tube"))
+        { oldTube.SetActive(false); Destroy(oldTube); }
+        timer = 0; spawnBlock = false;
+        StopAllCoroutines(); CancelInvoke();
+    }
+
+    public void ResetResearchEnvironment()
+    {
+        enabled = true;
+        locationNow = locationBefore = GameManager.Instance.gameLocation;
+        RestartEnvironment();
+    }
+
 }

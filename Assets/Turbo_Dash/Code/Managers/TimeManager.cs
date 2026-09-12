@@ -1,3 +1,4 @@
+using TurboDash.Research;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,6 +40,7 @@ public class TimeManager : MonoBehaviour
 
     private void Update()
     {
+        if (ResearchMode.Active) return;
 #if UNITY_EDITOR
         // ===================> GAME PAUSE SYSTEM <===================
         // Zatrzymywanie i wznawianie rozgrywki za pomoc¹ "Escape", "Space" lub klikniêcia

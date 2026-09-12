@@ -45,4 +45,11 @@ public class ImmortalityEffect : MonoBehaviour
             GameManager.Instance.playerImmortality = false;
         }
     }
+    public void ResetEpisode()
+    {
+        StopAllCoroutines(); CancelInvoke();
+        isImmortal = false; elapsedTime = 0; effectDuration = 3;
+        renderer = GetComponent<Renderer>(); renderer.enabled = false;
+    }
+
 }

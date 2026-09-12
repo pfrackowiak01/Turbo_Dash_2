@@ -6,7 +6,7 @@ Projekt powstał na potrzeby pracy inżynierskiej Pawła Frąckowiaka **„Proje
 
 ## Stan projektu
 
-Audyt z 2026-09-10 obejmuje kod, konfigurację, referencje scen/prefabów i porównanie z dostarczoną pracą inżynierską. Jest analizą statyczną — kompilacja, uruchomienie w Play Mode i build Android nie zostały podczas audytu wykonane. Znaleziono ryzyka uruchomienia oraz błędy logiki; szczegóły zawiera [audyt](docs/PROJECT_AUDIT.md). Samo istnienie lokalnego `Library/` nie potwierdza poprawnego odtworzenia projektu na nowym komputerze.
+Audyt z 2026-09-10 obejmuje kod, konfigurację, referencje scen/prefabów i porównanie z dostarczoną pracą inżynierską. Sam audyt był analizą statyczną. Dnia 2026-09-13 wykonano w Unity 2022.3.4f1 osobne testy Play Mode: bazowy i końcowy przepływ normalnej gry, pełny Research Mode oraz jego publiczny launcher przeszły bez błędów. Zakres i ograniczenia opisuje [raport weryfikacji](docs/BASELINE_VERIFICATION.md), a historyczne problemy — [audyt](docs/PROJECT_AUDIT.md).
 
 ## Unity i wymagania
 
@@ -47,4 +47,4 @@ Kluczowe klasy to `GameManager`, `SaveAndLoadManager`, `EnvironmentMovement`, `E
 
 Wykryte systemy obejmują poziomy trudności i portale, trzy życia, tarczę, nieśmiertelność, ładowanie turbo, waluty, lokalne rekordy, kamerę z efektami oraz muzykę/SFX. `Shop` i `Customization` są szkicami ekranów. Nie znaleziono działającego multiplayera, AI przeciwników, reklam, zakupów ani rankingów online.
 
-Dokumentacja: [architektura](docs/ARCHITECTURE.md), [systemy gry](docs/GAME_SYSTEMS.md), [audyt i roadmap](docs/PROJECT_AUDIT.md), [pełny inwentarz](docs/REPOSITORY_INVENTORY.md), [zasady pracy agentów](AGENTS.md).
+Dokumentacja: [architektura](docs/ARCHITECTURE.md), [systemy gry](docs/GAME_SYSTEMS.md), [audyt i roadmap](docs/PROJECT_AUDIT.md), [pełny inwentarz](docs/REPOSITORY_INVENTORY.md), [weryfikacja runtime](docs/BASELINE_VERIFICATION.md), [środowisko badawcze](docs/ML_RESEARCH_ENVIRONMENT.md), [zasady pracy agentów](AGENTS.md).

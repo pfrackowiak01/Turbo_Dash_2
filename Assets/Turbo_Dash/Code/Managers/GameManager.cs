@@ -1,3 +1,4 @@
+using TurboDash.Research;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -100,7 +101,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Private Parameters")]
     private UIGame UIGame;
-    private AudioSystem audioSystem = AudioSystem.Instance;
+    private AudioSystem audioSystem => AudioSystem.Instance;
 
     public enum LevelDifficulty
     {
@@ -135,6 +136,8 @@ public class GameManager : MonoBehaviour
 
     public void Update()
     {
+        if (ResearchMode.Active && !ResearchMode.Running) return;
+        float previousResearchScore = gameScore;
         //  =================== UP£YW CZASU ====================
         if (!gameHasEnded)
         {
@@ -154,8 +157,8 @@ public class GameManager : MonoBehaviour
 
         // ^^^^^^^^^^^^^ RÊCZNE USTAWIANIE WYNIKU ^^^^^^^^^^^^^^
         #if UNITY_EDITOR
-            if (Input.GetKeyDown(KeyCode.Q)) timer += 200f;
-            if (Input.GetKeyDown(KeyCode.W)) timer = 2000f;
+            if (!ResearchMode.Active && Input.GetKeyDown(KeyCode.Q)) timer += 200f;
+            if (!ResearchMode.Active && Input.GetKeyDown(KeyCode.W)) timer = 2000f;
         #endif
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -180,7 +183,8 @@ public class GameManager : MonoBehaviour
         }
         // =====================================================
 
-        if (gameScore > SaveAndLoadManager.Instance.usedGameMode.HighScore) isNewHighScore = true;
+        if (!ResearchMode.Active && gameScore > SaveAndLoadManager.Instance.usedGameMode.HighScore) isNewHighScore = true;
+        if (gameScore != previousResearchScore) ResearchEvents.Emit(ResearchEventType.ScoreDelta, gameScore - previousResearchScore);
     }
 
     // ---------------------------------------------------------
@@ -218,7 +222,7 @@ public class GameManager : MonoBehaviour
         audioSystem.PlaySound(audioSystem.sfxHeart);
         UIGame = GameObject.FindWithTag("UIGame").GetComponent<UIGame>();
         if (playerLives < maxPlayerLives) playerLives++;
-        StartCoroutine(UIGame.ShowPopUP(UIGame.gainedLife, 1f));
+        if (!ResearchMode.Active) StartCoroutine(UIGame.ShowPopUP(UIGame.gainedLife, 1f));
     }
 
     public void ShieldEffect()
@@ -230,21 +234,21 @@ public class GameManager : MonoBehaviour
             playerShield = true;
             ToggleVisibilityWithTag("VisualEffectShield");
         }
-        StartCoroutine(UIGame.ShowPopUP(UIGame.gainedShield, 1f));
+        if (!ResearchMode.Active) StartCoroutine(UIGame.ShowPopUP(UIGame.gainedShield, 1f));
     }
 
     public void CoinEffect()
     {
         audioSystem.PlaySound(audioSystem.sfxCoin);
         playerCoins++;
-        PlayerPrefs.SetInt("Coins",playerCoins);
+        if (!ResearchMode.Active) PlayerPrefs.SetInt("Coins",playerCoins);
     }
 
     public void DiamondEffect()
     {
         audioSystem.PlaySound(audioSystem.sfxDiamond);
         playerDiamonds++;
-        PlayerPrefs.SetInt("Diamonds", playerDiamonds);
+        if (!ResearchMode.Active) PlayerPrefs.SetInt("Diamonds", playerDiamonds);
     }
 
     public void ImmortalityEffect()
@@ -287,8 +291,8 @@ public class GameManager : MonoBehaviour
         gameLocation = Location.Inside;
         isPortalGoingToSpawn = false;
 
-        playerCoins = PlayerPrefs.GetInt("Coins", 0);
-        playerDiamonds = PlayerPrefs.GetInt("Diamonds", 0);
+        playerCoins = ResearchMode.Active ? 0 : PlayerPrefs.GetInt("Coins", 0);
+        playerDiamonds = ResearchMode.Active ? 0 : PlayerPrefs.GetInt("Diamonds", 0);
         maxPlayerLives = 3;
         playerLives = maxPlayerLives;
         playerShield = false;
@@ -331,8 +335,8 @@ public class GameManager : MonoBehaviour
         if (gameHasEnded == false)
         {
             gameHasEnded = true;
-            Time.timeScale = 0.4f;
-            SaveAndLoadManager.Instance.SaveHighScore((int)gameScore);
+            if (!ResearchMode.Active) Time.timeScale = 0.4f;
+            if (!ResearchMode.Active) SaveAndLoadManager.Instance.SaveHighScore((int)gameScore);
             UnityEngine.Debug.Log("GAME OVER");
             //Invoke("RestartGame",restartDelay);
         }
@@ -454,10 +458,11 @@ public class GameManager : MonoBehaviour
     {
         if (objectList.Count > 0)
         {
-            int randomIndex = UnityEngine.Random.Range(0, objectList.Count);
+            int randomIndex = GameplayRandom.Range(0, objectList.Count);
             ISpawnable spawnableObject = objectList[randomIndex];
             GameObject newObject = Instantiate(spawnableObject.GetPrefab(), parent.position, parent.rotation, parent);
             AssignMaterialByTag(newObject);
+            ResearchMode.RegisterSpawn(newObject, parent);
         }
         else UnityEngine.Debug.Log("Lista obiektów jest pusta!");
     }
@@ -465,6 +470,7 @@ public class GameManager : MonoBehaviour
     {
         GameObject newObject = Instantiate(Portal, parent.position, parent.rotation, parent);
         //AssignMaterialByTag(newObject);
+            ResearchMode.RegisterSpawn(newObject, parent);
     }
 
 

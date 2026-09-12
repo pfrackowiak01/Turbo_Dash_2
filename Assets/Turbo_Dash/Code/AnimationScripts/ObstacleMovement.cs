@@ -1,3 +1,4 @@
+using TurboDash.Research;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -48,7 +49,7 @@ public class ObstacleMovement : MonoBehaviour
     public void ObstacleSideToSideMovement()
     {
         // Oblicz now¹ pozycjê poziom¹ w zale¿noœci od czasu
-        float horizontalMovement = Mathf.Sin(Time.time * movementSpeedSide) * movementRangeSide;
+        float horizontalMovement = Mathf.Sin(ResearchMode.GameplayTime * movementSpeedSide) * movementRangeSide;
 
         // Ustal now¹ pozycjê przeszkody
         Vector3 newPosition = startPosition + new Vector3(horizontalMovement, transform.localPosition.y, transform.localPosition.z);
@@ -60,7 +61,7 @@ public class ObstacleMovement : MonoBehaviour
     public void ObstacleUpAndDownMovement()
     {
         // Oblicz now¹ pozycjê poziom¹ w zale¿noœci od czasu
-        float verticalMovement = Mathf.Sin(Time.time * movementSpeedUpDown) * movementRangeUpDown;
+        float verticalMovement = Mathf.Sin(ResearchMode.GameplayTime * movementSpeedUpDown) * movementRangeUpDown;
 
         // Ustal now¹ pozycjê przeszkody
         Vector3 newPosition = startPosition + new Vector3(transform.localPosition.x, verticalMovement, transform.localPosition.z);

@@ -1,3 +1,4 @@
+using TurboDash.Research;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ public class TubeMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (ResearchMode.Active && !ResearchMode.Running) return;
         // Obliczanie nowego po³o¿enia w którym pojawi siê rura
         movement = new Vector3(0f, 0f, forwardForce) * GameManager.Instance.tubeMoveSpeed * Time.deltaTime;
 

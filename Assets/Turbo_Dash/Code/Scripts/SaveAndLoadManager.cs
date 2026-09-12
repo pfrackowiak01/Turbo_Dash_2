@@ -1,3 +1,4 @@
+using TurboDash.Research;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,6 +42,7 @@ public class SaveAndLoadManager : MonoBehaviour
 
     public void SaveHighScore(int highscore)
     {
+        if (ResearchMode.Active) return;
         if (highscore > allGameModes[usedGameMode.Index].HighScore) allGameModes[usedGameMode.Index].HighScore = highscore;
 
         switch (usedGameMode.Index)
@@ -62,6 +64,7 @@ public class SaveAndLoadManager : MonoBehaviour
 
     public void SaveHighSpeed(float speed)
     {
+        if (ResearchMode.Active) return;
         if (speed > allGameModes[usedGameMode.Index].HighSpeed) allGameModes[usedGameMode.Index].HighSpeed = speed;
 
         switch (usedGameMode.Index)
@@ -83,6 +86,7 @@ public class SaveAndLoadManager : MonoBehaviour
 
     public void LoadHighScores()
     {
+        if (ResearchMode.Active) return;
         allGameModes[0].HighScore = PlayerPrefs.GetInt("gyroscopeHighScore", 0);
         allGameModes[1].HighScore = PlayerPrefs.GetInt("touchControlHighScore", 0);
         allGameModes[2].HighScore = PlayerPrefs.GetInt("multiplayerHighScore", 0);
@@ -91,6 +95,7 @@ public class SaveAndLoadManager : MonoBehaviour
 
     public void LoadHighSpeeds()
     {
+        if (ResearchMode.Active) return;
         allGameModes[0].HighSpeed = PlayerPrefs.GetFloat("gyroscopeHighSpeed", 0);
         allGameModes[1].HighSpeed = PlayerPrefs.GetFloat("touchControlHighSpeed", 0);
         allGameModes[2].HighSpeed = PlayerPrefs.GetFloat("multiplayerHighSpeed", 0);

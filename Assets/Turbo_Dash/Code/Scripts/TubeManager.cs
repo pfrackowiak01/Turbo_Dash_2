@@ -1,3 +1,4 @@
+using TurboDash.Research;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -15,8 +16,13 @@ public class TubeManager : MonoBehaviour
     private int percentageChance;  // Procentowa szansa na pojawienie siê przeszkód
     private float level;           // Aktualny level rozgrywanej gry
 
-    private void Start()
+    private bool initialized;
+    private void Start() { Initialize(); }
+
+    public void Initialize()
     {
+        if (initialized) return;
+        initialized = true;
         gameManager = GameManager.Instance;
 
         SetTexture();
@@ -40,7 +46,7 @@ public class TubeManager : MonoBehaviour
             }
             else
             {
-                if (Random.Range(1, 100) <= percentageChance)
+                if (GameplayRandom.Range(1, 100) <= percentageChance)
                 {
                     // Stwórz prefab przeszkody pobrany z Obstacle ScriptableObject
                     gameManager.SpawnObject(gameManager.usedObstacles, parrent);
@@ -52,7 +58,7 @@ public class TubeManager : MonoBehaviour
                 }
 
                 // Stwórz ScriptableObject gemu (range 1 i 3 to szansa 1/3 czyli 33%)
-                if (Random.Range(1, 3) == 1) gameManager.SpawnObject(gameManager.usedGems, parrent);
+                if (GameplayRandom.Range(1, 3) == 1) gameManager.SpawnObject(gameManager.usedGems, parrent);
             }
         }
         else GameManager.Instance.safeTubes--;
