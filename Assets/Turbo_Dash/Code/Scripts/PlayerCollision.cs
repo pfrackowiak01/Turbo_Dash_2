@@ -227,7 +227,9 @@ public class PlayerCollision : MonoBehaviour
     {
         // Efekt potrząśnięcia kamery "Shake"
         AnimationManager.Instance.CameraShake();
+#if UNITY_ANDROID || UNITY_IOS
         Handheld.Vibrate();
+#endif
 
         // Stwórz eksplozje w odpowiednim miejscu
         if (gameManager.gameLocation == GameManager.Location.Inside)

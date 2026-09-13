@@ -98,8 +98,9 @@ namespace TurboDash.Research
 #if UNITY_EDITOR
             if (json == null) json = UnityEditor.SessionState.GetString(EditorRequestKey, "");
 #endif
-            if (string.IsNullOrWhiteSpace(json)) return;
-            ResearchOptions options = JsonUtility.FromJson<ResearchOptions>(json);
+            ResearchOptions options;
+            if (!string.IsNullOrWhiteSpace(json)) options = JsonUtility.FromJson<ResearchOptions>(json);
+            else if (!ResearchWorkerBridge.TryCreateOptions(args, out options)) return;
             options.Validate();
             var root = new GameObject("ResearchMode");
             Instance = root.AddComponent<ResearchMode>();
@@ -139,7 +140,15 @@ namespace TurboDash.Research
             // Hide presentation only; UIGame and ImmortalityEffect continue running gameplay logic.
             foreach (var canvas in FindObjectsOfType<Canvas>(true)) canvas.enabled = false;
             Debug.Log("Research CSV: " + OutputPath);
-            ResetEpisode(Options.SeedFor(0));
+            var worker = Controller as ResearchWorkerController;
+            if (worker != null)
+            {
+                State = EpisodeState.Finished;
+                game.gamePaused = true; game.gameHasEnded = true; Time.timeScale = 0;
+                try { worker.Attach(this); }
+                catch (Exception ex) { Fail(ex); }
+            }
+            else ResetEpisode(Options.SeedFor(0));
         }
 
         public void SetController(IResearchController controller)
@@ -155,6 +164,8 @@ namespace TurboDash.Research
             if (string.Equals(options.controllerType, "NoAction", StringComparison.OrdinalIgnoreCase)) return new NoActionController();
             if (string.Equals(options.controllerType, "RuleBased", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(options.controllerType, "RuleBasedV1", StringComparison.OrdinalIgnoreCase)) return new RuleBasedController(options.ruleBased);
+            if (string.Equals(options.controllerType, ResearchWorkerController.TypeName, StringComparison.OrdinalIgnoreCase))
+                return ResearchWorkerBridge.CreateController();
             throw new ArgumentException("Unsupported research controller: " + options.controllerType);
         }
 
@@ -292,7 +303,12 @@ namespace TurboDash.Research
                 LastCompleted = Current;
                 EpisodeCompleted?.Invoke(Current);
                 if (Options.autoAdvance && Options.HasNext(episodeNumber)) requestedSeed = Options.SeedFor(episodeNumber);
-                else State = EpisodeState.Finished;
+                else
+                {
+                    State = EpisodeState.Finished;
+                    if (Application.isBatchMode && !Application.isEditor && !(Controller is ResearchWorkerController))
+                        Application.Quit(0);
+                }
             }
             catch (Exception ex) { Fail(ex); }
         }
@@ -303,6 +319,7 @@ namespace TurboDash.Research
             Time.timeScale = 0;
             if (game) { game.gamePaused = true; game.gameHasEnded = true; }
             Debug.LogException(exception);
+            if (Application.isBatchMode && !Application.isEditor) Application.Quit(1);
         }
 
         internal void Record(ResearchEvent data)
@@ -353,6 +370,8 @@ namespace TurboDash.Research
         private void OnDestroy()
         {
             if (Instance != this) return;
+            var disposable = Controller as IDisposable;
+            if (disposable != null) disposable.Dispose();
             if (runtimeGameMode) Destroy(runtimeGameMode);
             Instance = null; ResearchEvents.Clear(); Time.timeScale = 1;
         }

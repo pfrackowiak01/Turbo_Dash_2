@@ -2,7 +2,7 @@
 
 Implementacja dla Unity **2022.3.4f1**. Temat pracy: **„Opracowanie i analiza algorytmów uczenia maszynowego do sterowania agentem w grze typu endless runner.”** Wyniki przywrócenia wersji bazowej znajdują się w [BASELINE_VERIFICATION.md](BASELINE_VERIFICATION.md). Ten dokument opisuje architekturę przywróconego środowiska i zachowaną Observation v1. Aktualny, zamrożony kontrakt eksperymentów opisuje [RESEARCH_PROTOCOL_V1.md](RESEARCH_PROTOCOL_V1.md), a wykonany pilot [RULE_BASED_PILOT.md](RULE_BASED_PILOT.md); w punktach zmienionych przez protokół v1 te dwa dokumenty są nadrzędne.
 
-Decyzje badawcze pozostają następujące: główne porównanie **Rule-based / PPO discrete / NEAT discrete**, dodatkowe **PPO discrete / PPO continuous**. NEAT continuous jest możliwy przez interfejs, ale nie jest wymaganym eksperymentem. Celem jest długoterminowy score przy zachowaniu trzech żyć. Nie dodano PPO, NEAT ani ML-Agents. Dodano niezależną od algorytmu specyfikację reward/fitness v1 oraz właściwy `RuleBasedV1`; `NoAction` pozostaje kontrolerem diagnostycznym.
+Decyzje badawcze pozostają następujące: główne porównanie **Rule-based / PPO discrete / NEAT discrete**, dodatkowe **PPO discrete / PPO continuous**. Celem jest długoterminowy score przy zachowaniu trzech żyć. Obecny etap dodał pipeline **PPO discrete** bez ML-Agents; nie zaimplementowano NEAT ani eksperymentu PPO continuous. Szczegóły uruchomienia opisuje [PPO_TRAINING_PIPELINE.md](PPO_TRAINING_PIPELINE.md).
 
 ## 1. Architektura ResearchMode
 
@@ -40,7 +40,7 @@ Przykład konfiguracji **diagnostycznej**, nie zbioru treningowego/ewaluacyjnego
 }
 ```
 
-Wejście batch: `-batchmode -projectPath <projekt> -executeMethod TurboDash.Research.Editor.ResearchMenu.RunBatch -turboResearchConfig <plik.json> -logFile <log>`. Nie dodawaj `-quit`: wejście przechodzi do Play Mode, a launcher kończy proces po serii lub błędzie. Uruchamiaj osobną kopię, jeżeli projekt jest już otwarty. Format argumentów opisuje [dokumentacja edytora Unity](https://docs.unity3d.com/2022.3/Documentation/Manual/EditorCommandLineArguments.html). To wejście **edytora**; nie przygotowano jeszcze dedykowanego standalone playera badawczego. Samo przekazanie konfiguracji normalnemu buildowi zaczynającemu od Menu nie zastępuje tego launchera.
+Wejście batch edytora: `-batchmode -projectPath <projekt> -executeMethod TurboDash.Research.Editor.ResearchMenu.RunBatch -turboResearchConfig <plik.json> -logFile <log>`. Nie dodawaj `-quit`: wejście przechodzi do Play Mode, a launcher kończy proces po serii lub błędzie. Uruchamiaj osobną kopię, jeżeli projekt jest już otwarty. Dedykowany standalone Research Worker oraz jego osobny kontrakt CLI/TCP opisuje [pipeline PPO](PPO_TRAINING_PIPELINE.md).
 
 ## 2. Episode lifecycle
 
@@ -282,22 +282,20 @@ Gracz pozostaje w `PlayerCollision` na lokalnym `(0,-4,0)` Inside i `(0,6.5,0)` 
 | UI | Ukryte Canvas; `UIGame` nadal prowadzi charge/drain. Nie wyłączać komponentu lub jego GameObject przed przeniesieniem tej logiki. |
 | Ochrona | `ImmortalityEffect` nadal kończy logiczną ochronę. Można ukrywać renderer, ale nie usuwać komponentu/timera. |
 | Bonusy | `GemAnimationScript` przesuwa Outside i skaluje obiekty z colliderami. To częściowo gameplay, nie wyłącznie ozdoba. |
-| Renderowanie | Camera, Post Processing i shader bend są kandydatami do osobnego profilu bez renderowania. Zachować obiekty/referencje kamery wymagane przez FollowPlayer/AnimationManager. Obecnie nie wyłączano ich. |
+| Renderowanie | Standalone worker przeszedł testy z `-batchmode -nographics`. Obiekty/referencje kamery wymagane przez FollowPlayer/AnimationManager pozostają w scenie. |
 | Audio | Kandydat do wyciszenia źródeł w przyszłym profilu; zachować serwis i referencje. |
 | VFX | Prefaby efektów zbierania/eksplozji są śledzone i usuwane przy resecie. Można później wyłączyć ich tworzenie po sprawdzeniu zależności. |
 | Alokacje | Find/GetComponents, tablice obserwacji, tworzenie tub i renderer.material wymagają profilowania przy tysiącach epizodów. Nie dodano poolingu ani agresywnej optymalizacji. |
-| Czas / fizyka | Decyzje są fixed, ale oryginalny score, charge i część animacji nadal działają w Update. Pilot zweryfikował timeScale 1/5/10/20 i wybrał 20 przy opisanej małej tolerancji wyniku/czasu końcowego. |
+| Czas / fizyka | Decyzje są fixed, ale oryginalny score, charge i część animacji nadal działają w Update. Pilot zweryfikował timeScale 1/5/10/20 i wybrał 20. Krótki parity test jest zgodny w małej tolerancji, lecz drobne różnice kolejności aktualizacji mogą po wielu zdarzeniach skierować progową politykę na inną trajektorię; nie ma gwarancji długohoryzontowej deterministyczności. |
 | Obserwacje | Observation v2 ma 236 pól. Zachowuje przybliżenia geometrii, nie modeluje pełnego rozmiaru gracza ani przyszłej obwiedni ruchomych przeszkód. |
 | Singletony | Jedna scena gameplayu na proces, jedna sesja ResearchMode. Równoległe środowiska w tej samej scenie nie są obsługiwane. |
 | Normalna gra | Nie naprawiono historycznych problemów zapisów rekordów, kontynuacji ani nieaktywnych scen. Udany test podstawowego przepływu nie zamyka całego audytu. |
 
-Brak automatycznej kontynuacji po utracie trzech żyć w badaniu. Nie ma przyznawania życia reklamą ani ekranu Game Over. Normalny tryb zachowuje własne ekrany i Retry. Build Android, urządzenie mobilne, tysiące epizodów i trenowanie nie zostały zweryfikowane w tym etapie.
+Nie ma przyznawania życia reklamą ani interaktywnego ekranu Game Over w badaniu. Batch Research Mode wybiera następny jawny seed z konfiguracji, a standalone worker czeka na `RESET(seed)` od Pythona. Normalny tryb zachowuje własne ekrany i Retry. Build Android i urządzenie mobilne nie zostały zweryfikowane w tym etapie.
 
 ## 14. Przygotowanie do PPO
 
-Adapter PPO otrzyma Observation v2 przez `Decide`, wybierze jedną z trzech akcji albo jeden float, a wspólny kalkulator dostarczy reward zamknięty na granicy decyzji. Obie wersje muszą mieć ten sam krok środowiska, dane i limity. `terminated` i `truncated` są osobnymi polami; sposób bootstrapowania wartości przy truncation pozostaje decyzją następnego etapu. Nie zaimplementowano jeszcze PPO ani transportu do procesu treningowego.
-
-Przed implementacją integracji należy zlecić odpowiedni etap, wybrać bibliotekę/wersję kompatybilną z Unity 2022.3.4f1 i ustalić komunikację z procesem treningowym. Obecny interfejs nie wymaga konkretnego pakietu.
+PPO discrete korzysta z binarnego bridge’a TCP, custom `TurboDashVecEnv` i Stable-Baselines3 2.9.0. Unity nadal wylicza Observation v2 i reward v1. `terminated` i `truncated` pozostają osobnymi polami; wrapper zachowuje `terminal_observation`, oznacza `TimeLimit.truncated` i dopiero potem resetuje worker kolejnym seedem TRAIN. Konfigurację, checkpoint/resume, walidację i komendy opisuje [PPO_TRAINING_PIPELINE.md](PPO_TRAINING_PIPELINE.md).
 
 ## 15. Przygotowanie do NEAT
 
@@ -305,6 +303,6 @@ NEAT może czytać ten sam 236-elementowy wektor i mapować trzy wyjścia na LEF
 
 ## 16. Stan po zamrożeniu protokołu
 
-Protokół v1 zamroził limit epizodu, podział seedów, częstotliwość decyzji, utrzymanie akcji, Observation v2, baseline regułowy, pilot reward/fitness i rozróżnienie terminal/truncation. Wyniki pilota raportują pełny rozkład per seed oraz czas ścienny. Szczegóły i ograniczenia przed mostem treningowym znajdują się w [RULE_BASED_PILOT.md](RULE_BASED_PILOT.md).
+Protokół v1 zamroził limit epizodu, podział seedów, częstotliwość decyzji, utrzymanie akcji, Observation v2, baseline regułowy, pilot reward/fitness i rozróżnienie terminal/truncation. Wyniki pilota raportują pełny rozkład per seed oraz czas ścienny. Most treningowy zachowuje ten kontrakt; jego rzeczywiste parity, benchmark i smoke 100k opisuje [PPO_SMOKE_TEST.md](PPO_SMOKE_TEST.md).
 
 Nie zmieniono historycznych rozbieżności balansu: limitu prędkości 80, filtra difficulty Outside, prawdopodobieństw ani siedmiu kątów generatora. Ich ewentualna korekta wymaga nowej, jawnie wersjonowanej rewizji środowiska.

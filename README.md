@@ -2,7 +2,7 @@
 
 Turbo Dash to mobilna gra 3D typu endless runner: gracz unika przeszkód wewnątrz tunelu i na jego zewnętrznej powierzchni, zbiera klejnoty oraz aktywuje turbo. Wrażenie biegu powstaje przez przesuwanie tub w stronę gracza i obracanie otoczenia. Zaimplementowano sterowanie żyroskopem oraz dotykiem/strzałkami.
 
-Projekt powstał na potrzeby pracy inżynierskiej Pawła Frąckowiaka **„Projekt i implementacja gry mobilnej typu endless runner z wykorzystaniem sterowania żyroskopowego”** (2024). Obecnie jest przywracany do rozwoju jako podstawa magisterki **„Opracowanie i analiza algorytmów uczenia maszynowego do sterowania agentem w grze typu endless runner.”** Integracji uczenia maszynowego jeszcze nie ma; wybór algorytmów i narzędzi należy do kolejnych etapów.
+Projekt powstał na potrzeby pracy inżynierskiej Pawła Frąckowiaka **„Projekt i implementacja gry mobilnej typu endless runner z wykorzystaniem sterowania żyroskopowego”** (2024). Obecnie jest przywracany do rozwoju jako podstawa magisterki **„Opracowanie i analiza algorytmów uczenia maszynowego do sterowania agentem w grze typu endless runner.”** Projekt ma wersjonowane środowisko badawcze, baseline RuleBasedV1 oraz wieloprocesowy pipeline PPO discrete oparty na standalone workerach Unity i Stable-Baselines3.
 
 ## Stan projektu
 
@@ -47,4 +47,4 @@ Kluczowe klasy to `GameManager`, `SaveAndLoadManager`, `EnvironmentMovement`, `E
 
 Wykryte systemy obejmują poziomy trudności i portale, trzy życia, tarczę, nieśmiertelność, ładowanie turbo, waluty, lokalne rekordy, kamerę z efektami oraz muzykę/SFX. `Shop` i `Customization` są szkicami ekranów. Nie znaleziono działającego multiplayera, AI przeciwników, reklam, zakupów ani rankingów online.
 
-Dokumentacja: [architektura](docs/ARCHITECTURE.md), [systemy gry](docs/GAME_SYSTEMS.md), [audyt i roadmap](docs/PROJECT_AUDIT.md), [pełny inwentarz](docs/REPOSITORY_INVENTORY.md), [weryfikacja runtime](docs/BASELINE_VERIFICATION.md), [środowisko badawcze](docs/ML_RESEARCH_ENVIRONMENT.md), [Research Protocol v1](docs/RESEARCH_PROTOCOL_V1.md), [pilot RuleBasedV1](docs/RULE_BASED_PILOT.md), [zasady pracy agentów](AGENTS.md).
+Dokumentacja: [architektura](docs/ARCHITECTURE.md), [systemy gry](docs/GAME_SYSTEMS.md), [audyt i roadmap](docs/PROJECT_AUDIT.md), [pełny inwentarz](docs/REPOSITORY_INVENTORY.md), [weryfikacja runtime](docs/BASELINE_VERIFICATION.md), [środowisko badawcze](docs/ML_RESEARCH_ENVIRONMENT.md), [Research Protocol v1](docs/RESEARCH_PROTOCOL_V1.md), [pilot RuleBasedV1](docs/RULE_BASED_PILOT.md), [pipeline PPO](docs/PPO_TRAINING_PIPELINE.md), [smoke PPO 100k](docs/PPO_SMOKE_TEST.md), [zasady pracy agentów](AGENTS.md).

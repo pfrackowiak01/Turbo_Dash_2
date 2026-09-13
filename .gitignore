@@ -17,6 +17,13 @@ UserSettings/
 [Bb]uild/
 [Bb]uilds/
 
+# Local Python training environment and generated runs
+Training/.venv/
+Training/runs/
+Training/.build-temp/
+Training/__pycache__/
+Training/**/*.pyc
+
 # OS
 .DS_Store
 Thumbs.db
