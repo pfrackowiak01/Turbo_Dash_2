@@ -22,11 +22,7 @@ public class EnvironmentMovement : MonoBehaviour
             try
             {
                 var mode = ResearchMode.Instance;
-                Physics.SyncTransforms();
-                var action = mode.Controller.Decide(mode.Observations.Capture());
-                if (mode.Controller.ActionSpaceType == ActionSpaceType.Discrete && action.Value != -1 && action.Value != 0 && action.Value != 1)
-                    throw new System.InvalidOperationException("A discrete controller must return LEFT, NONE or RIGHT.");
-                ApplyAction(action, Time.fixedDeltaTime);
+                ApplyAction(mode.NextPhysicsAction(), Time.fixedDeltaTime);
             }
             catch (System.Exception exception) { ResearchMode.Instance.Fail(exception); }
         }

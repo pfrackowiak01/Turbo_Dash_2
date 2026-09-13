@@ -1,8 +1,8 @@
 # Środowisko badawcze Turbo Dash
 
-Implementacja dla Unity **2022.3.4f1**. Temat pracy: **„Opracowanie i analiza algorytmów uczenia maszynowego do sterowania agentem w grze typu endless runner.”** Wyniki uruchomienia znajdują się w [BASELINE_VERIFICATION.md](BASELINE_VERIFICATION.md). Dokument opisuje obecny kod; wcześniejsze ARCHITECTURE/GAME_SYSTEMS/PROJECT_AUDIT są zapisem audytu wersji bazowej.
+Implementacja dla Unity **2022.3.4f1**. Temat pracy: **„Opracowanie i analiza algorytmów uczenia maszynowego do sterowania agentem w grze typu endless runner.”** Wyniki przywrócenia wersji bazowej znajdują się w [BASELINE_VERIFICATION.md](BASELINE_VERIFICATION.md). Ten dokument opisuje architekturę przywróconego środowiska i zachowaną Observation v1. Aktualny, zamrożony kontrakt eksperymentów opisuje [RESEARCH_PROTOCOL_V1.md](RESEARCH_PROTOCOL_V1.md), a wykonany pilot [RULE_BASED_PILOT.md](RULE_BASED_PILOT.md); w punktach zmienionych przez protokół v1 te dwa dokumenty są nadrzędne.
 
-Decyzje badawcze pozostają następujące: główne porównanie **Rule-based / PPO discrete / NEAT discrete**, dodatkowe **PPO discrete / PPO continuous**. NEAT continuous jest możliwy przez interfejs, ale nie jest wymaganym eksperymentem. Celem jest długoterminowy score przy zachowaniu trzech żyć. Nie dodano PPO, NEAT, ML-Agents, finalnej funkcji nagrody ani właściwego kontrolera regułowego. Obecny `NoAction` jest kontrolerem diagnostycznym, a nie baseline'em badawczym.
+Decyzje badawcze pozostają następujące: główne porównanie **Rule-based / PPO discrete / NEAT discrete**, dodatkowe **PPO discrete / PPO continuous**. NEAT continuous jest możliwy przez interfejs, ale nie jest wymaganym eksperymentem. Celem jest długoterminowy score przy zachowaniu trzech żyć. Nie dodano PPO, NEAT ani ML-Agents. Dodano niezależną od algorytmu specyfikację reward/fitness v1 oraz właściwy `RuleBasedV1`; `NoAction` pozostaje kontrolerem diagnostycznym.
 
 ## 1. Architektura ResearchMode
 
@@ -24,7 +24,7 @@ Nowy kod znajduje się w [Code/Research](../Assets/Turbo_Dash/Code/Research). Ni
 
 Uruchomienie w edytorze: **Turbo Dash → Research → Configure and run → Start research episodes**. Okno otwiera bezpośrednio `DeafultLevel` i włącza Play Mode. Ustawienia w SessionState są usuwane po wyjściu z Play Mode. Zwykła gra nadal startuje od `Menu.unity`.
 
-Domyślne **3 epizody po maksymalnie 10 sekund**, seed początkowy 12345, służą wyłącznie sprawdzeniu instalacji. Nie są zatwierdzonym protokołem eksperymentu. `maxScore = 0` / `maxDuration = 0` wyłącza dany limit; `episodeCount = 0` oznacza serię bez ograniczenia liczby, chyba że podano skończoną tablicę seedów. Można podać własny CSV; pusta ścieżka tworzy unikalny plik w `Application.persistentDataPath/Research`. Istniejący niepusty plik jest odrzucany, aby nie mieszać sesji i identyfikatorów epizodów.
+Domyślne **3 epizody po maksymalnie 300 sekund**, seed początkowy 12345 i `maxScore = 0` są zgodne z limitami protokołu v1; do właściwych eksperymentów należy podać jawny zestaw seedów. `maxScore = 0` / `maxDuration = 0` wyłącza dany limit; `episodeCount = 0` oznacza serię bez ograniczenia liczby, chyba że podano skończoną tablicę seedów. Można podać własny CSV; pusta ścieżka tworzy unikalny plik w `Application.persistentDataPath/Research`. Istniejący niepusty plik jest odrzucany, aby nie mieszać sesji i identyfikatorów epizodów.
 
 Przykład konfiguracji **diagnostycznej**, nie zbioru treningowego/ewaluacyjnego:
 
@@ -49,7 +49,8 @@ stateDiagram-v2
     [*] --> Initializing
     Initializing --> Resetting: zależności gotowe
     Resetting --> Running: EpisodeStarted
-    Running --> Terminal: życia / limit / ResetRequested
+    Running --> Terminal: życia / limit
+    Running --> Resetting: ResetRequested, bez wyniku
     Terminal --> Resetting: CSV zapisany, następny seed
     Terminal --> Finished: koniec serii
     Initializing --> Faulted: brak zależności
@@ -60,7 +61,7 @@ stateDiagram-v2
 
 `LateUpdate` zbiera stan po gameplayu i kolizjach; dopiero potem rozstrzyga terminal i zapisuje jeden wiersz. Dzięki temu śmiertelne trafienie trafia do podsumowania przed resetem. Kolejność warunków: `LivesExhausted`, `MaxScore`, `MaxDuration`. Limity sprawdzane na granicy klatki mogą być przekroczone o przyrost ostatniej klatki; nie są bezwzględnym clampem wyniku/czasu.
 
-Wywołanie `ResetEpisode(seed)` podczas gry kończy bieżący epizod z `ResetRequested`, zapisuje go i kolejkuje reset na bezpiecznej granicy klatki. Tych przerwanych epizodów nie należy mieszać z wynikami kończonymi przez politykę. Reset w trakcie innego resetu jest odrzucany. Po ostatnim epizodzie gra jest zatrzymana w `Finished`; można uruchomić następny przez API. Błąd przechodzi w `Faulted`, zatrzymuje czas i dalsze epizody; nie jest etykietowany jako poprawny wynik agenta.
+Wywołanie `ResetEpisode(seed)` podczas gry anuluje bieżącą próbę i kolejkuje reset na bezpiecznej granicy klatki. `ResetRequested` nie emituje poprawnego terminalu, nie wywołuje `EpisodeCompleted` i nie zapisuje wiersza CSV. Reset w trakcie innego resetu jest odrzucany. Po ostatnim epizodzie gra jest zatrzymana w `Finished`; można uruchomić następny przez API. Błąd przechodzi w `Faulted`, zatrzymuje czas i dalsze epizody; nie jest etykietowany jako poprawny wynik agenta.
 
 ## 3. ResetEpisode
 
@@ -88,7 +89,7 @@ Singletony `GameManager`, `TimeManager`, `AnimationManager`, `AudioSystem` i his
 
 `IResearchController` udostępnia `ControllerType`, `ActionSpaceType`, `ResetEpisode(int seed)` i `Decide(ObservationFrame)`. `SetController` jest dozwolone pomiędzy epizodami. Nazwa i przestrzeń są walidowane oraz zapisywane w CSV. `NoActionController` zwraca NONE. `SubmittedActionController` przyjmuje komendę z zewnętrznego adaptera, utrzymuje ją do następnej i zeruje przy resecie. Właściwe RuleBased/PPO/NEAT mogą implementować ten sam interfejs.
 
-Badanie podejmuje decyzję i obraca świat w `EnvironmentMovement.FixedUpdate`, przed zwykłymi komponentami ruchu i symulacją fizyki, z istniejącym krokiem **0,01 s = 100 Hz czasu gry**. Jest to bieżąca częstotliwość środowiska, nie zatwierdzony hiperparametr treningu. Normalne sterowanie człowieka pozostaje w `Update`; oba źródła ostatecznie używają `ApplyDegreesPerSecond`. Fizyka zachowuje oryginalny Fixed Timestep; [Unity definiuje go w czasie gry](https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Time-fixedDeltaTime.html).
+Badanie obraca świat w `EnvironmentMovement.FixedUpdate`, przed zwykłymi komponentami ruchu i symulacją fizyki, z istniejącym krokiem **0,01 s = 100 Hz czasu gry**. `DecisionScheduler` pobiera Observation v2 i wywołuje kontroler co pięć kroków, czyli **20 Hz**, począwszy od pierwszego aktywnego kroku; pomiędzy decyzjami utrzymuje ostatnią akcję. Normalne sterowanie człowieka pozostaje w `Update`; oba źródła ostatecznie używają `ApplyDegreesPerSecond`. Fizyka zachowuje oryginalny Fixed Timestep; [Unity definiuje go w czasie gry](https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Time-fixedDeltaTime.html).
 
 Odczyt klawiatury/dotyku/gyro przeniesiono do `HumanController`; nieaktywny `PlayerMovement` pozostaje niewykorzystywany. Skróty debugowe wyniku, bonusów i pauzy są pomijane w ResearchMode. Człowiek nadal ręcznie aktywuje turbo, natomiast badanie aktywuje je automatycznie po pełnym naładowaniu.
 
@@ -108,9 +109,9 @@ LEFT/RIGHT są z perspektywy gracza. Kontroler nie odwraca znaku dla Outside. Pr
 
 Historyczny żyroskop człowieka zachowuje `Clamp(q.z × Rad2Deg, ±maxRotationSpeed) × rotationSpeed`, czyli maksymalnie 264°/s dla 22 i 12. Nie przycięto go do 144°/s, aby zachować normalną grę. **Porównania agentów** discrete/continuous mają wspólny limit 144°/s; gyro nie jest jedną z porównywanych polityk.
 
-## 7. Observation vector
+## 7. Observation v1 — diagnostic reference
 
-`ObservationFrame.SchemaVersion = 1`. Wektor ma stałe **2633 floaty**:
+Aktywną obserwacją kontrolerów jest obecnie Observation v2 opisana indeks po indeksie w [RESEARCH_PROTOCOL_V1.md](RESEARCH_PROTOCOL_V1.md). Zachowany `ObservationFrameV1.SchemaVersion = 1` i `ObservationProviderV1` udostępniają diagnostyczny wektor **2633 floatów**:
 
 `8 + 3 × (3 + 32 × 16 + 40 × 9)`.
 
@@ -195,7 +196,7 @@ Pozostałe `Random` w przykładach addonów dotyczą m.in. kolorów, UI i efekt�
 
 Seed nie oznacza identycznego całego przebiegu przy dowolnych akcjach. Bonusy/turbo wpływają na score i moment zmian poziomu, a poziom/lokacja wpływają na generowanie. Powtarzalność dalszej planszy wymaga tego samego stanu i sekwencji wywołań generatora. Pełna trajektoria fizyki i animowanych colliderów nie ma jeszcze gwarancji identyczności bitowej między maszynami/FPS. Wspólne seedy zapewniają wspólną losowość początkową, nie usuwają konsekwencji różnych działań.
 
-Domyślny harmonogram seedów to `initialSeed + episodeIndex ×104729` w arytmetyce int32. Jest oddzielony od losowań treści. Jawna tablica `seeds` pozwala podać ten sam zestaw w tej samej kolejności wszystkim algorytmom i nie jest automatycznie zapętlana. Dla treningu należy używać zmiennych seedów; osobny, niewidziany zbiór ewaluacyjny trzeba przygotować i zamrozić w następnym etapie. Nie wybrano go tutaj. Przechowywać należy też wersję kodu, konfigurację środowiska, fizyki i schematu obserwacji.
+Domyślny harmonogram awaryjny to `initialSeed + episodeIndex ×104729` w arytmetyce int32. Jest oddzielony od losowań treści. Protokół v1 przechowuje jednak jawne, rozłączne zbiory TRAIN 700, VALIDATION 100 i TEST 200 w `Assets/Turbo_Dash/Research/Seeds`. `ResearchSeedCatalog` waliduje ich rozmiar, dodatniość i globalną unikalność. TEST pozostaje zamrożony i nieużyty w pilocie.
 
 ## 9. Metryki i wspólne zdarzenia
 
@@ -205,7 +206,7 @@ CSV jest UTF-8, separator przecinek, liczby z kropką niezależnie od polskich u
 | --- | --- |
 | episodeId, controllerType, actionSpaceType, seed | Numer od 1, nazwa kontrolera, Discrete/Continuous, seed int32 |
 | finalScore | `GameManager.gameScore`, umowne punkty postępu |
-| survivalTime | Suma `Time.deltaTime` klatek aktywnego epizodu; sekundy gry, bez resetów |
+| survivalTime | Suma kroków fizyki po 0,01 s aktywnego epizodu; sekundy gry, bez resetów |
 | segmentsPassed | Tylna krawędź tuby minęła płaszczyznę gracza; jeden raz na tubę, także bezpieczną |
 | obstaclesEncountered | Logiczny spawn Wall/Obstacle dotarł przednią krawędzią do płaszczyzny gracza albo doszło do kontaktu; jeden raz na spawn |
 | obstaclesAvoided | Wszystkie pozostałe collidery tego spawnu minęły gracza i nie było kontaktu |
@@ -219,12 +220,13 @@ CSV jest UTF-8, separator przecinek, liczby z kropką niezależnie od polskich u
 | outsideStagesReached | Liczba wejść Inside→Outside |
 | timeInside, timeOutside | Sekundy gry przypisane lokacji na końcu klatki; suma równa survivalTime z błędem float |
 | maxEnvironmentSpeed | Maksymalne `tubeMoveSpeed`, jednostki Unity/s; nie prędkość punktów/s z HUD |
-| terminalReason | LivesExhausted / MaxScore / MaxDuration / ResetRequested |
-| trainingRunId, trainingStep, generation, episodeReward, fitness, trainingTime | Zarezerwowane, obecnie puste; adapter treningowy uzupełni identyfikator, licznik, wynik i czas ścienny treningu |
+| terminalReason | LivesExhausted / MaxScore / MaxDuration; ResetRequested nie tworzy wiersza |
+| trainingRunId, trainingStep, generation, trainingTime | Zarezerwowane dla przyszłego adaptera |
+| episodeReward, fitness | Wypełniane przez aktywny kalkulator pilot reward/fitness v1 |
 
 Ściana z czterema colliderami jest jednym logicznym spawnem dla encountered/avoided. `collisionsTotal` liczy kontakty fizyczne, więc jego mianownik jest inny. Obiektu skasowanego przed spotkaniem przez zmianę lokacji/reset nie liczy się jako ominiętego. Obiekt tylko wygenerowany daleko przed graczem nie zwiększa encountered. Trafienie pod tarczą/turbo jest kontaktem i nie jest „uniknięciem”, nawet bez straty życia. Scenariusze debugowe w testach nie stanowią wyników polityki.
 
-`ResearchEvents.Raised` przekazuje `ScoreDelta`, `Collision`, `LifeLost`, `ShieldConsumed`, `HeartCollected`, `ShieldCollected`, `BoostCollected`, `GoldCollected`, `DiamondCollected`, `Terminal`. `Value` to delta score lub liczność zdarzenia; terminal ma też reason. Zdarzenia bonusów pochodzą z obsługi kolizji, nie z domniemanego przyrostu licznika. Nie są domyślnie zapisywane co krok. To wspólne wejście przyszłej nagrody/fitness bez narzuconych wag. Główną wartość Heart/Shield/Boost ma stanowić przyszłe przeżycie i score; waluty mają niski priorytet badawczy.
+`ResearchEvents.Raised` przekazuje `ScoreDelta`, `Collision`, `LifeLost`, `ShieldConsumed`, `HeartCollected`, `ShieldCollected`, `BoostCollected`, `TurboActivated`, `GoldCollected`, `DiamondCollected`, `Terminal`. `Value` to delta score lub liczność zdarzenia; terminal ma też reason. Zdarzenia bonusów pochodzą z obsługi kolizji, a `TurboActivated` z rzeczywistego przejścia nieaktywne→aktywne. Kalkulator v1 bezpośrednio uwzględnia wyłącznie score i utratę życia. Główną wartość Heart/Shield/Boost ma stanowić przyszłe przeżycie i score.
 
 ## 10. Score — dokładny wzór
 
@@ -284,8 +286,8 @@ Gracz pozostaje w `PlayerCollision` na lokalnym `(0,-4,0)` Inside i `(0,6.5,0)` 
 | Audio | Kandydat do wyciszenia źródeł w przyszłym profilu; zachować serwis i referencje. |
 | VFX | Prefaby efektów zbierania/eksplozji są śledzone i usuwane przy resecie. Można później wyłączyć ich tworzenie po sprawdzeniu zależności. |
 | Alokacje | Find/GetComponents, tablice obserwacji, tworzenie tub i renderer.material wymagają profilowania przy tysiącach epizodów. Nie dodano poolingu ani agresywnej optymalizacji. |
-| Czas / fizyka | Decyzje są fixed, ale oryginalny score, charge i część animacji nadal działają w Update. Testy używają timeScale=1. Zwiększenie skali i build bez grafiki wymagają odrębnej walidacji. |
-| Obserwacje | Przybliżenia geometrii, brak pełnego rozmiaru gracza i kompletnego modelu osi/fazy wszystkich animacji; 2633 pola wymagają pilotażu reprezentacji. |
+| Czas / fizyka | Decyzje są fixed, ale oryginalny score, charge i część animacji nadal działają w Update. Pilot zweryfikował timeScale 1/5/10/20 i wybrał 20 przy opisanej małej tolerancji wyniku/czasu końcowego. |
+| Obserwacje | Observation v2 ma 236 pól. Zachowuje przybliżenia geometrii, nie modeluje pełnego rozmiaru gracza ani przyszłej obwiedni ruchomych przeszkód. |
 | Singletony | Jedna scena gameplayu na proces, jedna sesja ResearchMode. Równoległe środowiska w tej samej scenie nie są obsługiwane. |
 | Normalna gra | Nie naprawiono historycznych problemów zapisów rekordów, kontynuacji ani nieaktywnych scen. Udany test podstawowego przepływu nie zamyka całego audytu. |
 
@@ -293,16 +295,16 @@ Brak automatycznej kontynuacji po utracie trzech żyć w badaniu. Nie ma przyzna
 
 ## 14. Przygotowanie do PPO
 
-Adapter PPO otrzyma wektor przez `Decide`, wybierze jedną z trzech akcji albo jeden float, a zdarzenia/terminal wykorzysta do budowy przejścia treningowego. Obie wersje muszą mieć ten sam krok środowiska, dane i limity. Rozróżnienie terminalu śmierci od odcięcia MaxDuration/MaxScore jest dostępne w `terminalReason`; sposób bootstrapowania wartości przy odcięciu pozostaje decyzją następnego etapu. Niczego nie zapisuje się teraz jako wyliczonego rewardu PPO.
+Adapter PPO otrzyma Observation v2 przez `Decide`, wybierze jedną z trzech akcji albo jeden float, a wspólny kalkulator dostarczy reward zamknięty na granicy decyzji. Obie wersje muszą mieć ten sam krok środowiska, dane i limity. `terminated` i `truncated` są osobnymi polami; sposób bootstrapowania wartości przy truncation pozostaje decyzją następnego etapu. Nie zaimplementowano jeszcze PPO ani transportu do procesu treningowego.
 
 Przed implementacją integracji należy zlecić odpowiedni etap, wybrać bibliotekę/wersję kompatybilną z Unity 2022.3.4f1 i ustalić komunikację z procesem treningowym. Obecny interfejs nie wymaga konkretnego pakietu.
 
 ## 15. Przygotowanie do NEAT
 
-NEAT może czytać ten sam wektor i mapować trzy wyjścia na LEFT/NONE/RIGHT. Wersja z jednym wyjściem ciągłym pasuje do `ActionSpaceType.Continuous`, ale nie jest obecnie wymaganym eksperymentem. Ocena osobnika może agregować wyniki wielu wspólnych seedów; sposób agregacji fitness, budżet generacji i ponowna ocena elit nie zostały narzucone. Pola generation/fitness pozostają puste. Duży wektor wejściowy jest istotnym tematem pilotażu dla tej metody.
+NEAT może czytać ten sam 236-elementowy wektor i mapować trzy wyjścia na LEFT/NONE/RIGHT. Wersja z jednym wyjściem ciągłym pasuje do `ActionSpaceType.Continuous`, ale nie jest obecnie wymaganym eksperymentem. Kalkulator udostępnia episode fitness v1; sposób agregacji wielu seedów, budżet generacji i ponowna ocena elit nie zostały narzucone. Pole `generation` pozostaje zarezerwowane.
 
-## 16. Decyzje wymagające pilotażu
+## 16. Stan po zamrożeniu protokołu
 
-Do ustalenia pozostają: końcowe limity epizodu, zbiory i rozdzielenie seedów train/validation/test, liczba powtórzeń, częstotliwość decyzji, ewentualne utrzymywanie akcji przez kilka kroków, reprezentacja i marginesy obserwacji, reguły właściwego baseline'u, wagi/kształt rewardu i fitness, sposób traktowania limitów, budżety obu metod i pomiar czasu treningu. Rozdzielić należy liczbę kroków środowiska od czasu ściennego oraz raportować wyniki per seed, nie tylko średnią.
+Protokół v1 zamroził limit epizodu, podział seedów, częstotliwość decyzji, utrzymanie akcji, Observation v2, baseline regułowy, pilot reward/fitness i rozróżnienie terminal/truncation. Wyniki pilota raportują pełny rozkład per seed oraz czas ścienny. Szczegóły i ograniczenia przed mostem treningowym znajdują się w [RULE_BASED_PILOT.md](RULE_BASED_PILOT.md).
 
-Przed porównaniem wyników trzeba zamrozić wersję środowiska i osobno rozstrzygnąć opisane rozbieżności balansu (prędkość 80, difficulty Outside, prawdopodobieństwa i kąty). W tym etapie ich nie „naprawiano”. Techniczny interfejs i reset są przygotowane do kolejnego zlecenia; obecne pomiary nie stanowią jeszcze porównania agentów.
+Nie zmieniono historycznych rozbieżności balansu: limitu prędkości 80, filtra difficulty Outside, prawdopodobieństw ani siedmiu kątów generatora. Ich ewentualna korekta wymaga nowej, jawnie wersjonowanej rewizji środowiska.

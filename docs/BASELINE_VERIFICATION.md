@@ -10,8 +10,8 @@ Testy są programowymi scenariuszami Play Mode uruchamianymi przez edytor w tryb
 | --- | --- | ---: | ---: | --- |
 | Bazowa wersja przed zmianami | Commit `13e831b`, Menu → TouchControl → gameplay, portal, kolizje, bonusy, Game Over, Retry | 23 | 0 | kod 0 |
 | Regresja normalnej gry | Aktualny kod po wdrożeniu Research Mode; ten sam scenariusz | 23 | 0 | kod 0 |
-| Pełny Research Mode | Bezpośredni gameplay, sterowanie, obserwacje, RNG, metryki, terminale, reset i CSV | 172 | 0 | kod 0 |
-| Publiczny launcher `ResearchMenu.RunBatch` | JSON → scena → Play Mode → 3 epizody → CSV → automatyczne wyjście | 9 punktów kontrolnych | 0 | kod 0 |
+| Pełny Research Mode | Gameplay, Observation v1/v2, scheduler, RuleBased, reward, seedy, metryki, terminal/truncation, reset i CSV | 230 | 0 | kod 0 |
+| Publiczny launcher `ResearchMenu.RunBatch` | 8 uruchomień protokołu v1: benchmark, pilot i końcowy smoke; 67 epizodów | 8/8 procesów | 0 | kod 0 |
 
 Logi obu końcowych zestawów nie zawierały `error CS` ani wyjątków. Unity zgłasza nadal zastane ostrzeżenie o pustym `HeathenEngineering.UX.asmdef` oraz ostrzeżenia, że część istniejących wywołań `DontDestroyOnLoad` dotyczy obiektów niebędących rootami. Nie blokowały one badanych przepływów i nie były przedmiotem tej zmiany.
 
@@ -38,7 +38,7 @@ Sterowanie zostało podane programowo do istniejącej mapy wejścia, a przyciski
 
 ## Pełny Research Mode
 
-Końcowy przebieg na aktualnym kodzie zakończył się **172 PASS / 0 FAIL** i objął 13 resetów bez przeładowania sceny. CSV miał jeden nagłówek i 13 wierszy zakończonych epizodów.
+Końcowy przebieg na aktualnym kodzie zakończył się **230 PASS / 0 FAIL** i objął 15 resetów bez przeładowania sceny. CSV miał jeden nagłówek i 7 poprawnie zakończonych prób; resetowane w trakcie próby epizody `ResetRequested` nie utworzyły wyników.
 
 Sprawdzono między innymi:
 
@@ -89,6 +89,8 @@ JSON określał 3 epizody, seedy 7001, 7002 i 7003, limit czasu 0,25 s oraz ści
 8. wszystkie epizody zakończyły się `MaxDuration` i miały `NoAction / Discrete`;
 9. proces Unity zakończył się automatycznie kodem 0, bez błędów kompilacji i wyjątków.
 
+Po zamrożeniu protokołu v1 tę ścieżkę wykonano ponownie osiem razy: cztery skale benchmarku (po 1 epizodzie), trzy serie pilota (10, 30 i 20 epizodów) oraz końcowy smoke (3 epizody). Wszystkie **67 epizodów** przeszły przez config JSON, publiczne `RunBatch`, otwarcie `DeafultLevel`, Play Mode, automatyczne przejścia, CSV i kontrolowane wyjście Unity. Każdy proces zwrócił kod 0. Szczegóły zawierają [Research Protocol v1](RESEARCH_PROTOCOL_V1.md) i [raport pilota](RULE_BASED_PILOT.md).
+
 ## Powtórzenie testów
 
 [Invoke-UnityVerification.ps1](../Tools/Verification/Invoke-UnityVerification.ps1) tworzy nową izolowaną kopię. Przykłady:
@@ -106,8 +108,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File Tools/Verification/Invoke-Un
 - fizyczne wejście dotykowe i żyroskop na urządzeniu;
 - build Android i standalone player badawczy;
 - jakość wizualna, dźwięk i UX pełnej ręcznej sesji;
-- długotrwałe profilowanie tysięcy epizodów, stabilność bitowa na różnych maszynach i wysokie `Time.timeScale`;
-- uczenie i ocena Rule-based, PPO lub NEAT;
-- finalne seedy, limity, częstotliwość decyzji oraz reward/fitness.
+- długotrwałe profilowanie tysięcy epizodów i stabilność bitowa na różnych maszynach;
+- uczenie i ocena PPO lub NEAT;
+- standalone/headless player oraz zewnętrzny most treningowy.
 
 Szczegóły implementacji, obserwacji, RNG, metryk i rozbieżności balansu zawiera [ML_RESEARCH_ENVIRONMENT.md](ML_RESEARCH_ENVIRONMENT.md).

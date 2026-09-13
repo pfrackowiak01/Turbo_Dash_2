@@ -5,7 +5,7 @@ namespace TurboDash.Research
     public enum ResearchEventType
     {
         ScoreDelta, Collision, LifeLost, ShieldConsumed, HeartCollected,
-        ShieldCollected, BoostCollected, GoldCollected, DiamondCollected, Terminal
+        ShieldCollected, BoostCollected, TurboActivated, GoldCollected, DiamondCollected, Terminal
     }
     public readonly struct ResearchEvent
     {

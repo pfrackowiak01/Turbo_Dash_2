@@ -11,18 +11,22 @@ namespace TurboDash.Research
     {
         public int episodeId;
         public string controllerType, actionSpaceType;
+        public int protocolVersion, observationSchemaVersion;
+        public float decisionInterval;
+        public int decisionCount;
         public int seed;
         public float finalScore, survivalTime;
         public int segmentsPassed, obstaclesEncountered, obstaclesAvoided;
         public int collisionsTotal, lifeLossCount, shieldHits;
         public bool fatalCollision;
-        public int heartsCollected, shieldsCollected, boostsCollected, goldCollected, diamondsCollected;
+        public int heartsCollected, shieldsCollected, boostsCollected, turboActivations, goldCollected, diamondsCollected;
         public int maxLevel = 1, outsideStagesReached;
         public float timeInside, timeOutside, maxEnvironmentSpeed = 50;
         public string terminalReason;
+        public bool terminated, truncated;
         public string trainingRunId = "", trainingStep = "", generation = "", episodeReward = "", fitness = "", trainingTime = "";
 
-        public const string Header = "episodeId,controllerType,actionSpaceType,seed,finalScore,survivalTime,segmentsPassed,obstaclesEncountered,obstaclesAvoided,collisionsTotal,lifeLossCount,shieldHits,fatalCollision,heartsCollected,shieldsCollected,boostsCollected,goldCollected,diamondsCollected,maxLevel,outsideStagesReached,timeInside,timeOutside,maxEnvironmentSpeed,terminalReason,trainingRunId,trainingStep,generation,episodeReward,fitness,trainingTime";
+        public const string Header = "episodeId,controllerType,actionSpaceType,protocolVersion,observationSchemaVersion,decisionInterval,decisionCount,seed,finalScore,survivalTime,segmentsPassed,obstaclesEncountered,obstaclesAvoided,collisionsTotal,lifeLossCount,shieldHits,fatalCollision,heartsCollected,shieldsCollected,boostsCollected,turboActivations,goldCollected,diamondsCollected,maxLevel,outsideStagesReached,timeInside,timeOutside,maxEnvironmentSpeed,terminalReason,terminated,truncated,trainingRunId,trainingStep,generation,episodeReward,fitness,trainingTime";
         public static string Escape(string text)
         {
             text = text ?? "";

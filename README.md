@@ -47,4 +47,4 @@ Kluczowe klasy to `GameManager`, `SaveAndLoadManager`, `EnvironmentMovement`, `E
 
 Wykryte systemy obejmują poziomy trudności i portale, trzy życia, tarczę, nieśmiertelność, ładowanie turbo, waluty, lokalne rekordy, kamerę z efektami oraz muzykę/SFX. `Shop` i `Customization` są szkicami ekranów. Nie znaleziono działającego multiplayera, AI przeciwników, reklam, zakupów ani rankingów online.
 
-Dokumentacja: [architektura](docs/ARCHITECTURE.md), [systemy gry](docs/GAME_SYSTEMS.md), [audyt i roadmap](docs/PROJECT_AUDIT.md), [pełny inwentarz](docs/REPOSITORY_INVENTORY.md), [weryfikacja runtime](docs/BASELINE_VERIFICATION.md), [środowisko badawcze](docs/ML_RESEARCH_ENVIRONMENT.md), [zasady pracy agentów](AGENTS.md).
+Dokumentacja: [architektura](docs/ARCHITECTURE.md), [systemy gry](docs/GAME_SYSTEMS.md), [audyt i roadmap](docs/PROJECT_AUDIT.md), [pełny inwentarz](docs/REPOSITORY_INVENTORY.md), [weryfikacja runtime](docs/BASELINE_VERIFICATION.md), [środowisko badawcze](docs/ML_RESEARCH_ENVIRONMENT.md), [Research Protocol v1](docs/RESEARCH_PROTOCOL_V1.md), [pilot RuleBasedV1](docs/RULE_BASED_PILOT.md), [zasady pracy agentów](AGENTS.md).

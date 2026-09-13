@@ -11,11 +11,13 @@ namespace TurboDash.Research.Editor
         public static void Open() { GetWindow<ResearchMenu>("Turbo Dash Research"); }
         private void OnGUI()
         {
-            EditorGUILayout.HelpBox("Diagnostic NoAction controller. Defaults are a smoke test, not research parameters. Zero limits disable a limit.", MessageType.Info);
+            EditorGUILayout.HelpBox("Research Protocol v1. MaxScore zero disables that optional limit.", MessageType.Info);
+            options.controllerType = EditorGUILayout.TextField("Controller (NoAction/RuleBasedV1)", options.controllerType);
             options.initialSeed = EditorGUILayout.IntField("First seed", options.initialSeed);
             options.episodeCount = EditorGUILayout.IntField("Episodes (0 = unlimited)", options.episodeCount);
             options.maxDuration = EditorGUILayout.FloatField("Max duration (game seconds)", options.maxDuration);
             options.maxScore = EditorGUILayout.FloatField("Max score", options.maxScore);
+            options.simulationTimeScale = EditorGUILayout.FloatField("Simulation time scale", options.simulationTimeScale);
             options.csvPath = EditorGUILayout.TextField("CSV path (empty = automatic)", options.csvPath);
             GUI.enabled = !EditorApplication.isPlayingOrWillChangePlaymode;
             if (GUILayout.Button("Start research episodes"))

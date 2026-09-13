@@ -199,6 +199,7 @@ public class GameManager : MonoBehaviour
 
     public void TurboEffect()
     {
+        bool started = !turboEffectEnable;
         audioSystem.PlaySound(audioSystem.sfxTurbo);
         UIGame = GameObject.FindWithTag("UIGame").GetComponent<UIGame>();
         UIGame.ResetTurboParameters();
@@ -207,6 +208,7 @@ public class GameManager : MonoBehaviour
         isFOVChanging = true;
         ImmortalityEffect();
         ToggleVisibilityWithTag("VisualEffectTurbo");
+        if (started) ResearchEvents.Emit(ResearchEventType.TurboActivated);
         
     }
 

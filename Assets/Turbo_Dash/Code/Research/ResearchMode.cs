@@ -10,21 +10,32 @@ namespace TurboDash.Research
     [Serializable]
     public sealed class ResearchOptions
     {
-        // Diagnostic defaults, not experimental limits or an evaluation seed set.
+        public int protocolVersion = ResearchProtocolV1.Version;
         public int initialSeed = 12345;
         public int episodeCount = 3;
         public int[] seeds = Array.Empty<int>();
-        public float maxDuration = 10;
+        public float maxDuration = ResearchProtocolV1.DefaultMaxDuration;
         public float maxScore;
+        public float simulationTimeScale = 1;
+        public string controllerType = "NoAction";
+        public bool enablePilotReward = true;
+        public PilotRewardParameters pilotReward = new PilotRewardParameters();
+        public RuleBasedParameters ruleBased = new RuleBasedParameters();
         public string csvPath = "";
         public bool autoAdvance = true;
         public void Validate()
         {
+            if (protocolVersion != ResearchProtocolV1.Version) throw new ArgumentException("Unsupported research protocol version.");
             if (episodeCount < 0 || maxDuration < 0 || maxScore < 0 ||
                 float.IsNaN(maxDuration) || float.IsInfinity(maxDuration) ||
-                float.IsNaN(maxScore) || float.IsInfinity(maxScore)) throw new ArgumentException("Invalid episode limits.");
+                float.IsNaN(maxScore) || float.IsInfinity(maxScore) || simulationTimeScale <= 0 ||
+                float.IsNaN(simulationTimeScale) || float.IsInfinity(simulationTimeScale)) throw new ArgumentException("Invalid episode limits or time scale.");
             if (seeds == null) seeds = Array.Empty<int>();
             if (seeds.Length > 0 && episodeCount > seeds.Length) throw new ArgumentException("Not enough explicit seeds.");
+            if (string.IsNullOrWhiteSpace(controllerType)) controllerType = "NoAction";
+            if (pilotReward == null) pilotReward = new PilotRewardParameters();
+            if (ruleBased == null) ruleBased = new RuleBasedParameters();
+            pilotReward.Validate(); ruleBased.Validate();
         }
         public int SeedFor(int zeroBasedEpisode) => seeds.Length > 0 ? seeds[zeroBasedEpisode]
             : unchecked(initialSeed + zeroBasedEpisode * 104729);
@@ -49,6 +60,9 @@ namespace TurboDash.Research
         public EpisodeSummary LastCompleted { get; private set; }
         public IResearchController Controller { get; private set; } = new NoActionController();
         public ObservationProvider Observations { get; private set; }
+        public ObservationProviderV1 DiagnosticObservationsV1 { get; private set; }
+        public DecisionScheduler Decisions { get; } = new DecisionScheduler();
+        public PilotRewardCalculator RewardCalculator { get; private set; }
         public string OutputPath { get; private set; }
         public readonly List<ResearchSegment> Segments = new List<ResearchSegment>();
         public event Action<EpisodeSummary> EpisodeStarted;
@@ -112,7 +126,11 @@ namespace TurboDash.Research
             if (!game || !generator || !movement || !player || !ui || !TimeManager.Instance || !AudioSystem.Instance)
             { Fail(new InvalidOperationException("Launch ResearchMode directly in DeafultLevel using the Research menu/batch entry.")); yield break; }
             initialEnvironmentRotation = movement.transform.localRotation;
+            ResearchProtocolV1.ValidateRuntime();
             Observations = new ObservationProvider(this, player, ui);
+            DiagnosticObservationsV1 = new ObservationProviderV1(this, player, ui);
+            RewardCalculator = new PilotRewardCalculator(Options.pilotReward);
+            Controller = CreateConfiguredController(Options);
             OutputPath = string.IsNullOrWhiteSpace(Options.csvPath)
                 ? Path.Combine(Application.persistentDataPath, "Research", DateTime.UtcNow.ToString("yyyyMMdd-HHmmss-fffffff") + ".csv")
                 : Path.GetFullPath(Options.csvPath);
@@ -132,18 +150,37 @@ namespace TurboDash.Research
             Controller = controller ?? throw new ArgumentNullException(nameof(controller));
         }
 
+        public static IResearchController CreateConfiguredController(ResearchOptions options)
+        {
+            if (string.Equals(options.controllerType, "NoAction", StringComparison.OrdinalIgnoreCase)) return new NoActionController();
+            if (string.Equals(options.controllerType, "RuleBased", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(options.controllerType, "RuleBasedV1", StringComparison.OrdinalIgnoreCase)) return new RuleBasedController(options.ruleBased);
+            throw new ArgumentException("Unsupported research controller: " + options.controllerType);
+        }
+
         public void ResetEpisode(int seed)
         {
             if (!generator) throw new InvalidOperationException("Research initialization is not complete.");
             if (State == EpisodeState.Resetting) throw new InvalidOperationException("A reset is already in progress.");
             if (State == EpisodeState.Faulted) throw new InvalidOperationException("Resolve the research fault before restarting.");
-            if (Running) Complete("ResetRequested");
+            if (Running) AbortCurrentEpisode();
             if (State != EpisodeState.Faulted) requestedSeed = seed;
+        }
+        private void AbortCurrentEpisode()
+        {
+            State = EpisodeState.Terminal;
+            game.gameHasEnded = true; game.gamePaused = true; Time.timeScale = 0;
+            // ResetRequested is an aborted attempt: no terminal event, CSV row or result callback.
+            Current = null;
         }
 
         private void FixedUpdate()
         {
-            if (Running) episodePhysicsTime += Time.fixedDeltaTime;
+            if (!Running) return;
+            episodePhysicsTime += Time.fixedDeltaTime;
+            Current.survivalTime = episodePhysicsTime;
+            if (game.gameLocation == GameManager.Location.Inside) Current.timeInside += Time.fixedDeltaTime;
+            else Current.timeOutside += Time.fixedDeltaTime;
         }
 
         private void LateUpdate()
@@ -157,9 +194,6 @@ namespace TurboDash.Research
             if (!Running) return;
             try
             {
-                Current.survivalTime += Time.deltaTime;
-                if (game.gameLocation == GameManager.Location.Inside) Current.timeInside += Time.deltaTime;
-                else Current.timeOutside += Time.deltaTime;
                 if (previousLocation != game.gameLocation && game.gameLocation == GameManager.Location.Outside) Current.outsideStagesReached++;
                 previousLocation = game.gameLocation;
                 Current.finalScore = game.gameScore;
@@ -209,8 +243,12 @@ namespace TurboDash.Research
                 episodePhysicsTime = 0; segmentSequence = 0;
                 GameplayRandom.Reset(seed);
                 Controller.ResetEpisode(seed);
+                Decisions.Reset();
+                RewardCalculator.Reset();
                 Current = new EpisodeSummary { episodeId = ++episodeNumber, seed = seed,
-                    controllerType = Controller.ControllerType, actionSpaceType = Controller.ActionSpaceType.ToString() };
+                    controllerType = Controller.ControllerType, actionSpaceType = Controller.ActionSpaceType.ToString(),
+                    protocolVersion = ResearchProtocolV1.Version, observationSchemaVersion = ObservationFrame.SchemaVersion,
+                    decisionInterval = ResearchProtocolV1.DecisionInterval };
                 generator.ResetResearchEnvironment();
             }
             catch (Exception ex) { Fail(ex); yield break; }
@@ -220,9 +258,11 @@ namespace TurboDash.Research
             {
                 Physics.SyncTransforms();
                 Observations.Capture(); // Fail explicitly if new content exceeds the declared schema.
+                DiagnosticObservationsV1.Capture();
                 game.gameStart = false; game.gamePaused = false; game.gameHasEnded = false;
                 previousLocation = GameManager.Location.Inside;
                 TimeManager.Instance.ResetTimeScale();
+                Time.timeScale = Options.simulationTimeScale;
                 State = EpisodeState.Running;
                 EpisodeStarted?.Invoke(Current);
             }
@@ -234,6 +274,15 @@ namespace TurboDash.Research
             if (!Running) return;
             Current.finalScore = game.gameScore;
             Current.terminalReason = reason;
+            Current.terminated = reason == "LivesExhausted";
+            Current.truncated = reason == "MaxDuration" || reason == "MaxScore";
+            Current.decisionCount = Decisions.DecisionCount;
+            if (Options.enablePilotReward)
+            {
+                RewardCalculator.CloseDecisionInterval();
+                Current.episodeReward = RewardCalculator.EpisodeReward.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+                Current.fitness = RewardCalculator.Fitness(Current.finalScore, Current.lifeLossCount).ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+            }
             ResearchEvents.Emit(ResearchEventType.Terminal, 1, reason);
             State = EpisodeState.Terminal;
             game.gameHasEnded = true; game.gamePaused = true; Time.timeScale = 0;
@@ -258,6 +307,7 @@ namespace TurboDash.Research
 
         internal void Record(ResearchEvent data)
         {
+            if (Options.enablePilotReward) RewardCalculator.Record(data);
             switch (data.Type)
             {
                 case ResearchEventType.Collision: Current.collisionsTotal++; break;
@@ -269,9 +319,20 @@ namespace TurboDash.Research
                 case ResearchEventType.HeartCollected: Current.heartsCollected++; break;
                 case ResearchEventType.ShieldCollected: Current.shieldsCollected++; break;
                 case ResearchEventType.BoostCollected: Current.boostsCollected++; break;
+                case ResearchEventType.TurboActivated: Current.turboActivations++; break;
                 case ResearchEventType.GoldCollected: Current.goldCollected++; break;
                 case ResearchEventType.DiamondCollected: Current.diamondsCollected++; break;
             }
+        }
+        internal SteeringAction NextPhysicsAction()
+        {
+            Physics.SyncTransforms();
+            Action beforeDecision = Options.enablePilotReward ? (Action)(() => RewardCalculator.CloseDecisionInterval()) : null;
+            SteeringAction action = Decisions.Tick(Observations.Capture, Controller.Decide, beforeDecision);
+            Current.decisionCount = Decisions.DecisionCount;
+            if (Controller.ActionSpaceType == ActionSpaceType.Discrete && action.Value != -1 && action.Value != 0 && action.Value != 1)
+                throw new InvalidOperationException("A discrete controller must return LEFT, NONE or RIGHT.");
+            return action;
         }
         public static void RegisterTube(GameObject tube)
         {
