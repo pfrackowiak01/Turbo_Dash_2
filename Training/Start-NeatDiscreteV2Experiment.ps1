@@ -87,6 +87,15 @@ try {
     } finally {
         Pop-Location
     }
+    $ValidationMapPath = Join-Path $RunsRoot "neat-discrete-v2-extended-validation-500\validation-map.json"
+    $SummaryPath = Join-Path $RunsRoot "neat-discrete-v2-experiment-summary.json"
+    if (-not (Test-Path -LiteralPath $ValidationMapPath -PathType Leaf) -or
+        -not (Test-Path -LiteralPath $SummaryPath -PathType Leaf)) {
+        throw "NEAT v2 final artifacts are missing."
+    }
+    $ValidationMap = Get-Content -Raw -Encoding UTF8 -LiteralPath $ValidationMapPath | ConvertFrom-Json
+    Write-ExperimentLog ("Extended validation completed: {0} requested selections, {1} unique validations." -f
+        $ValidationMap.requested_selections, $ValidationMap.unique_validations)
     $Stopwatch.Stop()
     Write-ExperimentLog ("NEAT Discrete v2 experiment completed in {0:N1} wall-clock seconds." -f $Stopwatch.Elapsed.TotalSeconds)
 } catch {

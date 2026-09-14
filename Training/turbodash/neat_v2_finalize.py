@@ -63,7 +63,7 @@ def main() -> int:
             if reused:
                 summary_path = completed[deduplication_key]
             else:
-                output = validation_root / genome_hash[:16]
+                output = validation_root / f"{genome_hash[:16]}-{config_hash[:12]}"
                 summary_path = output / "summary.json"
                 if not (args.skip_existing and valid_existing(summary_path, genome_hash, config_hash)):
                     if output.exists():

@@ -4,6 +4,7 @@ import argparse
 import csv
 import json
 import statistics
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -43,9 +44,13 @@ def read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def validation_metrics(summary: dict[str, Any]) -> dict[str, Any]:
+def validation_metrics(summary: dict[str, Any], expected_duration: float) -> dict[str, Any]:
     if int(summary.get("episodes", 0)) != 100 or summary.get("action_space") != "Discrete":
         raise ValueError("NEAT v2 summary requires 100-seed Discrete validation")
+    if float(summary.get("max_duration", 0)) != expected_duration:
+        raise ValueError(f"NEAT v2 validation must use MaxDuration={expected_duration:g}")
+    if summary.get("test_status") != "UNUSED FOR TRAINING/TUNING/EVALUATION":
+        raise ValueError("NEAT v2 validation does not confirm TEST UNUSED")
     result = {public: summary[source] for public, source in METRIC_MAP.items()}
     result["terminal_distribution"] = summary["terminal_distribution"]
     return result
@@ -65,7 +70,8 @@ def build_summary(runs_root: Path, validation_map_path: Path) -> dict[str, Any]:
         result = manifest["result"]
         if int(result["generations_completed"]) != 200:
             raise ValueError(f"{run_id} did not complete 200 generations")
-        generation_rows = list(csv.DictReader((run_dir / "generation_metrics.csv").open(encoding="utf-8")))
+        with (run_dir / "generation_metrics.csv").open(encoding="utf-8") as stream:
+            generation_rows = list(csv.DictReader(stream))
         if len(generation_rows) != 200:
             raise ValueError(f"{run_id} generation_metrics does not contain 200 rows")
         species_history = [int(row["species_count"]) for row in generation_rows]
@@ -92,8 +98,12 @@ def build_summary(runs_root: Path, validation_map_path: Path) -> dict[str, Any]:
             mapped = mapping[map_key]
             summary_300 = read_json(Path(selection["summary_path"]))
             summary_500 = read_json(Path(mapped["summary_path"]))
+            if file_sha256(Path(selection["summary_path"])) != selection["summary_sha256"]:
+                raise ValueError(f"300 s validation summary hash mismatch for {map_key}")
             if summary_500["genome_sha256"] != selection["genome_sha256"]:
                 raise ValueError(f"500 s validation genome mismatch for {map_key}")
+            if summary_500["config_sha256"] != selection["config_sha256"]:
+                raise ValueError(f"500 s validation config mismatch for {map_key}")
             budgets[budget_name] = {
                 "selected_generation": selection["generation"],
                 "selected_genome_id": selection["genome_id"],
@@ -104,8 +114,8 @@ def build_summary(runs_root: Path, validation_map_path: Path) -> dict[str, Any]:
                 "budget_limit": selection["budget_limit"],
                 "budget_basis": selection["budget_basis"],
                 "topology": selection["topology"],
-                "validation_300": validation_metrics(summary_300),
-                "validation_500": validation_metrics(summary_500),
+                "validation_300": validation_metrics(summary_300, 300),
+                "validation_500": validation_metrics(summary_500, 500),
                 "validation_500_reused": bool(mapped["reused"]),
                 "validation_500_deduplication_key": mapped["deduplication_key"],
                 "genome_sha256": selection["genome_sha256"],
@@ -137,6 +147,7 @@ def build_summary(runs_root: Path, validation_map_path: Path) -> dict[str, Any]:
     }
     return {
         "schema": 1,
+        "created_utc": datetime.now(timezone.utc).isoformat(),
         "experiment": "NEAT Discrete v2 — 3 × 200 generations",
         "wallclock_match": read_json(runs_root / RUN_SPECS[0][0] / "manifest.json")["wallclock_match"],
         "runs": runs,
@@ -150,12 +161,21 @@ def write_csv(path: Path, summary: dict[str, Any]) -> None:
     fields = [
         "run_id", "experiment_seed", "budget", "generations_completed", "total_train_transitions",
         "total_wall_clock_seconds", "training_only_wall_clock_seconds", "species_count_min",
-        "species_count_mean", "species_count_max", "final_species_count", "selected_generation",
+        "species_count_mean", "species_count_max", "final_species_count", "best_validated_genome_id",
+        "selected_generation",
         "selected_genome_id", "selected_species_id", "train_transitions_at_selection",
         "elapsed_total_wall_seconds_at_selection", "elapsed_training_wall_seconds_at_selection",
         "enabled_connection_count", "disabled_connection_count", "total_node_count", "hidden_node_count",
         "input_count", "output_count", "feed_forward_layer_count", "validation_500_reused",
     ]
+    for generation in (50, 100, 150, 200):
+        fields.extend((
+            f"checkpoint_{generation}_transitions",
+            f"checkpoint_{generation}_total_wall_seconds",
+            f"checkpoint_{generation}_training_wall_seconds",
+            f"checkpoint_{generation}_species_count",
+            f"checkpoint_{generation}_best_training_fitness",
+        ))
     for duration in ("300", "500"):
         for public_name in METRIC_MAP:
             fields.extend((f"validation_{duration}_{public_name}_mean", f"validation_{duration}_{public_name}_median",
@@ -181,6 +201,13 @@ def write_csv(path: Path, summary: dict[str, Any]) -> None:
                 "hidden_node_count", "input_count", "output_count", "feed_forward_layer_count",
             ):
                 row[key] = topology[key]
+            for generation in (50, 100, 150, 200):
+                milestone = run["milestone_checkpoints"][str(generation)]
+                row[f"checkpoint_{generation}_transitions"] = milestone["cumulative_training_transitions"]
+                row[f"checkpoint_{generation}_total_wall_seconds"] = milestone["elapsed_total_wall_seconds"]
+                row[f"checkpoint_{generation}_training_wall_seconds"] = milestone["elapsed_training_wall_seconds"]
+                row[f"checkpoint_{generation}_species_count"] = milestone["species_count"]
+                row[f"checkpoint_{generation}_best_training_fitness"] = milestone["best_training_fitness"]
             for duration in ("300", "500"):
                 validation = budget[f"validation_{duration}"]
                 for public_name in METRIC_MAP:

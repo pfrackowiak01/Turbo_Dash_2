@@ -444,9 +444,20 @@ def main() -> int:
                 best_validation=best_validation, best_genome=best_genome,
                 checkpoint_metadata=metadata, extra_state=extra_state,
             )
-            restored = restore_population_exact(Path(read_json(latest_state)["native_checkpoint"]))
+            saved_state = read_json(latest_state)
+            restored = restore_population_exact(Path(saved_state["native_checkpoint"]))
             if restored.generation != population.generation or set(restored.population) != set(population.population):
                 raise RuntimeError("Immediate NEAT v2 checkpoint load verification failed")
+            total_seconds = elapsed_total(base_total_seconds, invocation_started)
+            metadata["elapsed_total_wall_seconds"] = total_seconds
+            extra_state["elapsed_total_wall_seconds"] = total_seconds
+            saved_state["checkpoint_metadata"] = metadata
+            saved_state["extra_state"] = extra_state
+            write_json(latest_state, saved_state)
+            write_json(
+                Path(saved_state["native_checkpoint"] + ".metadata.json"),
+                metadata,
+            )
             if metadata["milestone"]:
                 write_json(run_dir / "milestones" / f"generation-{generation:03d}.json", {
                     **metadata,
