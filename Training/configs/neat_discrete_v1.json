@@ -1,0 +1,25 @@
+{
+  "name": "NEAT Discrete v1",
+  "algorithm": "NEAT",
+  "library": "neat-python",
+  "library_version": "2.0.0",
+  "neat_config": "configs/neat_discrete_v1.ini",
+  "action_space": "Discrete",
+  "observation_size": 236,
+  "outputs": ["LEFT", "NONE", "RIGHT"],
+  "episodes_per_genome": 2,
+  "population_size": 64,
+  "workers": 6,
+  "time_scale": 20,
+  "training_max_duration": 300,
+  "target_transitions": 5000000,
+  "validation_interval": 500000,
+  "validation_workers": 6,
+  "validation_max_duration": 300,
+  "experiment_seed": 20260919,
+  "checkpoint_each_generation": true,
+  "fitness": {
+    "score_divisor": 100,
+    "life_loss_penalty": 0.5
+  }
+}
