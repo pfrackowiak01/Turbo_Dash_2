@@ -228,7 +228,7 @@ namespace TurboDash.Research
                     if (!Enum.IsDefined(typeof(DiscreteAction), value)) throw new InvalidDataException("Discrete action must be 0, 1 or 2.");
                     action = SteeringAction.FromDiscrete((DiscreteAction)value);
                 }
-                else action = new SteeringAction(payload.ReadSingle());
+                else action = SteeringAction.FromContinuous(payload.ReadSingle());
                 EnsureConsumed(payload);
                 return true;
             }

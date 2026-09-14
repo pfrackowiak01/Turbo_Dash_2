@@ -14,13 +14,14 @@ from stable_baselines3 import PPO
 from .callbacks import PipelineCallback
 from .manifest import create_manifest, write_json
 from .paths import DEFAULT_CONFIG, DEFAULT_WORKER, RUNS_ROOT, SEED_ROOT
+from .protocol import ActionSpace
 from .seeds import TrainingSeedScheduler, load_seed_split
 from .vec_env import TurboDashVecEnv
 from .worker import start_workers
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Train PPO Discrete against Turbo Dash Unity workers")
+    parser = argparse.ArgumentParser(description="Train PPO against Turbo Dash Unity workers")
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--worker-exe", type=Path, default=DEFAULT_WORKER)
     parser.add_argument("--run-id")
@@ -52,8 +53,9 @@ def load_config(args: argparse.Namespace) -> dict:
     for key, value in overrides.items():
         if value is not None:
             config[key] = value
-    if config.get("algorithm") != "PPO" or config.get("action_space") != "Discrete":
-        raise ValueError("This entry point supports PPO with Discrete action space only")
+    if config.get("algorithm") != "PPO":
+        raise ValueError("This entry point supports PPO only")
+    config["action_space"] = ActionSpace.from_name(config.get("action_space", "")).name.title()
     if config.get("normalize_observation") or config.get("normalize_reward"):
         raise ValueError("PPO Pilot v1 does not normalize observations or rewards")
     for key in ("workers", "total_timesteps", "checkpoint_interval", "validation_interval", "validation_workers"):
@@ -82,6 +84,7 @@ def infer_scheduler_path(checkpoint: Path) -> Path:
 def main() -> int:
     args = parse_args()
     config = load_config(args)
+    action_space = ActionSpace.from_name(config["action_space"])
     if stable_baselines3.__version__ != "2.9.0":
         raise RuntimeError(f"stable-baselines3 2.9.0 is required, found {stable_baselines3.__version__}")
     worker_exe = args.worker_exe.resolve()
@@ -91,7 +94,8 @@ def main() -> int:
     validation_path = SEED_ROOT / "validation.json"
     train_seeds = load_seed_split(train_path, "train")
     validation_seeds = load_seed_split(validation_path, "validation")
-    run_id = args.run_id or datetime.now(timezone.utc).strftime("ppo-discrete-%Y%m%d-%H%M%S")
+    action_name = config["action_space"].lower()
+    run_id = args.run_id or datetime.now(timezone.utc).strftime(f"ppo-{action_name}-%Y%m%d-%H%M%S")
     run_dir = RUNS_ROOT / run_id
     if run_dir.exists():
         raise FileExistsError(f"Run directory already exists: {run_dir}")
@@ -111,7 +115,7 @@ def main() -> int:
     try:
         workers = start_workers(
             int(config["workers"]), worker_exe, run_dir,
-            time_scale=float(config["time_scale"]), nographics=True,
+            time_scale=float(config["time_scale"]), action_space=action_space, nographics=True,
         )
         env = TurboDashVecEnv(workers, scheduler)
         policy_kwargs = {
@@ -155,6 +159,7 @@ def main() -> int:
             validation_interval=int(config["validation_interval"]),
             validation_workers=int(config["validation_workers"]),
             time_scale=float(config["time_scale"]),
+            action_space=action_space,
         )
         callback.align_with_existing_steps(initial_steps)
         model.learn(total_timesteps=remaining, callback=callback, reset_num_timesteps=not bool(args.resume),
@@ -201,9 +206,8 @@ def main() -> int:
         write_json(run_dir / "manifest.json", manifest)
         raise
     finally:
-        if env is not None:
-            for worker in workers:
-                worker.terminate()
+        for worker in workers:
+            worker.terminate()
 
 
 if __name__ == "__main__":

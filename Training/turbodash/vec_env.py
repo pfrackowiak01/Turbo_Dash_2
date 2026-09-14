@@ -7,7 +7,7 @@ import gymnasium as gym
 import numpy as np
 from stable_baselines3.common.vec_env import VecEnv
 
-from .protocol import OBSERVATION_SIZE
+from .protocol import ActionSpace, OBSERVATION_SIZE
 from .seeds import TrainingSeedScheduler
 from .worker import UnityWorker
 
@@ -24,8 +24,20 @@ class TurboDashVecEnv(VecEnv):
         self._episode_returns = np.zeros(len(workers), dtype=np.float64)
         self._episode_lengths = np.zeros(len(workers), dtype=np.int64)
         self._episode_started = np.zeros(len(workers), dtype=np.float64)
+        worker_action_spaces = {
+            worker.handshake.action_space if getattr(worker, "handshake", None) is not None else worker.action_space
+            for worker in workers
+        }
+        if len(worker_action_spaces) != 1:
+            raise ValueError("All Unity workers must use the same action space")
+        self.action_space_type = worker_action_spaces.pop()
         observation_space = gym.spaces.Box(low=-1.0, high=1.0, shape=(OBSERVATION_SIZE,), dtype=np.float32)
-        action_space = gym.spaces.Discrete(3)
+        if self.action_space_type == ActionSpace.DISCRETE:
+            action_space = gym.spaces.Discrete(3)
+        elif self.action_space_type == ActionSpace.CONTINUOUS:
+            action_space = gym.spaces.Box(low=-1.0, high=1.0, shape=(1,), dtype=np.float32)
+        else:
+            raise ValueError(f"Unsupported action space: {self.action_space_type!r}")
         super().__init__(len(workers), observation_space, action_space)
 
     def reset(self) -> np.ndarray:
@@ -41,14 +53,23 @@ class TurboDashVecEnv(VecEnv):
         return np.stack(observations).astype(np.float32, copy=False)
 
     def step_async(self, actions: np.ndarray) -> None:
-        actions = np.asarray(actions).reshape(self.num_envs)
         if self._actions is not None:
             raise RuntimeError("step_async called twice")
-        self._actions = actions.copy()
+        actions = np.asarray(actions)
+        if self.action_space_type == ActionSpace.DISCRETE:
+            self._actions = actions.reshape(self.num_envs).copy()
+        else:
+            actions = actions.reshape(self.num_envs, -1)
+            if actions.shape[1] != 1:
+                raise ValueError("Continuous actions must have shape (num_envs, 1)")
+            if not np.isfinite(actions).all():
+                raise ValueError("Continuous actions must be finite")
+            self._actions = np.clip(actions[:, 0], -1.0, 1.0).astype(np.float32, copy=False)
         sent = 0
         try:
             for worker, action in zip(self.workers, self._actions):
-                worker.send_step(int(action))
+                value = int(action) if self.action_space_type == ActionSpace.DISCRETE else float(action)
+                worker.send_step(value)
                 sent += 1
         except Exception:
             for worker in self.workers[:sent]:

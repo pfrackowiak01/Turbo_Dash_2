@@ -38,6 +38,7 @@ class UnityWorker:
         startup_timeout: float = 180,
         nographics: bool = True,
         expected_handshake_worker_id: int | None = None,
+        expected_handshake_action_space: ActionSpace | None = None,
     ):
         self.worker_id = worker_id
         self.executable = executable.resolve()
@@ -48,6 +49,7 @@ class UnityWorker:
         self.startup_timeout = startup_timeout
         self.nographics = nographics
         self.expected_handshake_worker_id = expected_handshake_worker_id
+        self.expected_handshake_action_space = expected_handshake_action_space
         self.listener: socket.socket | None = None
         self.socket: socket.socket | None = None
         self.process: subprocess.Popen | None = None
@@ -102,7 +104,8 @@ class UnityWorker:
             handshake = Handshake.decode(payload)
             try:
                 expected_id = self.worker_id if self.expected_handshake_worker_id is None else self.expected_handshake_worker_id
-                handshake.validate(expected_id, self.action_space)
+                expected_action_space = self.action_space if self.expected_handshake_action_space is None else self.expected_handshake_action_space
+                handshake.validate(expected_id, expected_action_space)
             except Exception as exc:
                 send_error(connection, str(exc))
                 raise
@@ -213,6 +216,7 @@ def start_workers(
     time_scale: float,
     max_duration: float = 300,
     nographics: bool = True,
+    action_space: ActionSpace = ActionSpace.DISCRETE,
 ) -> list[UnityWorker]:
     workers: list[UnityWorker] = []
     try:
@@ -225,6 +229,7 @@ def start_workers(
                     run_dir / "unity_episode_csv" / f"worker-{worker_id}.csv",
                 ),
                 time_scale=time_scale,
+                action_space=action_space,
                 max_duration=max_duration,
                 nographics=nographics,
             )

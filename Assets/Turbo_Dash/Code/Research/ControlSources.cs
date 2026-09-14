@@ -25,6 +25,9 @@ namespace TurboDash.Research
                 default: throw new ArgumentOutOfRangeException(nameof(action));
             }
         }
+        // The public continuous convention is -1 LEFT, 0 NONE, +1 RIGHT.
+        // Internally positive rotation is LEFT, so only the input boundary changes sign.
+        public static SteeringAction FromContinuous(float action) => new SteeringAction(-action);
     }
 
     public interface IResearchController
@@ -64,7 +67,7 @@ namespace TurboDash.Research
         public void Submit(float steering)
         {
             if (ActionSpaceType != ActionSpaceType.Continuous) throw new InvalidOperationException("Discrete controller.");
-            current = new SteeringAction(steering);
+            current = SteeringAction.FromContinuous(steering);
         }
         public void ResetEpisode(int seed) { current = new SteeringAction(0); }
         public SteeringAction Decide(ObservationFrame observation) => current;

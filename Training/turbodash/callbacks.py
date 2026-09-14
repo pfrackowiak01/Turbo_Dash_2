@@ -6,6 +6,8 @@ from pathlib import Path
 
 from stable_baselines3.common.callbacks import BaseCallback
 
+from .manifest import write_json
+from .protocol import ActionSpace
 from .reporting import append_summary
 from .validation import run_validation
 
@@ -13,7 +15,7 @@ from .validation import run_validation
 class PipelineCallback(BaseCallback):
     def __init__(self, run_dir: Path, scheduler, executable: Path, validation_seeds: list[int], *,
                  checkpoint_interval: int, validation_interval: int, validation_workers: int,
-                 time_scale: float, verbose: int = 1):
+                 time_scale: float, action_space: ActionSpace, verbose: int = 1):
         super().__init__(verbose)
         self.run_dir = run_dir
         self.scheduler = scheduler
@@ -23,6 +25,7 @@ class PipelineCallback(BaseCallback):
         self.validation_interval = validation_interval
         self.validation_workers = validation_workers
         self.time_scale = time_scale
+        self.action_space = action_space
         self.next_checkpoint = checkpoint_interval
         self.next_validation = validation_interval
         self.best_score = -math.inf
@@ -84,6 +87,7 @@ class PipelineCallback(BaseCallback):
         summary = run_validation(
             self.model, self.executable, self.validation_seeds, output,
             workers_count=self.validation_workers, time_scale=self.time_scale,
+            action_space=self.action_space, max_duration=300,
         )
         mean_score = summary["final_score"]["mean"]
         append_summary(self.run_dir / "training_summary.csv", {
@@ -96,4 +100,12 @@ class PipelineCallback(BaseCallback):
         if mean_score > self.best_score:
             self.best_score = mean_score
             self.model.save(self.run_dir / "best_model" / "model")
+            write_json(self.run_dir / "best_model" / "selection.json", {
+                "criterion": "maximum mean finalScore on 100 VALIDATION seeds",
+                "checkpoint_label": label,
+                "checkpoint_timestep": int(self.num_timesteps),
+                "source_checkpoint": str((self.run_dir / "checkpoints" / f"ppo_{label}.zip").resolve()),
+                "validation_summary": str((output / "summary.json").resolve()),
+                "summary": summary,
+            })
         return summary

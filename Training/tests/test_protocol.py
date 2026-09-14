@@ -1,6 +1,7 @@
 import socket
 import struct
 import unittest
+import math
 
 from turbodash.protocol import (
     ActionSpace, DiscreteAction, Handshake, Message, ProtocolError, encode_step,
@@ -14,11 +15,22 @@ class ProtocolTests(unittest.TestCase):
         hello.validate(3, ActionSpace.DISCRETE)
         with self.assertRaises(ProtocolError):
             hello.validate(4, ActionSpace.DISCRETE)
+        with self.assertRaises(ProtocolError):
+            hello.validate(3, ActionSpace.CONTINUOUS)
 
     def test_discrete_wire_mapping(self):
         self.assertEqual(struct.unpack("<Bi", encode_step(DiscreteAction.LEFT, ActionSpace.DISCRETE)), (Message.STEP, 0))
         self.assertEqual(struct.unpack("<Bi", encode_step(DiscreteAction.NONE, ActionSpace.DISCRETE)), (Message.STEP, 1))
         self.assertEqual(struct.unpack("<Bi", encode_step(DiscreteAction.RIGHT, ActionSpace.DISCRETE)), (Message.STEP, 2))
+
+    def test_continuous_wire_mapping_clamps_and_rejects_non_finite(self):
+        self.assertEqual(ActionSpace.from_name("continuous"), ActionSpace.CONTINUOUS)
+        self.assertEqual(struct.unpack("<Bf", encode_step(-2.0, ActionSpace.CONTINUOUS)), (Message.STEP, -1.0))
+        self.assertEqual(struct.unpack("<Bf", encode_step(0.25, ActionSpace.CONTINUOUS)), (Message.STEP, 0.25))
+        self.assertEqual(struct.unpack("<Bf", encode_step(2.0, ActionSpace.CONTINUOUS)), (Message.STEP, 1.0))
+        for value in (math.nan, math.inf, -math.inf):
+            with self.assertRaises(ValueError):
+                encode_step(value, ActionSpace.CONTINUOUS)
 
     def test_length_prefixed_transport(self):
         left, right = socket.socketpair()

@@ -10,6 +10,7 @@ from typing import Any
 
 import numpy as np
 
+from .protocol import ActionSpace
 from .worker import close_workers, start_workers
 
 METRICS = (
@@ -47,11 +48,17 @@ def write_validation(output_dir: Path, rows: list[dict[str, Any]], summary: dict
 
 
 def run_validation(model, executable: Path, seeds: list[int], output_dir: Path, *, workers_count: int,
-                   time_scale: float, nographics: bool = True) -> dict[str, Any]:
+                   time_scale: float, action_space: ActionSpace = ActionSpace.DISCRETE,
+                   max_duration: float = 300, nographics: bool = True) -> dict[str, Any]:
     if len(seeds) != 100:
         raise ValueError("Validation must use all 100 frozen VALIDATION seeds")
+    if workers_count <= 0:
+        raise ValueError("workers_count must be positive")
     workers_count = min(workers_count, len(seeds))
-    workers = start_workers(workers_count, executable, output_dir, time_scale=time_scale, nographics=nographics)
+    if max_duration <= 0:
+        raise ValueError("max_duration must be positive")
+    workers = start_workers(workers_count, executable, output_dir, time_scale=time_scale,
+                            max_duration=max_duration, nographics=nographics, action_space=action_space)
     active: list[tuple[int, np.ndarray] | None] = [None] * workers_count
     next_index = 0
     rows: list[dict[str, Any]] = []
@@ -66,8 +73,16 @@ def run_validation(model, executable: Path, seeds: list[int], output_dir: Path, 
             indices = [index for index, item in enumerate(active) if item is not None]
             observations = np.stack([active[index][1] for index in indices])
             actions, _ = model.predict(observations, deterministic=True)
-            for index, action in zip(indices, np.asarray(actions).reshape(len(indices))):
-                workers[index].send_step(int(action))
+            action_values = np.asarray(actions)
+            if action_space == ActionSpace.DISCRETE:
+                action_values = action_values.reshape(len(indices))
+            else:
+                action_values = action_values.reshape(len(indices), -1)
+                if action_values.shape[1] != 1 or not np.isfinite(action_values).all():
+                    raise ValueError("Continuous model must return one finite action per environment")
+                action_values = np.clip(action_values[:, 0], -1.0, 1.0)
+            for index, action in zip(indices, action_values):
+                workers[index].send_step(int(action) if action_space == ActionSpace.DISCRETE else float(action))
             for index in indices:
                 result = workers[index].receive_step()
                 returns[index] += result.reward
@@ -94,6 +109,8 @@ def run_validation(model, executable: Path, seeds: list[int], output_dir: Path, 
             raise RuntimeError("Validation seed coverage differs from the frozen VALIDATION split")
         summary = summarize(rows)
         summary["wall_seconds"] = time.perf_counter() - started
+        summary["action_space"] = action_space.name.title()
+        summary["max_duration"] = float(max_duration)
         summary["test_status"] = "UNUSED FOR TRAINING/TUNING/EVALUATION"
         write_validation(output_dir, rows, summary)
         return summary

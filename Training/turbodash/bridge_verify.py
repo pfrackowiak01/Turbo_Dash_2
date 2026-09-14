@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 
 from .paths import DEFAULT_WORKER, RUNS_ROOT, SEED_ROOT
-from .protocol import OBSERVATION_SIZE, ProtocolError
+from .protocol import ActionSpace, OBSERVATION_SIZE, ProtocolError
 from .seeds import TrainingSeedScheduler, load_seed_split
 from .vec_env import TurboDashVecEnv
 from .worker import UnityWorker, WorkerPaths, close_workers, start_workers
@@ -61,6 +61,22 @@ def main() -> int:
         mismatch_worker.terminate()
     check(mismatch_rejected, "real worker handshake protocol mismatch rejection")
 
+    action_mismatch_worker = UnityWorker(
+        0, executable,
+        WorkerPaths(root / "action-mismatch" / "worker_logs" / "worker-0.log",
+                    root / "action-mismatch" / "unity_episode_csv" / "worker-0.csv"),
+        time_scale=20, max_duration=2, action_space=ActionSpace.DISCRETE,
+        expected_handshake_action_space=ActionSpace.CONTINUOUS,
+    )
+    try:
+        action_mismatch_worker.start()
+        action_mismatch_rejected = False
+    except ProtocolError:
+        action_mismatch_rejected = True
+    finally:
+        action_mismatch_worker.terminate()
+    check(action_mismatch_rejected, "Continuous Python to Discrete Unity mismatch rejection")
+
     short = UnityWorker(0, executable, WorkerPaths(root / "short" / "worker_logs" / "worker-0.log",
                                                     root / "short" / "unity_episode_csv" / "worker-0.csv"),
                         time_scale=20, max_duration=0.07)
@@ -91,6 +107,31 @@ def main() -> int:
     finally:
         short.close()
     check(short.last_exit_code == 0, "graceful close exits with code zero", short.last_exit_code)
+
+    continuous = UnityWorker(
+        0, executable,
+        WorkerPaths(root / "continuous" / "worker_logs" / "worker-0.log",
+                    root / "continuous" / "unity_episode_csv" / "worker-0.csv"),
+        time_scale=20, max_duration=0.17, action_space=ActionSpace.CONTINUOUS,
+    )
+    continuous.start()
+    try:
+        check(continuous.handshake is not None and continuous.handshake.action_space == ActionSpace.CONTINUOUS,
+              "continuous handshake success")
+        initial = continuous.reset(train_seeds[0])
+        check(initial.shape == (OBSERVATION_SIZE,) and np.isfinite(initial).all(),
+              "continuous reset returns a finite Observation v2")
+        terminal = None
+        for action in (-2.0, -0.25, 0.0, 0.25, 2.0, 0.0, 0.0, 0.0):
+            continuous.send_step(action)
+            terminal = continuous.receive_step()
+            if terminal.terminated or terminal.truncated:
+                break
+        check(terminal is not None and terminal.truncated and terminal.info["terminal_reason"] == "MaxDuration",
+              "continuous clamp/step/reset terminal path")
+    finally:
+        continuous.close()
+    check(continuous.last_exit_code == 0, "continuous worker closes cleanly", continuous.last_exit_code)
 
     deterministic = UnityWorker(0, executable,
         WorkerPaths(root / "deterministic" / "worker_logs" / "worker-0.log",

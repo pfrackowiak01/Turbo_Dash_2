@@ -32,6 +32,13 @@ class ActionSpace(enum.IntEnum):
     DISCRETE = 0
     CONTINUOUS = 1
 
+    @classmethod
+    def from_name(cls, value: str) -> "ActionSpace":
+        try:
+            return cls[value.strip().upper()]
+        except (AttributeError, KeyError) as exc:
+            raise ValueError("action_space must be Discrete or Continuous") from exc
+
 
 class DiscreteAction(enum.IntEnum):
     LEFT = 0
@@ -141,8 +148,9 @@ def encode_step(action: int | float, action_space: ActionSpace) -> bytes:
             raise ValueError("Discrete action must be LEFT=0, NONE=1 or RIGHT=2")
         return struct.pack("<Bi", Message.STEP, value)
     value = float(action)
-    if not math.isfinite(value) or value < -1 or value > 1:
-        raise ValueError("Continuous action must be finite and in [-1, 1]")
+    if not math.isfinite(value):
+        raise ValueError("Continuous action must be finite")
+    value = min(1.0, max(-1.0, value))
     return struct.pack("<Bf", Message.STEP, value)
 
 

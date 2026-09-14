@@ -1,6 +1,6 @@
 # Pipeline treningowy PPO discrete
 
-Stan na 2026-09-13. Pipeline wykorzystuje zamrożony [Research Protocol v1](RESEARCH_PROTOCOL_V1.md), Observation v2 (`236 × float32`) i reward v1. Nie zawiera ML-Agents, NEAT ani eksperymentu PPO continuous.
+Stan na 2026-09-14. Pipeline wykorzystuje zamrożony [Research Protocol v1](RESEARCH_PROTOCOL_V1.md), Observation v2 (`236 × float32`) i reward v1. Ten dokument opisuje wariant discrete; wariant continuous oraz automatyczny eksperyment 3-run opisuje [PPO_CONTINUOUS_PIPELINE.md](PPO_CONTINUOUS_PIPELINE.md). Pipeline nie zawiera ML-Agents ani NEAT.
 
 ## Architektura
 
