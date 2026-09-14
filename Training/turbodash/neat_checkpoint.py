@@ -48,6 +48,8 @@ def save_pipeline_checkpoint(
     effective_config_path: Path,
     best_validation: dict[str, Any] | None,
     best_genome: Any | None,
+    checkpoint_metadata: dict[str, Any] | None = None,
+    extra_state: dict[str, Any] | None = None,
 ) -> Path:
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
     prefix = checkpoint_dir / "neat-checkpoint-"
@@ -80,6 +82,11 @@ def save_pipeline_checkpoint(
         "best_validated_genome_sha256": file_sha256(best_snapshot_path) if best_snapshot_path else None,
         "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION",
     }
+    if checkpoint_metadata is not None:
+        state["checkpoint_metadata"] = checkpoint_metadata
+        write_json(native_path.with_name(native_path.name + ".metadata.json"), checkpoint_metadata)
+    if extra_state is not None:
+        state["extra_state"] = extra_state
     write_json(state_path, state)
     write_json(checkpoint_dir / "latest.json", {
         "schema": 1,
