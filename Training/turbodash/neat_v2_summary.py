@@ -36,6 +36,10 @@ METRIC_MAP = {
     "Diamond": "diamonds_collected",
     "turboActivations": "turbo_activations",
 }
+CONTINUOUS_ACTION_METRICS = (
+    "mean_abs_steering", "mean_steering", "steering_std", "fraction_near_zero",
+    "fraction_near_max", "fraction_left", "fraction_right",
+)
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -44,27 +48,41 @@ def read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def validation_metrics(summary: dict[str, Any], expected_duration: float) -> dict[str, Any]:
-    if int(summary.get("episodes", 0)) != 100 or summary.get("action_space") != "Discrete":
-        raise ValueError("NEAT v2 summary requires 100-seed Discrete validation")
+def validation_metrics(summary: dict[str, Any], expected_duration: float,
+                       expected_action_space: str = "Discrete") -> dict[str, Any]:
+    if int(summary.get("episodes", 0)) != 100 or summary.get("action_space") != expected_action_space:
+        raise ValueError(f"NEAT summary requires 100-seed {expected_action_space} validation")
     if float(summary.get("max_duration", 0)) != expected_duration:
         raise ValueError(f"NEAT v2 validation must use MaxDuration={expected_duration:g}")
     if summary.get("test_status") != "UNUSED FOR TRAINING/TUNING/EVALUATION":
         raise ValueError("NEAT v2 validation does not confirm TEST UNUSED")
     result = {public: summary[source] for public, source in METRIC_MAP.items()}
     result["terminal_distribution"] = summary["terminal_distribution"]
+    if expected_action_space == "Continuous":
+        analytics = summary.get("continuous_action", {})
+        missing = [name for name in CONTINUOUS_ACTION_METRICS if name not in analytics]
+        if missing or analytics.get("role") != "analytics_only_not_used_for_fitness_or_selection":
+            raise ValueError("Continuous validation action analytics are missing or not marked analytics-only")
+        result["continuous_action"] = analytics
+        result["episodeFitness"] = summary["episode_fitness"]
     return result
 
 
-def build_summary(runs_root: Path, validation_map_path: Path) -> dict[str, Any]:
+def build_summary(runs_root: Path, validation_map_path: Path, *,
+                  run_specs: tuple[tuple[str, int], ...] | None = None,
+                  expected_algorithm: str = "NEAT Discrete v2",
+                  expected_action_space: str = "Discrete",
+                  expected_output_count: int = 3,
+                  experiment_name: str = "NEAT Discrete v2 — 3 × 200 generations") -> dict[str, Any]:
+    run_specs = RUN_SPECS if run_specs is None else run_specs
     validation_map = read_json(validation_map_path)
     mapping = validation_map["selections"]
     runs = []
-    for run_id, experiment_seed in RUN_SPECS:
+    for run_id, experiment_seed in run_specs:
         run_dir = runs_root / run_id
         manifest = read_json(run_dir / "manifest.json")
-        if manifest.get("status") != "complete" or manifest.get("algorithm") != "NEAT Discrete v2":
-            raise ValueError(f"{run_id} is not a completed NEAT Discrete v2 run")
+        if manifest.get("status") != "complete" or manifest.get("algorithm") != expected_algorithm:
+            raise ValueError(f"{run_id} is not a completed {expected_algorithm} run")
         if int(manifest["configuration"]["experiment_seed"]) != experiment_seed:
             raise ValueError(f"{run_id} experiment seed mismatch")
         result = manifest["result"]
@@ -114,13 +132,17 @@ def build_summary(runs_root: Path, validation_map_path: Path) -> dict[str, Any]:
                 "budget_limit": selection["budget_limit"],
                 "budget_basis": selection["budget_basis"],
                 "topology": selection["topology"],
-                "validation_300": validation_metrics(summary_300, 300),
-                "validation_500": validation_metrics(summary_500, 500),
+                "validation_300": validation_metrics(summary_300, 300, expected_action_space),
+                "validation_500": validation_metrics(summary_500, 500, expected_action_space),
                 "validation_500_reused": bool(mapped["reused"]),
                 "validation_500_deduplication_key": mapped["deduplication_key"],
                 "genome_sha256": selection["genome_sha256"],
                 "config_sha256": selection["config_sha256"],
             }
+            if int(selection["topology"]["output_count"]) != expected_output_count:
+                raise ValueError(f"{map_key} topology output count mismatch")
+        if int(checkpoint_metadata["current_champion_topology"]["output_count"]) != expected_output_count:
+            raise ValueError(f"{run_id} final champion topology output count mismatch")
         runs.append({
             "run_id": run_id,
             "experiment_seed": experiment_seed,
@@ -148,8 +170,8 @@ def build_summary(runs_root: Path, validation_map_path: Path) -> dict[str, Any]:
     return {
         "schema": 1,
         "created_utc": datetime.now(timezone.utc).isoformat(),
-        "experiment": "NEAT Discrete v2 — 3 × 200 generations",
-        "wallclock_match": read_json(runs_root / RUN_SPECS[0][0] / "manifest.json")["wallclock_match"],
+        "experiment": experiment_name,
+        "wallclock_match": read_json(runs_root / run_specs[0][0] / "manifest.json")["wallclock_match"],
         "runs": runs,
         "best_run_by_budget_mean_finalScore_500": winners,
         "extended_validation": validation_map,
@@ -158,6 +180,12 @@ def build_summary(runs_root: Path, validation_map_path: Path) -> dict[str, Any]:
 
 
 def write_csv(path: Path, summary: dict[str, Any]) -> None:
+    include_continuous = any(
+        "continuous_action" in budget[f"validation_{duration}"]
+        for run in summary["runs"]
+        for budget in run["budgets"].values()
+        for duration in ("300", "500")
+    )
     fields = [
         "run_id", "experiment_seed", "budget", "generations_completed", "total_train_transitions",
         "total_wall_clock_seconds", "training_only_wall_clock_seconds", "species_count_min",
@@ -181,6 +209,13 @@ def write_csv(path: Path, summary: dict[str, Any]) -> None:
             fields.extend((f"validation_{duration}_{public_name}_mean", f"validation_{duration}_{public_name}_median",
                            f"validation_{duration}_{public_name}_std"))
         fields.extend((f"validation_{duration}_MaxDuration_count", f"validation_{duration}_LivesExhausted_count"))
+        if include_continuous:
+            fields.extend((
+                f"validation_{duration}_episodeFitness_mean",
+                f"validation_{duration}_episodeFitness_median",
+                f"validation_{duration}_episodeFitness_std",
+            ))
+            fields.extend(f"validation_{duration}_{name}" for name in CONTINUOUS_ACTION_METRICS)
     rows = []
     for run in summary["runs"]:
         for budget_name, budget in run["budgets"].items():
@@ -217,6 +252,14 @@ def write_csv(path: Path, summary: dict[str, Any]) -> None:
                 terminal = validation["terminal_distribution"]
                 row[f"validation_{duration}_MaxDuration_count"] = terminal.get("MaxDuration", 0)
                 row[f"validation_{duration}_LivesExhausted_count"] = terminal.get("LivesExhausted", 0)
+                if include_continuous:
+                    for statistic in ("mean", "median", "std"):
+                        row[f"validation_{duration}_episodeFitness_{statistic}"] = (
+                            validation["episodeFitness"][statistic]
+                        )
+                    analytics = validation["continuous_action"]
+                    for name in CONTINUOUS_ACTION_METRICS:
+                        row[f"validation_{duration}_{name}"] = analytics[name]
             rows.append(row)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as stream:

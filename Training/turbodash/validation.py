@@ -62,6 +62,7 @@ def run_validation(model, executable: Path, seeds: list[int], output_dir: Path, 
     active: list[tuple[int, np.ndarray] | None] = [None] * workers_count
     next_index = 0
     rows: list[dict[str, Any]] = []
+    continuous_actions: list[float] = []
     returns = [0.0] * workers_count
     started = time.perf_counter()
     try:
@@ -81,6 +82,7 @@ def run_validation(model, executable: Path, seeds: list[int], output_dir: Path, 
                 if action_values.shape[1] != 1 or not np.isfinite(action_values).all():
                     raise ValueError("Continuous model must return one finite action per environment")
                 action_values = np.clip(action_values[:, 0], -1.0, 1.0)
+                continuous_actions.extend(float(action) for action in action_values)
             for index, action in zip(indices, action_values):
                 workers[index].send_step(int(action) if action_space == ActionSpace.DISCRETE else float(action))
             for index in indices:
@@ -111,6 +113,39 @@ def run_validation(model, executable: Path, seeds: list[int], output_dir: Path, 
         summary["wall_seconds"] = time.perf_counter() - started
         summary["action_space"] = action_space.name.title()
         summary["max_duration"] = float(max_duration)
+        if action_space == ActionSpace.CONTINUOUS:
+            episode_fitnesses = [
+                float(row["final_score"]) / 100.0 - 0.5 * int(row["life_loss_count"])
+                for row in rows
+            ]
+            summary["episode_fitness"] = {
+                "mean": statistics.fmean(episode_fitnesses),
+                "median": statistics.median(episode_fitnesses),
+                "std": statistics.pstdev(episode_fitnesses),
+                "min": min(episode_fitnesses),
+                "max": max(episode_fitnesses),
+            }
+            near_zero_threshold = 0.1
+            near_max_threshold = 0.9
+            summary["continuous_action"] = {
+                "decision_count": len(continuous_actions),
+                "mean_abs_steering": statistics.fmean(abs(value) for value in continuous_actions),
+                "mean_steering": statistics.fmean(continuous_actions),
+                "steering_std": statistics.pstdev(continuous_actions),
+                "fraction_near_zero": sum(abs(value) < near_zero_threshold for value in continuous_actions)
+                / len(continuous_actions),
+                "fraction_near_max": sum(abs(value) > near_max_threshold for value in continuous_actions)
+                / len(continuous_actions),
+                "fraction_left": sum(value < -near_zero_threshold for value in continuous_actions)
+                / len(continuous_actions),
+                "fraction_right": sum(value > near_zero_threshold for value in continuous_actions)
+                / len(continuous_actions),
+                "near_zero_rule": "abs(steering) < 0.1",
+                "near_max_rule": "abs(steering) > 0.9",
+                "left_rule": "steering < -0.1",
+                "right_rule": "steering > 0.1",
+                "role": "analytics_only_not_used_for_fitness_or_selection",
+            }
         summary["test_status"] = "UNUSED FOR TRAINING/TUNING/EVALUATION"
         write_validation(output_dir, rows, summary)
         return summary

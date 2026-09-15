@@ -9,6 +9,7 @@ import neat
 
 from .manifest import write_json
 from .neat_checkpoint import read_pickle
+from .neat_continuous_policy import NeatContinuousPolicy
 from .neat_manifest import require_neat_version
 from .neat_policy import NeatPolicy
 from .paths import DEFAULT_WORKER, RUNS_ROOT, SEED_ROOT
@@ -18,7 +19,7 @@ from .validation import run_validation
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Evaluate a NEAT Discrete genome on VALIDATION seeds")
+    parser = argparse.ArgumentParser(description="Evaluate a NEAT genome on VALIDATION seeds")
     parser.add_argument("--genome", type=Path, required=True)
     parser.add_argument("--neat-config", type=Path)
     parser.add_argument("--worker-exe", type=Path, default=DEFAULT_WORKER)
@@ -26,6 +27,7 @@ def main() -> int:
     parser.add_argument("--time-scale", type=float, default=20)
     parser.add_argument("--max-duration", type=float, default=300)
     parser.add_argument("--run-id")
+    parser.add_argument("--action-space", choices=("Discrete", "Continuous"), default="Discrete")
     args = parser.parse_args()
     version = require_neat_version()
     genome_path = args.genome.resolve()
@@ -39,15 +41,21 @@ def main() -> int:
         neat.DefaultStagnation, str(config_path),
     )
     genome = read_pickle(genome_path)
+    action_space = ActionSpace.from_name(args.action_space)
+    expected_outputs = 1 if action_space == ActionSpace.CONTINUOUS else 3
+    if neat_config.genome_config.num_inputs != 236 or neat_config.genome_config.num_outputs != expected_outputs:
+        raise ValueError("NEAT validation config input/output count differs from the selected action space")
+    policy_type = NeatContinuousPolicy if action_space == ActionSpace.CONTINUOUS else NeatPolicy
     seeds = load_seed_split(SEED_ROOT / "validation.json", "validation")
-    run_id = args.run_id or datetime.now(timezone.utc).strftime("neat-validation-%Y%m%d-%H%M%S")
+    default_prefix = "neat-continuous-validation" if action_space == ActionSpace.CONTINUOUS else "neat-validation"
+    run_id = args.run_id or datetime.now(timezone.utc).strftime(default_prefix + "-%Y%m%d-%H%M%S")
     output = RUNS_ROOT / run_id / "validation" / "all-100"
     if output.exists():
         raise FileExistsError(f"Validation output already exists: {output}")
     summary = run_validation(
-        NeatPolicy(genome, neat_config), args.worker_exe.resolve(), seeds, output,
+        policy_type(genome, neat_config), args.worker_exe.resolve(), seeds, output,
         workers_count=args.workers, time_scale=args.time_scale,
-        action_space=ActionSpace.DISCRETE, max_duration=args.max_duration,
+        action_space=action_space, max_duration=args.max_duration,
     )
     summary.update({
         "algorithm": "NEAT",

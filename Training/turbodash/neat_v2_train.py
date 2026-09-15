@@ -15,11 +15,13 @@ import neat
 
 from .manifest import git_snapshot, write_json
 from .neat_checkpoint import read_pickle, restore_population_exact, save_pipeline_checkpoint, write_pickle
+from .neat_continuous_policy import NeatContinuousPolicy, select_continuous_action
 from .neat_evaluation import GenerationEvaluation, GenerationEvaluator
 from .neat_manifest import create_neat_manifest, require_neat_version
-from .neat_policy import NeatPolicy
+from .neat_policy import NeatPolicy, select_discrete_action
 from .neat_topology import genome_topology
 from .neat_v2_selection import (
+    PPO_CONTINUOUS_RUN_IDS,
     materialize_budget_models,
     resolve_wallclock_match_seconds,
     select_budget_records,
@@ -41,8 +43,37 @@ GENERATION_FIELDS = (
 )
 
 
+def experiment_profile(config: dict[str, Any]) -> dict[str, Any]:
+    action_space = ActionSpace.from_name(str(config.get("action_space", "")))
+    if action_space == ActionSpace.DISCRETE:
+        return {
+            "action_space": action_space,
+            "outputs": ["LEFT", "NONE", "RIGHT"],
+            "output_count": 3,
+            "manifest_algorithm": "NEAT Discrete v2",
+            "run_prefix": "neat-discrete-v2",
+            "ppo_run_ids": (
+                "ppo-discrete-5m-run1", "ppo-discrete-5m-run2", "ppo-discrete-5m-run3",
+            ),
+            "ppo_label": "PPO-D",
+            "policy_type": NeatPolicy,
+            "action_selector": select_discrete_action,
+        }
+    return {
+        "action_space": action_space,
+        "outputs": ["STEERING"],
+        "output_count": 1,
+        "manifest_algorithm": "NEAT Continuous v1",
+        "run_prefix": "neat-continuous-v1",
+        "ppo_run_ids": PPO_CONTINUOUS_RUN_IDS,
+        "ppo_label": "PPO-C",
+        "policy_type": NeatContinuousPolicy,
+        "action_selector": select_continuous_action,
+    }
+
+
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run the generation-bounded NEAT Discrete v2 pipeline")
+    parser = argparse.ArgumentParser(description="Run a generation-bounded NEAT pipeline")
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--worker-exe", type=Path, default=DEFAULT_WORKER)
     parser.add_argument("--run-id")
@@ -78,14 +109,14 @@ def apply_overrides(config: dict[str, Any], args: argparse.Namespace) -> dict[st
 
 
 def validate_pipeline_config(config: dict[str, Any], purpose: str) -> None:
+    profile = experiment_profile(config)
     exact = {
         "algorithm": "NEAT",
         "pipeline_version": 2,
         "library": "neat-python",
         "library_version": "2.0.0",
-        "action_space": "Discrete",
         "observation_size": OBSERVATION_SIZE,
-        "outputs": ["LEFT", "NONE", "RIGHT"],
+        "outputs": profile["outputs"],
         "episodes_per_genome": 2,
         "population_size": 64,
         "workers": 6,
@@ -99,7 +130,7 @@ def validate_pipeline_config(config: dict[str, Any], purpose: str) -> None:
     }
     for key, expected in exact.items():
         if config.get(key) != expected:
-            raise ValueError(f"NEAT v2 requires {key}={expected!r}")
+            raise ValueError(f"Generation-bounded NEAT requires {key}={expected!r}")
     fitness = config.get("fitness", {})
     if fitness.get("score_divisor") != 100 or fitness.get("life_loss_penalty") != 0.5:
         raise ValueError("NEAT v2 fitness formula differs from Research Protocol v1")
@@ -117,11 +148,12 @@ def validate_pipeline_config(config: dict[str, Any], purpose: str) -> None:
             raise ValueError("NEAT v2 smoke MaxDuration must be in (0, 60]")
 
 
-def validate_neat_config(config: neat.Config) -> None:
+def validate_neat_config(config: neat.Config, expected_outputs: int = 3,
+                         expected_threshold: float = 2.5) -> None:
     genome = config.genome_config
     expected = {
         "num_inputs": 236,
-        "num_outputs": 3,
+        "num_outputs": expected_outputs,
         "feed_forward": True,
         "initial_connection": "partial_direct",
         "connection_fraction": 0.10,
@@ -137,11 +169,14 @@ def validate_neat_config(config: neat.Config) -> None:
     }
     for key, value in expected.items():
         if getattr(genome, key) != value:
-            raise ValueError(f"Frozen NEAT v2 config requires {key}={value!r}")
+            raise ValueError(f"Frozen generation-bounded NEAT config requires {key}={value!r}")
     if config.pop_size != 64:
         raise ValueError("Frozen NEAT v2 config requires population 64")
-    if config.species_set_config.compatibility_threshold != 2.5:
-        raise ValueError("Frozen NEAT v2 config requires compatibility_threshold=2.5")
+    if config.species_set_config.compatibility_threshold != expected_threshold:
+        raise ValueError(
+            "Frozen generation-bounded NEAT config requires "
+            f"compatibility_threshold={expected_threshold}"
+        )
     if config.reproduction_config.elitism != 2 or config.reproduction_config.survival_threshold != 0.20:
         raise ValueError("Frozen NEAT v2 reproduction parameters differ")
 
@@ -218,7 +253,7 @@ def load_resume(args: argparse.Namespace, train_seeds: list[int]):
     state = read_json(state_path)
     extra = state.get("extra_state", {})
     if state.get("schema") != 1 or extra.get("pipeline_version") != 2:
-        raise ValueError("Checkpoint is not a NEAT Discrete v2 state")
+        raise ValueError("Checkpoint is not a generation-bounded NEAT state")
     native = Path(state["native_checkpoint"]).resolve()
     if file_sha256(native) != state["native_checkpoint_sha256"]:
         raise ValueError("Native checkpoint hash mismatch")
@@ -262,11 +297,17 @@ def main() -> int:
             (latest_state, state, extra, config, run_dir, effective_neat, scheduler, population,
              best_genome, validation_records) = load_resume(args, train_seeds)
             validate_pipeline_config(config, args.purpose)
-            validate_neat_config(population.config)
+            profile = experiment_profile(config)
+            validate_neat_config(population.config, profile["output_count"])
+            checkpoint_action_space = extra.get("action_space")
+            if checkpoint_action_space not in (None, profile["action_space"].name.title()):
+                raise ValueError("Checkpoint action-space metadata mismatch")
             git = git_snapshot()
             if git["dirty"] and not args.allow_dirty:
                 raise RuntimeError("Working tree is dirty; explicitly pass --allow-dirty")
             manifest = read_json(run_dir / "manifest.json")
+            if manifest.get("algorithm") != profile["manifest_algorithm"]:
+                raise ValueError("Resume manifest algorithm/action-space mismatch")
             manifest.setdefault("resume_events", []).append({
                 "utc": datetime.now(timezone.utc).isoformat(),
                 "state": str(latest_state),
@@ -285,6 +326,7 @@ def main() -> int:
         else:
             config = apply_overrides(read_json(args.config.resolve()), args)
             validate_pipeline_config(config, args.purpose)
+            profile = experiment_profile(config)
             configured_path = Path(config["neat_config"])
             source_neat = configured_path if configured_path.is_absolute() else TRAINING_ROOT / configured_path
             neat_config = neat.Config(
@@ -292,11 +334,13 @@ def main() -> int:
                 neat.DefaultStagnation, str(source_neat.resolve()),
             )
             neat_config.seed = int(config["experiment_seed"])
-            validate_neat_config(neat_config)
+            validate_neat_config(neat_config, profile["output_count"])
             git = git_snapshot()
             if git["dirty"] and not args.allow_dirty:
                 raise RuntimeError("Working tree is dirty; explicitly pass --allow-dirty")
-            run_id = args.run_id or datetime.now(timezone.utc).strftime("neat-discrete-v2-%Y%m%d-%H%M%S")
+            run_id = args.run_id or datetime.now(timezone.utc).strftime(
+                profile["run_prefix"] + "-%Y%m%d-%H%M%S"
+            )
             run_dir = RUNS_ROOT / run_id
             if run_dir.exists():
                 raise FileExistsError(f"Run directory already exists: {run_dir}")
@@ -304,13 +348,17 @@ def main() -> int:
             effective_neat = run_dir / "neat_config.ini"
             neat_config.save(str(effective_neat))
             config["neat_config"] = str(effective_neat.resolve())
-            wallclock_match = resolve_wallclock_match_seconds(args.compute_match_seconds)
+            wallclock_match = resolve_wallclock_match_seconds(
+                args.compute_match_seconds,
+                run_ids=profile["ppo_run_ids"],
+                source_label=profile["ppo_label"],
+            )
             manifest = create_neat_manifest(
                 config, allow_dirty=args.allow_dirty, run_id=run_id, purpose=args.purpose,
                 worker_executable=worker_exe,
             )
             manifest.update({
-                "algorithm": "NEAT Discrete v2",
+                "algorithm": profile["manifest_algorithm"],
                 "pipeline_version": 2,
                 "wallclock_match": wallclock_match,
             })
@@ -340,7 +388,7 @@ def main() -> int:
                 workers = start_workers(
                     6, worker_exe, run_dir / "training_sessions" / session,
                     time_scale=20, max_duration=float(config["training_max_duration"]),
-                    nographics=True, action_space=ActionSpace.DISCRETE,
+                    nographics=True, action_space=profile["action_space"],
                 )
             generation = int(population.generation) + 1
             species_before = len(population.species.species)
@@ -350,7 +398,10 @@ def main() -> int:
                 for genome_id in species.members
             }
             seed_pair = (scheduler.next_seed(), scheduler.next_seed())
-            evaluator = GenerationEvaluator(workers, run_dir / "training_episodes.csv")
+            evaluator = GenerationEvaluator(
+                workers, run_dir / "training_episodes.csv",
+                action_selector=profile["action_selector"],
+            )
             captured: list[GenerationEvaluation] = []
             training_started = time.perf_counter()
             population.run(
@@ -377,8 +428,10 @@ def main() -> int:
                 close_workers(closing)
                 output = run_dir / "validation" / f"generation-{generation:06d}"
                 validation_summary = run_validation(
-                    NeatPolicy(evaluation.champion, population.config), worker_exe, validation_seeds,
-                    output, workers_count=6, time_scale=20, action_space=ActionSpace.DISCRETE,
+                    profile["policy_type"](evaluation.champion, population.config),
+                    worker_exe, validation_seeds,
+                    output, workers_count=6, time_scale=20,
+                    action_space=profile["action_space"],
                     max_duration=300, nographics=True,
                 )
                 validation_summary.update({
@@ -429,6 +482,7 @@ def main() -> int:
             }
             extra_state = {
                 "pipeline_version": 2,
+                "action_space": profile["action_space"].name.title(),
                 "elapsed_total_wall_seconds": total_seconds,
                 "elapsed_training_wall_seconds": training_seconds,
                 "best_training_fitness": best_training_fitness,

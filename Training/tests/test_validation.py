@@ -53,6 +53,18 @@ class ValidationTests(unittest.TestCase):
         self.assertEqual(summary["action_space"], "Continuous")
         self.assertEqual(summary["max_duration"], 500.0)
         self.assertEqual(summary["terminal_distribution"], {"MaxDuration": 100})
+        self.assertEqual(summary["continuous_action"]["decision_count"], 100)
+        self.assertEqual(summary["continuous_action"]["mean_abs_steering"], 1.0)
+        self.assertEqual(summary["continuous_action"]["mean_steering"], 1.0)
+        self.assertEqual(summary["continuous_action"]["steering_std"], 0.0)
+        self.assertEqual(summary["continuous_action"]["fraction_near_zero"], 0.0)
+        self.assertEqual(summary["continuous_action"]["fraction_near_max"], 1.0)
+        self.assertEqual(summary["continuous_action"]["fraction_left"], 0.0)
+        self.assertEqual(summary["continuous_action"]["fraction_right"], 1.0)
+        self.assertEqual(
+            summary["continuous_action"]["role"],
+            "analytics_only_not_used_for_fitness_or_selection",
+        )
         self.assertTrue(all(isinstance(action, float) and action == 1.0
                             for worker in workers for action in worker.actions))
         start_workers_mock.assert_called_once_with(

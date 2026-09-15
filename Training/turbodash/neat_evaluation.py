@@ -5,7 +5,7 @@ from collections import defaultdict, deque
 from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Sequence
 
 import neat
 
@@ -44,11 +44,13 @@ class GenerationEvaluation:
 
 
 class GenerationEvaluator:
-    def __init__(self, workers: list[UnityWorker], episode_csv: Path):
+    def __init__(self, workers: list[UnityWorker], episode_csv: Path,
+                 action_selector: Callable[[Sequence[float]], int | float] = select_discrete_action):
         if not workers:
             raise ValueError("At least one Unity worker is required")
         self.workers = workers
         self.episode_csv = episode_csv
+        self.action_selector = action_selector
 
     def evaluate(self, genomes, config: neat.Config, seed_pair: tuple[int, int],
                  generation: int) -> GenerationEvaluation:
@@ -87,7 +89,7 @@ class GenerationEvaluator:
             for index in indices:
                 episode = active[index]
                 outputs = networks[episode.genome_id].activate(episode.observation)
-                self.workers[index].send_step(select_discrete_action(outputs))
+                self.workers[index].send_step(self.action_selector(outputs))
             for index in indices:
                 episode = active[index]
                 result = self.workers[index].receive_step()

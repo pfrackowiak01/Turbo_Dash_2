@@ -14,6 +14,11 @@ PPO_DISCRETE_RUN_IDS = (
     "ppo-discrete-5m-run2",
     "ppo-discrete-5m-run3",
 )
+PPO_CONTINUOUS_RUN_IDS = (
+    "ppo-continuous-5m-run1",
+    "ppo-continuous-5m-run2",
+    "ppo-continuous-5m-run3",
+)
 BUDGET_NAMES = (
     "best_interaction_matched",
     "best_wallclock_matched",
@@ -21,10 +26,12 @@ BUDGET_NAMES = (
 )
 
 
-def resolve_wallclock_match_seconds(override: float | None = None) -> dict[str, Any]:
+def resolve_wallclock_match_seconds(override: float | None = None, *,
+                                    run_ids: tuple[str, ...] = PPO_DISCRETE_RUN_IDS,
+                                    source_label: str = "PPO-D") -> dict[str, Any]:
     values = []
     manifests = []
-    for run_id in PPO_DISCRETE_RUN_IDS:
+    for run_id in run_ids:
         path = RUNS_ROOT / run_id / "manifest.json"
         if not path.is_file():
             values = []
@@ -40,14 +47,14 @@ def resolve_wallclock_match_seconds(override: float | None = None) -> dict[str, 
         return {
             "seconds": sum(values) / len(values),
             "basis": "total_pipeline_wall_clock",
-            "source": "mean PPO-D 5M manifest result.wall_seconds",
-            "source_run_ids": list(PPO_DISCRETE_RUN_IDS),
+            "source": f"mean {source_label} 5M manifest result.wall_seconds",
+            "source_run_ids": list(run_ids),
             "source_values_seconds": values,
             "source_manifests": manifests,
         }
     if override is None or override <= 0:
         raise FileNotFoundError(
-            "Complete PPO-D manifests are unavailable; provide --compute-match-seconds"
+            f"Complete {source_label} manifests are unavailable; provide --compute-match-seconds"
         )
     return {
         "seconds": float(override),
