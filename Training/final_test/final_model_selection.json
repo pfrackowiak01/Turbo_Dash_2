@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "frozen_before_test_access": true,
+  "selection_basis": "maximum mean finalScore on the existing 100-seed VALIDATION split at MaxDuration=500; TEST was not accessed",
+  "selection_created_from_git_commit": "aad1f9d0b7d6d2c93c4f1a9f444b2e7f9e722611",
+  "test_status_at_freeze": "UNREAD_AND_UNUSED",
+  "methods": [
+    {
+      "method": "RuleBasedV1",
+      "family": "RuleBased",
+      "action_space": "Discrete",
+      "selection": "the only frozen Research Protocol v1 deterministic baseline; no result-based choice",
+      "source_path": "Assets/Turbo_Dash/Code/Research/RuleBasedController.cs",
+      "source_sha256": "e9915f916b22bc5e950b4c87bd3128fed78bbac2ae2e92a5d1083925af80f97e",
+      "configuration_sha256": "e9915f916b22bc5e950b4c87bd3128fed78bbac2ae2e92a5d1083925af80f97e",
+      "inference_adapter_path": "Training/turbodash/final_rule_based.py",
+      "inference_adapter_sha256": "da582151c9a67ad695fca9c471ecf0ec6afcc46d0b4ff4b58425ce064a85e9fd",
+      "source_git_commit": "aad1f9d0b7d6d2c93c4f1a9f444b2e7f9e722611",
+      "validation_500_mean_final_score": null,
+      "validation_500_note": "No pre-existing 500-second VALIDATION artifact exists; none was created during the freeze."
+    },
+    {
+      "method": "PPO-D",
+      "family": "PPO",
+      "action_space": "Discrete",
+      "run_id": "ppo-discrete-5m-run3",
+      "checkpoint_label": 3000000,
+      "checkpoint_timestep": 3000000,
+      "model_path": "Training/runs/ppo-discrete-5m-run3/best_model/model.zip",
+      "model_sha256": "1b4527e05914ba0269da4a49b0695216469f10a7930ffddd1501cd1a3b607fb1",
+      "source_checkpoint_path": "Training/runs/ppo-discrete-5m-run3/checkpoints/ppo_3000000.zip",
+      "source_checkpoint_sha256": "bc0a6d3606949b020c7f12a5b06e12d77cd1ea678aafd5edbb989e582eb11242",
+      "config_path": "Training/runs/ppo-discrete-5m-run3/config.json",
+      "config_sha256": "8789cd034454fd0bd8b36f13fe2259f7b8e9c29a5f8fdab6e6b95c87a4a2f085",
+      "source_git_commit": "dde122f7ab7456c2c4f8f3f98aef45b6fdd62426",
+      "validation_500_summary_path": "Training/runs/ppo-run3-best-validation-500/validation/all-100/summary.json",
+      "validation_500_mean_final_score": 74890.25592651367,
+      "selection_evidence": [
+        {"run_id": "ppo-discrete-5m-run1", "checkpoint_label": 4000000, "validation_500_mean_final_score": 64082.208921813966},
+        {"run_id": "ppo-discrete-5m-run2", "checkpoint_label": 2000000, "validation_500_mean_final_score": 63150.82875610352},
+        {"run_id": "ppo-discrete-5m-run3", "checkpoint_label": 3000000, "validation_500_mean_final_score": 74890.25592651367}
+      ]
+    },
+    {
+      "method": "PPO-C",
+      "family": "PPO",
+      "action_space": "Continuous",
+      "run_id": "ppo-continuous-5m-run3",
+      "checkpoint_label": 2000000,
+      "checkpoint_timestep": 2000004,
+      "model_path": "Training/runs/ppo-continuous-5m-run3/best_model/model.zip",
+      "model_sha256": "f2eb8e2464abd8719c9c624523032f0e74886695dede270edfa1c56fd5e9236e",
+      "source_checkpoint_path": "Training/runs/ppo-continuous-5m-run3/checkpoints/ppo_2000000.zip",
+      "source_checkpoint_sha256": "67fe86f39a934be7cbbc07d2762444ded50b15001ef53302f7fe07ef9aea4fbc",
+      "config_path": "Training/runs/ppo-continuous-5m-run3/config.json",
+      "config_sha256": "245d664950dcc538ea81160bfb682c15689f226dc7066002ed093a5afba302d1",
+      "source_git_commit": "dcab5414e564eaedfcf195c55ad1c6087a5412af",
+      "validation_500_summary_path": "Training/runs/ppo-continuous-run3-best-validation-500/validation/all-100/summary.json",
+      "validation_500_mean_final_score": 72340.23536010743,
+      "selection_evidence": [
+        {"run_id": "ppo-continuous-5m-run1", "checkpoint_timestep": 500004, "validation_500_mean_final_score": 52598.32148742676},
+        {"run_id": "ppo-continuous-5m-run2", "checkpoint_timestep": 1000002, "validation_500_mean_final_score": 55867.3174230957},
+        {"run_id": "ppo-continuous-5m-run3", "checkpoint_timestep": 2000004, "validation_500_mean_final_score": 72340.23536010743}
+      ]
+    },
+    {
+      "method": "NEAT-D",
+      "family": "NEAT",
+      "action_space": "Discrete",
+      "variant": "NEAT Discrete v2",
+      "run_id": "neat-discrete-v2-200g-run3",
+      "generation": 141,
+      "genome_id": 8134,
+      "genome_path": "Training/runs/neat-discrete-v2-200g-run3/selected_models/best_200_generations/genome.pkl",
+      "genome_sha256": "15a146d9079359210d6552a921d3776a7be5db98541030abe8e8992b9a24d547",
+      "config_path": "Training/runs/neat-discrete-v2-200g-run3/selected_models/best_200_generations/config.ini",
+      "config_sha256": "3fde2fd66b06ddc910b07881f2e84329be89dc0805e0f92bb25c7be0eb6aa16a",
+      "source_git_commit": "71a87674ef48d02a7a31997460227c93f32ad521",
+      "validation_500_summary_path": "Training/runs/neat-discrete-v2-extended-validation-500/15a146d907935921-3fde2fd66b06/summary.json",
+      "validation_500_mean_final_score": 39742.59798400879,
+      "selection_evidence": [
+        {"run_id": "neat-discrete-v2-200g-run1", "generation": 83, "genome_id": 4732, "validation_500_mean_final_score": 39254.67101135254},
+        {"run_id": "neat-discrete-v2-200g-run2", "generation": 111, "genome_id": 6350, "validation_500_mean_final_score": 38201.85504577637},
+        {"run_id": "neat-discrete-v2-200g-run3", "generation": 141, "genome_id": 8134, "validation_500_mean_final_score": 39742.59798400879}
+      ]
+    },
+    {
+      "method": "NEAT-C",
+      "family": "NEAT",
+      "action_space": "Continuous",
+      "variant": "NEAT Continuous v1",
+      "run_id": "neat-continuous-v1-200g-run1",
+      "generation": 62,
+      "genome_id": 3390,
+      "genome_path": "Training/runs/neat-continuous-v1-200g-run1/selected_models/best_200_generations/genome.pkl",
+      "genome_sha256": "38de5fc3b347cbe71d1cf30a771b9dbbd9c02456b169ed37a54d79e91ec4d2fd",
+      "config_path": "Training/runs/neat-continuous-v1-200g-run1/selected_models/best_200_generations/config.ini",
+      "config_sha256": "03240f1aa9549ab373aa5b05376420836f8692475d20fc4fa2f7e70de90f0bb9",
+      "source_git_commit": "aad1f9d0b7d6d2c93c4f1a9f444b2e7f9e722611",
+      "validation_500_summary_path": "Training/runs/neat-continuous-v1-extended-validation-500/38de5fc3b347cbe7-03240f1aa954/summary.json",
+      "validation_500_mean_final_score": 63393.31073425293,
+      "selection_evidence": [
+        {"run_id": "neat-continuous-v1-200g-run1", "generation": 62, "genome_id": 3390, "validation_500_mean_final_score": 63393.31073425293},
+        {"run_id": "neat-continuous-v1-200g-run2", "generation": 132, "genome_id": 7702, "validation_500_mean_final_score": 25225.046850891114},
+        {"run_id": "neat-continuous-v1-200g-run3", "generation": 158, "genome_id": 9270, "validation_500_mean_final_score": 39275.248699951175}
+      ]
+    }
+  ]
+}
