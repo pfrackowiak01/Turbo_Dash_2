@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "status": "complete_unblinded",
+  "started_utc": "2026-09-17T04:20:34.586137+00:00",
+  "git_commit": "0fc396934150a94c1521eedbc0dff0f176643a14",
+  "git_clean_before_first_test_access": true,
+  "protocol_path": "Training\\final_test\\final_test_protocol.json",
+  "protocol_sha256": "335a2e8d162bf7c3dffc4369aa4fc21f8b21388a6dbf0d600e258171943133b0",
+  "model_selection_path": "Training\\final_test\\final_model_selection.json",
+  "model_selection_sha256": "49a87efdbcc768b9b5fe93d4b321a55920adda68a4aa4b72f76fa90779481bf8",
+  "worker_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Builds\\ResearchWorker\\TurboDashResearchWorker.exe",
+  "worker_sha256": "e9656a4844f9670a83297b039b1572c08120edaf3ed4dfadfd28e8ce288184d5",
+  "worker_handshake": {
+    "transport_version": 1,
+    "research_protocol_version": 1,
+    "observation_schema_version": 2,
+    "observation_size": 236,
+    "fixed_timestep": 0.009999999776482582,
+    "decision_interval": 0.05000000074505806
+  },
+  "test_seed_path": "Assets\\Turbo_Dash\\Research\\Seeds\\test.json",
+  "test_seed_sha256": "1074fcdd4bc2b1b997e4a8a2349cdaff9ed2a9fe75c52b9e253f320007ab5f14",
+  "test_seed_count": 200,
+  "expected_total_episodes": 3000,
+  "blinded_until_complete": true,
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "numpy": "2.4.6",
+  "completed_utc": "2026-09-17T07:09:29.445941+00:00",
+  "valid_episode_count": 3000,
+  "technical_retry_counts": {}
+}

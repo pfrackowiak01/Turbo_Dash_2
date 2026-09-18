@@ -1,0 +1,10 @@
+{
+  "test": "Friedman",
+  "analysis_unit": "seed",
+  "n_seeds": 200,
+  "statistic": 308.88319517709135,
+  "degrees_of_freedom": 4,
+  "p_value": 1.313510782286309e-65,
+  "alpha": 0.05,
+  "significant": true
+}

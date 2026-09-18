@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "status": "complete_ready_to_unblind",
+  "completed_episodes": 3000,
+  "expected_episodes": 3000,
+  "remaining_episodes": 0,
+  "elapsed_wall_seconds": 10133.155999999988,
+  "eta_seconds": 0.0,
+  "completed_by_method": {
+    "RuleBasedV1": 600,
+    "PPO-D": 600,
+    "PPO-C": 600,
+    "NEAT-D": 600,
+    "NEAT-C": 600
+  },
+  "technical_retry_counts": {},
+  "protocol_sha256": "335a2e8d162bf7c3dffc4369aa4fc21f8b21388a6dbf0d600e258171943133b0",
+  "model_selection_sha256": "49a87efdbcc768b9b5fe93d4b321a55920adda68a4aa4b72f76fa90779481bf8",
+  "updated_utc": "2026-09-17T07:09:29.442806+00:00"
+}

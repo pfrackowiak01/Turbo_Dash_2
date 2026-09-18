@@ -1,0 +1,6 @@
+method,episodes,events_lives_exhausted,censored_max_duration,km_median_survival,at_risk_0,at_risk_100,at_risk_200,at_risk_300,at_risk_400,at_risk_500
+RuleBasedV1,600,371,229,70.85672760009766,600,240,232,231,229,229
+PPO-D,600,63,537,>500.0,600,542,538,538,537,537
+PPO-C,600,105,495,>500.0,600,507,496,496,495,495
+NEAT-D,600,356,244,89.90079498291016,600,255,245,245,244,244
+NEAT-C,600,79,521,>500.0,600,534,526,525,523,521
