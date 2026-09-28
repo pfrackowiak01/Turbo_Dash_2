@@ -1,0 +1,132 @@
+{
+  "figure": "W5",
+  "measurement": "species_count after completed generation/reproduction",
+  "data_rows": 782,
+  "smoothing": false,
+  "extrapolation": false,
+  "scope": "Three historical NEAT-D v1 runs and three full NEAT-D v2 runs.",
+  "excluded": "Separate three-generation v2 tuning pilot; seed catalogs; TEST data.",
+  "interpretation": "Descriptive comparison; initialization and threshold changed together, with different RNG seeds and stopping budgets; no isolated causal attribution.",
+  "sources": [
+    {
+      "version": "v1",
+      "run": 1,
+      "run_id": "neat-discrete-5m-run1",
+      "initial_connection": "full_direct",
+      "compatibility_threshold": 3.0,
+      "experiment_seed": 20260919,
+      "population_size": 64,
+      "source_sha256": {
+        "Training/runs/neat-discrete-5m-run1/generation_metrics.csv": "c67db0a64ab3d201d4b902f67affd7c00e582686798c5709053aeaf2dc33906c",
+        "Training/runs/neat-discrete-5m-run1/neat_config.ini": "0978690aed0b44f09194a17f8bb8d25d54e8a3ccbfdfdcd9a0de3a785d8ed8f3"
+      },
+      "statistics": {
+        "generations": 61,
+        "min": 1,
+        "mean": 1.0,
+        "max": 1,
+        "final": 1
+      }
+    },
+    {
+      "version": "v1",
+      "run": 2,
+      "run_id": "neat-discrete-5m-run2",
+      "initial_connection": "full_direct",
+      "compatibility_threshold": 3.0,
+      "experiment_seed": 20260920,
+      "population_size": 64,
+      "source_sha256": {
+        "Training/runs/neat-discrete-5m-run2/generation_metrics.csv": "bd5aa95ecc9d223137900ff3eee29fba1615529f6387c7ab0e9ce6a02b348d9c",
+        "Training/runs/neat-discrete-5m-run2/neat_config.ini": "23d2040f5c960429496faa8e1a8a3688c4fde54bae041d22fe073b11cd6d796e"
+      },
+      "statistics": {
+        "generations": 63,
+        "min": 1,
+        "mean": 1.0,
+        "max": 1,
+        "final": 1
+      }
+    },
+    {
+      "version": "v1",
+      "run": 3,
+      "run_id": "neat-discrete-5m-run3",
+      "initial_connection": "full_direct",
+      "compatibility_threshold": 3.0,
+      "experiment_seed": 20260921,
+      "population_size": 64,
+      "source_sha256": {
+        "Training/runs/neat-discrete-5m-run3/generation_metrics.csv": "2d3da4ea8cc00fad6dc02df5c59bddab6fb2daade2ab4f6a0cafdf6ae5813d29",
+        "Training/runs/neat-discrete-5m-run3/neat_config.ini": "ea6517de8fe5d42f516dd0e3387368ea05b28d39cf16e01856b1b4a7d40cef53"
+      },
+      "statistics": {
+        "generations": 58,
+        "min": 1,
+        "mean": 1.0,
+        "max": 1,
+        "final": 1
+      }
+    },
+    {
+      "version": "v2",
+      "run": 1,
+      "run_id": "neat-discrete-v2-200g-run1",
+      "initial_connection": "partial_direct 0.1",
+      "compatibility_threshold": 2.5,
+      "experiment_seed": 20260922,
+      "population_size": 64,
+      "source_sha256": {
+        "Training/runs/neat-discrete-v2-200g-run1/generation_metrics.csv": "acbfa57ee1c1c1bb6ba34403c9d44c2047607a74b96ec3478ce81f4884053553",
+        "Training/runs/neat-discrete-v2-200g-run1/neat_config.ini": "806a047d79a4d04d13190a7da51c0fd45253c7ccc66042c6625a832df54b06cf"
+      },
+      "statistics": {
+        "generations": 200,
+        "min": 2,
+        "mean": 2.62,
+        "max": 7,
+        "final": 2
+      }
+    },
+    {
+      "version": "v2",
+      "run": 2,
+      "run_id": "neat-discrete-v2-200g-run2",
+      "initial_connection": "partial_direct 0.1",
+      "compatibility_threshold": 2.5,
+      "experiment_seed": 20260923,
+      "population_size": 64,
+      "source_sha256": {
+        "Training/runs/neat-discrete-v2-200g-run2/generation_metrics.csv": "44db9ed96295f77cea22a8cd09f8e47da7090fbda2c00bfd71f06d34ab5350f8",
+        "Training/runs/neat-discrete-v2-200g-run2/neat_config.ini": "52853436f4be25d8cbde3026e161d6ae3976afc410ae5f91393fabe58105c119"
+      },
+      "statistics": {
+        "generations": 200,
+        "min": 2,
+        "mean": 2.97,
+        "max": 8,
+        "final": 3
+      }
+    },
+    {
+      "version": "v2",
+      "run": 3,
+      "run_id": "neat-discrete-v2-200g-run3",
+      "initial_connection": "partial_direct 0.1",
+      "compatibility_threshold": 2.5,
+      "experiment_seed": 20260924,
+      "population_size": 64,
+      "source_sha256": {
+        "Training/runs/neat-discrete-v2-200g-run3/generation_metrics.csv": "4319c2fb5bb165ca91b5b0fc63177cdb2eb0a02e8a0927110be2770de3d56126",
+        "Training/runs/neat-discrete-v2-200g-run3/neat_config.ini": "3fde2fd66b06ddc910b07881f2e84329be89dc0805e0f92bb25c7be0eb6aa16a"
+      },
+      "statistics": {
+        "generations": 200,
+        "min": 2,
+        "mean": 2.705,
+        "max": 7,
+        "final": 2
+      }
+    }
+  ]
+}
