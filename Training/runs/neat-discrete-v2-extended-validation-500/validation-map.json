@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "unique_validations": 8,
+  "requested_selections": 9,
+  "selections": {
+    "neat-discrete-v2-200g-run1:best_interaction_matched": {
+      "run_id": "neat-discrete-v2-200g-run1",
+      "budget": "best_interaction_matched",
+      "deduplication_key": "b2d42c247335628803aa06ad63ca71648b689af87eb3a4aa70970087d1b01220:806a047d79a4d04d13190a7da51c0fd45253c7ccc66042c6625a832df54b06cf",
+      "reused": false,
+      "summary_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-v2-extended-validation-500\\b2d42c2473356288-806a047d79a4\\summary.json"
+    },
+    "neat-discrete-v2-200g-run1:best_wallclock_matched": {
+      "run_id": "neat-discrete-v2-200g-run1",
+      "budget": "best_wallclock_matched",
+      "deduplication_key": "205e49aaab6b6460fbeddae02208027abcdeb981b463b44b08bb6d47fb91b35c:806a047d79a4d04d13190a7da51c0fd45253c7ccc66042c6625a832df54b06cf",
+      "reused": false,
+      "summary_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-v2-extended-validation-500\\205e49aaab6b6460-806a047d79a4\\summary.json"
+    },
+    "neat-discrete-v2-200g-run1:best_200_generations": {
+      "run_id": "neat-discrete-v2-200g-run1",
+      "budget": "best_200_generations",
+      "deduplication_key": "205e49aaab6b6460fbeddae02208027abcdeb981b463b44b08bb6d47fb91b35c:806a047d79a4d04d13190a7da51c0fd45253c7ccc66042c6625a832df54b06cf",
+      "reused": true,
+      "summary_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-v2-extended-validation-500\\205e49aaab6b6460-806a047d79a4\\summary.json"
+    },
+    "neat-discrete-v2-200g-run2:best_interaction_matched": {
+      "run_id": "neat-discrete-v2-200g-run2",
+      "budget": "best_interaction_matched",
+      "deduplication_key": "c3843d95fbe29fd2b2701765ce6f82ff73acf717d0a3160d28c9b4dfb5f9b7b8:52853436f4be25d8cbde3026e161d6ae3976afc410ae5f91393fabe58105c119",
+      "reused": false,
+      "summary_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-v2-extended-validation-500\\c3843d95fbe29fd2-52853436f4be\\summary.json"
+    },
+    "neat-discrete-v2-200g-run2:best_wallclock_matched": {
+      "run_id": "neat-discrete-v2-200g-run2",
+      "budget": "best_wallclock_matched",
+      "deduplication_key": "5e8b53c83b01ef6050718fc51e04f0be7149db37299a27c4e21b62c3dd3f2568:52853436f4be25d8cbde3026e161d6ae3976afc410ae5f91393fabe58105c119",
+      "reused": false,
+      "summary_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-v2-extended-validation-500\\5e8b53c83b01ef60-52853436f4be\\summary.json"
+    },
+    "neat-discrete-v2-200g-run2:best_200_generations": {
+      "run_id": "neat-discrete-v2-200g-run2",
+      "budget": "best_200_generations",
+      "deduplication_key": "4650ef32d4a2c09248670975c508a3c3dcd9734015e070aba609d637641f9374:52853436f4be25d8cbde3026e161d6ae3976afc410ae5f91393fabe58105c119",
+      "reused": false,
+      "summary_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-v2-extended-validation-500\\4650ef32d4a2c092-52853436f4be\\summary.json"
+    },
+    "neat-discrete-v2-200g-run3:best_interaction_matched": {
+      "run_id": "neat-discrete-v2-200g-run3",
+      "budget": "best_interaction_matched",
+      "deduplication_key": "31e29e29159f73bba382c84a88d4cfcfb069b99adeedb12d61e2dc5864a0cbfb:3fde2fd66b06ddc910b07881f2e84329be89dc0805e0f92bb25c7be0eb6aa16a",
+      "reused": false,
+      "summary_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-v2-extended-validation-500\\31e29e29159f73bb-3fde2fd66b06\\summary.json"
+    },
+    "neat-discrete-v2-200g-run3:best_wallclock_matched": {
+      "run_id": "neat-discrete-v2-200g-run3",
+      "budget": "best_wallclock_matched",
+      "deduplication_key": "692b8a88d4be9e09cf0ec210b6e113f93179d30293ff7eb6aa9c8c73f31bf8c9:3fde2fd66b06ddc910b07881f2e84329be89dc0805e0f92bb25c7be0eb6aa16a",
+      "reused": false,
+      "summary_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-v2-extended-validation-500\\692b8a88d4be9e09-3fde2fd66b06\\summary.json"
+    },
+    "neat-discrete-v2-200g-run3:best_200_generations": {
+      "run_id": "neat-discrete-v2-200g-run3",
+      "budget": "best_200_generations",
+      "deduplication_key": "15a146d9079359210d6552a921d3776a7be5db98541030abe8e8992b9a24d547:3fde2fd66b06ddc910b07881f2e84329be89dc0805e0f92bb25c7be0eb6aa16a",
+      "reused": false,
+      "summary_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-v2-extended-validation-500\\15a146d907935921-3fde2fd66b06\\summary.json"
+    }
+  },
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+}

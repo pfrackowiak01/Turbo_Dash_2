@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "generation": 100,
+  "cumulative_training_transitions": 7314479,
+  "elapsed_total_wall_seconds": 4109.048479999998,
+  "elapsed_training_wall_seconds": 3320.784347500099,
+  "species_count": 2,
+  "genome_count": 64,
+  "generation_best_training_fitness": 128.04589416503907,
+  "best_training_fitness_so_far": 274.7824609375,
+  "current_champion_genome_id": 5691,
+  "current_champion_topology": {
+    "genome_id": 5691,
+    "species_id": 2,
+    "enabled_connection_count": 27,
+    "disabled_connection_count": 60,
+    "genome_node_gene_count": 6,
+    "total_node_count": 242,
+    "hidden_node_count": 3,
+    "input_count": 236,
+    "output_count": 3,
+    "feed_forward_layer_count": 2
+  },
+  "milestone": true,
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION",
+  "checkpoint_state": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-v2-200g-run3\\checkpoints\\neat-checkpoint-100.state.json",
+  "checkpoint_state_sha256": "8c4603d6ba32ebcf5b385196eca24ba4287251069268168b8379ddbdb0942708"
+}

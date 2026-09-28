@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "generation": 120,
+  "genome_id": 6794,
+  "species_id": 79,
+  "training_fitness": 134.8536456298828,
+  "cumulative_training_transitions": 14533493,
+  "elapsed_total_wall_seconds": 11069.493621700007,
+  "elapsed_training_wall_seconds": 7691.608418099946,
+  "validation_mean_final_score": 8429.970645751953,
+  "genome_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-v2-200g-run2\\validation_archive\\generation-000120\\genome.pkl",
+  "genome_sha256": "6b7714f8f023e65697bc1f1291983618044a55e03e6260b1b62f5b694ffccd9f",
+  "config_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-v2-200g-run2\\validation_archive\\generation-000120\\config.ini",
+  "config_sha256": "52853436f4be25d8cbde3026e161d6ae3976afc410ae5f91393fabe58105c119",
+  "summary_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-v2-200g-run2\\validation_archive\\generation-000120\\summary.json",
+  "summary_sha256": "c10c11b2fb7d319c3ee2514ff117d0146082dd65a890818b0fd10209ada3d326",
+  "topology": {
+    "genome_id": 6794,
+    "species_id": 79,
+    "enabled_connection_count": 18,
+    "disabled_connection_count": 66,
+    "genome_node_gene_count": 5,
+    "total_node_count": 241,
+    "hidden_node_count": 2,
+    "input_count": 236,
+    "output_count": 3,
+    "feed_forward_layer_count": 2
+  },
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+}

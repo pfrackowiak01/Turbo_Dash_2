@@ -1,0 +1,825 @@
+{
+  "schema": 1,
+  "created_utc": "2026-09-14T17:32:33.714328+00:00",
+  "experiment_seed": 20260922,
+  "population_size": 64,
+  "generations_per_runtime_variant": 3,
+  "workers": 6,
+  "time_scale": 20.0,
+  "max_duration": 30.0,
+  "source_config": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\configs\\neat_discrete_v1.ini",
+  "source_config_sha256": "50229add859d575198898f18dde399661619879f3f1d72cacd23dfbb6dfdb19b",
+  "preflight": [
+    {
+      "initial_connection": "full_direct",
+      "connection_fraction": null,
+      "compatibility_threshold": 0.25,
+      "initial_species_count": 64,
+      "initial_connection_count_min": 708,
+      "initial_connection_count_mean": 708.0,
+      "initial_connection_count_max": 708
+    },
+    {
+      "initial_connection": "full_direct",
+      "connection_fraction": null,
+      "compatibility_threshold": 0.5,
+      "initial_species_count": 64,
+      "initial_connection_count_min": 708,
+      "initial_connection_count_mean": 708.0,
+      "initial_connection_count_max": 708
+    },
+    {
+      "initial_connection": "full_direct",
+      "connection_fraction": null,
+      "compatibility_threshold": 1.0,
+      "initial_species_count": 9,
+      "initial_connection_count_min": 708,
+      "initial_connection_count_mean": 708.0,
+      "initial_connection_count_max": 708
+    },
+    {
+      "initial_connection": "full_direct",
+      "connection_fraction": null,
+      "compatibility_threshold": 1.5,
+      "initial_species_count": 4,
+      "initial_connection_count_min": 708,
+      "initial_connection_count_mean": 708.0,
+      "initial_connection_count_max": 708
+    },
+    {
+      "initial_connection": "full_direct",
+      "connection_fraction": null,
+      "compatibility_threshold": 2.0,
+      "initial_species_count": 1,
+      "initial_connection_count_min": 708,
+      "initial_connection_count_mean": 708.0,
+      "initial_connection_count_max": 708
+    },
+    {
+      "initial_connection": "full_direct",
+      "connection_fraction": null,
+      "compatibility_threshold": 2.5,
+      "initial_species_count": 1,
+      "initial_connection_count_min": 708,
+      "initial_connection_count_mean": 708.0,
+      "initial_connection_count_max": 708
+    },
+    {
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.1,
+      "compatibility_threshold": 0.25,
+      "initial_species_count": 64,
+      "initial_connection_count_min": 71,
+      "initial_connection_count_mean": 71.0,
+      "initial_connection_count_max": 71
+    },
+    {
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.1,
+      "compatibility_threshold": 0.5,
+      "initial_species_count": 64,
+      "initial_connection_count_min": 71,
+      "initial_connection_count_mean": 71.0,
+      "initial_connection_count_max": 71
+    },
+    {
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.1,
+      "compatibility_threshold": 1.0,
+      "initial_species_count": 64,
+      "initial_connection_count_min": 71,
+      "initial_connection_count_mean": 71.0,
+      "initial_connection_count_max": 71
+    },
+    {
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.1,
+      "compatibility_threshold": 1.5,
+      "initial_species_count": 64,
+      "initial_connection_count_min": 71,
+      "initial_connection_count_mean": 71.0,
+      "initial_connection_count_max": 71
+    },
+    {
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.1,
+      "compatibility_threshold": 2.0,
+      "initial_species_count": 34,
+      "initial_connection_count_min": 71,
+      "initial_connection_count_mean": 71.0,
+      "initial_connection_count_max": 71
+    },
+    {
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.1,
+      "compatibility_threshold": 2.5,
+      "initial_species_count": 5,
+      "initial_connection_count_min": 71,
+      "initial_connection_count_mean": 71.0,
+      "initial_connection_count_max": 71
+    },
+    {
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.25,
+      "compatibility_threshold": 0.25,
+      "initial_species_count": 64,
+      "initial_connection_count_min": 177,
+      "initial_connection_count_mean": 177.0,
+      "initial_connection_count_max": 177
+    },
+    {
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.25,
+      "compatibility_threshold": 0.5,
+      "initial_species_count": 64,
+      "initial_connection_count_min": 177,
+      "initial_connection_count_mean": 177.0,
+      "initial_connection_count_max": 177
+    },
+    {
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.25,
+      "compatibility_threshold": 1.0,
+      "initial_species_count": 64,
+      "initial_connection_count_min": 177,
+      "initial_connection_count_mean": 177.0,
+      "initial_connection_count_max": 177
+    },
+    {
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.25,
+      "compatibility_threshold": 1.5,
+      "initial_species_count": 64,
+      "initial_connection_count_min": 177,
+      "initial_connection_count_mean": 177.0,
+      "initial_connection_count_max": 177
+    },
+    {
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.25,
+      "compatibility_threshold": 2.0,
+      "initial_species_count": 14,
+      "initial_connection_count_min": 177,
+      "initial_connection_count_mean": 177.0,
+      "initial_connection_count_max": 177
+    },
+    {
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.25,
+      "compatibility_threshold": 2.5,
+      "initial_species_count": 3,
+      "initial_connection_count_min": 177,
+      "initial_connection_count_mean": 177.0,
+      "initial_connection_count_max": 177
+    },
+    {
+      "initial_connection": "fs_neat_nohidden",
+      "connection_fraction": null,
+      "compatibility_threshold": 0.25,
+      "initial_species_count": 64,
+      "initial_connection_count_min": 3,
+      "initial_connection_count_mean": 3.0,
+      "initial_connection_count_max": 3
+    },
+    {
+      "initial_connection": "fs_neat_nohidden",
+      "connection_fraction": null,
+      "compatibility_threshold": 0.5,
+      "initial_species_count": 64,
+      "initial_connection_count_min": 3,
+      "initial_connection_count_mean": 3.0,
+      "initial_connection_count_max": 3
+    },
+    {
+      "initial_connection": "fs_neat_nohidden",
+      "connection_fraction": null,
+      "compatibility_threshold": 1.0,
+      "initial_species_count": 62,
+      "initial_connection_count_min": 3,
+      "initial_connection_count_mean": 3.0,
+      "initial_connection_count_max": 3
+    },
+    {
+      "initial_connection": "fs_neat_nohidden",
+      "connection_fraction": null,
+      "compatibility_threshold": 1.5,
+      "initial_species_count": 58,
+      "initial_connection_count_min": 3,
+      "initial_connection_count_mean": 3.0,
+      "initial_connection_count_max": 3
+    },
+    {
+      "initial_connection": "fs_neat_nohidden",
+      "connection_fraction": null,
+      "compatibility_threshold": 2.0,
+      "initial_species_count": 57,
+      "initial_connection_count_min": 3,
+      "initial_connection_count_mean": 3.0,
+      "initial_connection_count_max": 3
+    },
+    {
+      "initial_connection": "fs_neat_nohidden",
+      "connection_fraction": null,
+      "compatibility_threshold": 2.5,
+      "initial_species_count": 7,
+      "initial_connection_count_min": 3,
+      "initial_connection_count_mean": 3.0,
+      "initial_connection_count_max": 3
+    }
+  ],
+  "runtime_variants": [
+    {
+      "variant": "full-t1_0",
+      "initial_connection": "full_direct",
+      "connection_fraction": null,
+      "compatibility_threshold": 1.0,
+      "initial_species_count": 9,
+      "species_history": [
+        9,
+        11,
+        12,
+        13
+      ],
+      "species_min": 9,
+      "species_mean": 11.25,
+      "species_max": 13,
+      "total_transitions": 142376,
+      "generations": [
+        {
+          "generation": 1,
+          "seed_pair": [
+            30847768,
+            11368174
+          ],
+          "species_before": 9,
+          "species_after": 11,
+          "generation_transitions": 46757,
+          "cumulative_transitions": 46757,
+          "fitness_min": 0.9572843933105468,
+          "fitness_mean": 2.030654261112213,
+          "fitness_max": 3.324122161865234,
+          "enabled_connections_min": 699,
+          "enabled_connections_mean": 705.1875,
+          "enabled_connections_max": 708,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.046875,
+          "hidden_nodes_max": 1,
+          "unique_enabled_topologies": 48,
+          "champion_topology": {
+            "genome_id": 10,
+            "species_id": 2,
+            "enabled_connection_count": 708,
+            "disabled_connection_count": 0,
+            "genome_node_gene_count": 3,
+            "total_node_count": 239,
+            "hidden_node_count": 0,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        },
+        {
+          "generation": 2,
+          "seed_pair": [
+            27601169,
+            12624922
+          ],
+          "species_before": 11,
+          "species_after": 12,
+          "generation_transitions": 46595,
+          "cumulative_transitions": 93352,
+          "fitness_min": 1.3566795349121095,
+          "fitness_mean": 2.1336511409282686,
+          "fitness_max": 4.08563949584961,
+          "enabled_connections_min": 696,
+          "enabled_connections_mean": 702.46875,
+          "enabled_connections_max": 708,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.078125,
+          "hidden_nodes_max": 1,
+          "unique_enabled_topologies": 57,
+          "champion_topology": {
+            "genome_id": 109,
+            "species_id": 1,
+            "enabled_connection_count": 704,
+            "disabled_connection_count": 4,
+            "genome_node_gene_count": 3,
+            "total_node_count": 239,
+            "hidden_node_count": 0,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        },
+        {
+          "generation": 3,
+          "seed_pair": [
+            27391711,
+            7597930
+          ],
+          "species_before": 12,
+          "species_after": 13,
+          "generation_transitions": 49024,
+          "cumulative_transitions": 142376,
+          "fitness_min": 1.133904342651367,
+          "fitness_mean": 2.4207699418067934,
+          "fitness_max": 5.689494323730469,
+          "enabled_connections_min": 687,
+          "enabled_connections_mean": 699.3125,
+          "enabled_connections_max": 708,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.078125,
+          "hidden_nodes_max": 1,
+          "unique_enabled_topologies": 60,
+          "champion_topology": {
+            "genome_id": 154,
+            "species_id": 1,
+            "enabled_connection_count": 696,
+            "disabled_connection_count": 12,
+            "genome_node_gene_count": 3,
+            "total_node_count": 239,
+            "hidden_node_count": 0,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "variant": "full-t1_5",
+      "initial_connection": "full_direct",
+      "connection_fraction": null,
+      "compatibility_threshold": 1.5,
+      "initial_species_count": 4,
+      "species_history": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "species_min": 4,
+      "species_mean": 4.0,
+      "species_max": 4,
+      "total_transitions": 143190,
+      "generations": [
+        {
+          "generation": 1,
+          "seed_pair": [
+            30847768,
+            11368174
+          ],
+          "species_before": 4,
+          "species_after": 4,
+          "generation_transitions": 46398,
+          "cumulative_transitions": 46398,
+          "fitness_min": 1.0106121826171874,
+          "fitness_mean": 2.0676512026786806,
+          "fitness_max": 3.637344970703125,
+          "enabled_connections_min": 699,
+          "enabled_connections_mean": 704.8125,
+          "enabled_connections_max": 708,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.03125,
+          "hidden_nodes_max": 1,
+          "unique_enabled_topologies": 57,
+          "champion_topology": {
+            "genome_id": 60,
+            "species_id": 1,
+            "enabled_connection_count": 708,
+            "disabled_connection_count": 0,
+            "genome_node_gene_count": 3,
+            "total_node_count": 239,
+            "hidden_node_count": 0,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        },
+        {
+          "generation": 2,
+          "seed_pair": [
+            27601169,
+            12624922
+          ],
+          "species_before": 4,
+          "species_after": 4,
+          "generation_transitions": 45800,
+          "cumulative_transitions": 92198,
+          "fitness_min": 1.193352813720703,
+          "fitness_mean": 2.063245589733124,
+          "fitness_max": 3.8397868347167967,
+          "enabled_connections_min": 692,
+          "enabled_connections_mean": 700.78125,
+          "enabled_connections_max": 708,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.140625,
+          "hidden_nodes_max": 2,
+          "unique_enabled_topologies": 63,
+          "champion_topology": {
+            "genome_id": 109,
+            "species_id": 4,
+            "enabled_connection_count": 705,
+            "disabled_connection_count": 3,
+            "genome_node_gene_count": 3,
+            "total_node_count": 239,
+            "hidden_node_count": 0,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        },
+        {
+          "generation": 3,
+          "seed_pair": [
+            27391711,
+            7597930
+          ],
+          "species_before": 4,
+          "species_after": 4,
+          "generation_transitions": 50992,
+          "cumulative_transitions": 143190,
+          "fitness_min": 1.253800811767578,
+          "fitness_mean": 2.5785999727249145,
+          "fitness_max": 5.133423461914063,
+          "enabled_connections_min": 682,
+          "enabled_connections_mean": 695.265625,
+          "enabled_connections_max": 705,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.1875,
+          "hidden_nodes_max": 1,
+          "unique_enabled_topologies": 64,
+          "champion_topology": {
+            "genome_id": 149,
+            "species_id": 1,
+            "enabled_connection_count": 702,
+            "disabled_connection_count": 6,
+            "genome_node_gene_count": 3,
+            "total_node_count": 239,
+            "hidden_node_count": 0,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "variant": "partial10-t2_5",
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.1,
+      "compatibility_threshold": 2.5,
+      "initial_species_count": 5,
+      "species_history": [
+        5,
+        5,
+        6,
+        6
+      ],
+      "species_min": 5,
+      "species_mean": 5.5,
+      "species_max": 6,
+      "total_transitions": 129445,
+      "generations": [
+        {
+          "generation": 1,
+          "seed_pair": [
+            30847768,
+            11368174
+          ],
+          "species_before": 5,
+          "species_after": 5,
+          "generation_transitions": 42808,
+          "cumulative_transitions": 42808,
+          "fitness_min": 1.0705438995361327,
+          "fitness_mean": 2.0031876862049103,
+          "fitness_max": 4.082228393554688,
+          "enabled_connections_min": 69,
+          "enabled_connections_mean": 70.828125,
+          "enabled_connections_max": 72,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.046875,
+          "hidden_nodes_max": 1,
+          "unique_enabled_topologies": 41,
+          "champion_topology": {
+            "genome_id": 22,
+            "species_id": 3,
+            "enabled_connection_count": 71,
+            "disabled_connection_count": 0,
+            "genome_node_gene_count": 3,
+            "total_node_count": 239,
+            "hidden_node_count": 0,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        },
+        {
+          "generation": 2,
+          "seed_pair": [
+            27601169,
+            12624922
+          ],
+          "species_before": 5,
+          "species_after": 6,
+          "generation_transitions": 39609,
+          "cumulative_transitions": 82417,
+          "fitness_min": 1.0181423187255858,
+          "fitness_mean": 1.8801828002929688,
+          "fitness_max": 3.738132934570313,
+          "enabled_connections_min": 68,
+          "enabled_connections_mean": 70.625,
+          "enabled_connections_max": 73,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.171875,
+          "hidden_nodes_max": 2,
+          "unique_enabled_topologies": 36,
+          "champion_topology": {
+            "genome_id": 71,
+            "species_id": 5,
+            "enabled_connection_count": 72,
+            "disabled_connection_count": 1,
+            "genome_node_gene_count": 4,
+            "total_node_count": 240,
+            "hidden_node_count": 1,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        },
+        {
+          "generation": 3,
+          "seed_pair": [
+            27391711,
+            7597930
+          ],
+          "species_before": 6,
+          "species_after": 6,
+          "generation_transitions": 47028,
+          "cumulative_transitions": 129445,
+          "fitness_min": 0.9803150939941405,
+          "fitness_mean": 2.569109320640564,
+          "fitness_max": 5.335428161621094,
+          "enabled_connections_min": 66,
+          "enabled_connections_mean": 70.359375,
+          "enabled_connections_max": 73,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.234375,
+          "hidden_nodes_max": 2,
+          "unique_enabled_topologies": 41,
+          "champion_topology": {
+            "genome_id": 161,
+            "species_id": 3,
+            "enabled_connection_count": 69,
+            "disabled_connection_count": 1,
+            "genome_node_gene_count": 3,
+            "total_node_count": 239,
+            "hidden_node_count": 0,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "variant": "partial25-t2_5",
+      "initial_connection": "partial_direct",
+      "connection_fraction": 0.25,
+      "compatibility_threshold": 2.5,
+      "initial_species_count": 3,
+      "species_history": [
+        3,
+        3,
+        3,
+        3
+      ],
+      "species_min": 3,
+      "species_mean": 3.0,
+      "species_max": 3,
+      "total_transitions": 129212,
+      "generations": [
+        {
+          "generation": 1,
+          "seed_pair": [
+            30847768,
+            11368174
+          ],
+          "species_before": 3,
+          "species_after": 3,
+          "generation_transitions": 42929,
+          "cumulative_transitions": 42929,
+          "fitness_min": 0.9483432769775391,
+          "fitness_mean": 1.9745531833171845,
+          "fitness_max": 4.801295318603516,
+          "enabled_connections_min": 173,
+          "enabled_connections_mean": 176.40625,
+          "enabled_connections_max": 178,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.046875,
+          "hidden_nodes_max": 1,
+          "unique_enabled_topologies": 49,
+          "champion_topology": {
+            "genome_id": 49,
+            "species_id": 1,
+            "enabled_connection_count": 177,
+            "disabled_connection_count": 0,
+            "genome_node_gene_count": 3,
+            "total_node_count": 239,
+            "hidden_node_count": 0,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        },
+        {
+          "generation": 2,
+          "seed_pair": [
+            27601169,
+            12624922
+          ],
+          "species_before": 3,
+          "species_after": 3,
+          "generation_transitions": 43649,
+          "cumulative_transitions": 86578,
+          "fitness_min": 1.4414341735839844,
+          "fitness_mean": 2.1391981375217437,
+          "fitness_max": 3.838017730712891,
+          "enabled_connections_min": 172,
+          "enabled_connections_mean": 175.15625,
+          "enabled_connections_max": 178,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.03125,
+          "hidden_nodes_max": 1,
+          "unique_enabled_topologies": 58,
+          "champion_topology": {
+            "genome_id": 49,
+            "species_id": 1,
+            "enabled_connection_count": 177,
+            "disabled_connection_count": 0,
+            "genome_node_gene_count": 3,
+            "total_node_count": 239,
+            "hidden_node_count": 0,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        },
+        {
+          "generation": 3,
+          "seed_pair": [
+            27391711,
+            7597930
+          ],
+          "species_before": 3,
+          "species_after": 3,
+          "generation_transitions": 42634,
+          "cumulative_transitions": 129212,
+          "fitness_min": 1.2778462219238282,
+          "fitness_mean": 2.195716825723648,
+          "fitness_max": 7.551401977539062,
+          "enabled_connections_min": 170,
+          "enabled_connections_mean": 174.640625,
+          "enabled_connections_max": 178,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.21875,
+          "hidden_nodes_max": 2,
+          "unique_enabled_topologies": 57,
+          "champion_topology": {
+            "genome_id": 160,
+            "species_id": 1,
+            "enabled_connection_count": 175,
+            "disabled_connection_count": 4,
+            "genome_node_gene_count": 4,
+            "total_node_count": 240,
+            "hidden_node_count": 1,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "variant": "fs-neat-t2_5",
+      "initial_connection": "fs_neat_nohidden",
+      "connection_fraction": null,
+      "compatibility_threshold": 2.5,
+      "initial_species_count": 7,
+      "species_history": [
+        7,
+        7,
+        7,
+        7
+      ],
+      "species_min": 7,
+      "species_mean": 7.0,
+      "species_max": 7,
+      "total_transitions": 115513,
+      "generations": [
+        {
+          "generation": 1,
+          "seed_pair": [
+            30847768,
+            11368174
+          ],
+          "species_before": 7,
+          "species_after": 7,
+          "generation_transitions": 36620,
+          "cumulative_transitions": 36620,
+          "fitness_min": 0.9745109558105469,
+          "fitness_mean": 1.5719023168087005,
+          "fitness_max": 3.135498657226562,
+          "enabled_connections_min": 2,
+          "enabled_connections_mean": 3.140625,
+          "enabled_connections_max": 4,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.046875,
+          "hidden_nodes_max": 1,
+          "unique_enabled_topologies": 31,
+          "champion_topology": {
+            "genome_id": 51,
+            "species_id": 1,
+            "enabled_connection_count": 3,
+            "disabled_connection_count": 0,
+            "genome_node_gene_count": 3,
+            "total_node_count": 239,
+            "hidden_node_count": 0,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        },
+        {
+          "generation": 2,
+          "seed_pair": [
+            27601169,
+            12624922
+          ],
+          "species_before": 7,
+          "species_after": 7,
+          "generation_transitions": 35757,
+          "cumulative_transitions": 72377,
+          "fitness_min": 1.1891519165039064,
+          "fitness_mean": 1.576062034368515,
+          "fitness_max": 2.3554649353027344,
+          "enabled_connections_min": 1,
+          "enabled_connections_mean": 2.9375,
+          "enabled_connections_max": 5,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.03125,
+          "hidden_nodes_max": 1,
+          "unique_enabled_topologies": 30,
+          "champion_topology": {
+            "genome_id": 76,
+            "species_id": 2,
+            "enabled_connection_count": 2,
+            "disabled_connection_count": 0,
+            "genome_node_gene_count": 3,
+            "total_node_count": 239,
+            "hidden_node_count": 0,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        },
+        {
+          "generation": 3,
+          "seed_pair": [
+            27391711,
+            7597930
+          ],
+          "species_before": 7,
+          "species_after": 7,
+          "generation_transitions": 43136,
+          "cumulative_transitions": 115513,
+          "fitness_min": 1.2351516723632812,
+          "fitness_mean": 2.340055114030838,
+          "fitness_max": 7.195223083496094,
+          "enabled_connections_min": 1,
+          "enabled_connections_mean": 3.234375,
+          "enabled_connections_max": 5,
+          "hidden_nodes_min": 0,
+          "hidden_nodes_mean": 0.03125,
+          "hidden_nodes_max": 1,
+          "unique_enabled_topologies": 28,
+          "champion_topology": {
+            "genome_id": 141,
+            "species_id": 2,
+            "enabled_connection_count": 4,
+            "disabled_connection_count": 0,
+            "genome_node_gene_count": 3,
+            "total_node_count": 239,
+            "hidden_node_count": 0,
+            "input_count": 236,
+            "output_count": 3,
+            "feed_forward_layer_count": 2
+          }
+        }
+      ]
+    }
+  ],
+  "wall_seconds": 376.151509299998,
+  "selection_note": "Select structurally; validation finalScore was not used.",
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+}

@@ -1,0 +1,109 @@
+{
+  "criterion": "maximum mean finalScore on 100 VALIDATION seeds",
+  "checkpoint_label": 2000000,
+  "checkpoint_timestep": 2000004,
+  "source_checkpoint": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\ppo-continuous-5m-run3\\checkpoints\\ppo_2000000.zip",
+  "validation_summary": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\ppo-continuous-5m-run3\\validation\\step-2000000\\summary.json",
+  "summary": {
+    "episodes": 100,
+    "final_score": {
+      "mean": 22419.92903137207,
+      "median": 26254.666015625,
+      "std": 9348.51273359314,
+      "min": 762.23974609375,
+      "max": 30977.33203125
+    },
+    "survival_time": {
+      "mean": 264.61834049224854,
+      "median": 302.6490783691406,
+      "std": 86.25461089793977,
+      "min": 34.990135192871094,
+      "max": 306.6479797363281
+    },
+    "episode_reward": {
+      "mean": 223.41426102638243,
+      "median": 262.046630859375,
+      "std": 93.89736176048487,
+      "min": 6.122397422790527,
+      "max": 309.2732849121094
+    },
+    "life_loss_count": {
+      "mean": 1.57,
+      "median": 1.0,
+      "std": 1.2186467905016614,
+      "min": 0.0,
+      "max": 6.0
+    },
+    "collisions": {
+      "mean": 17.76,
+      "median": 19.0,
+      "std": 7.413663062211555,
+      "min": 3.0,
+      "max": 34.0
+    },
+    "obstacles_avoided": {
+      "mean": 48.06,
+      "median": 51.0,
+      "std": 17.63112021398527,
+      "min": 12.0,
+      "max": 136.0
+    },
+    "max_level": {
+      "mean": 22.61,
+      "median": 27.0,
+      "std": 9.18138878383875,
+      "min": 1.0,
+      "max": 31.0
+    },
+    "hearts_collected": {
+      "mean": 2.86,
+      "median": 3.0,
+      "std": 1.9900753754569198,
+      "min": 0.0,
+      "max": 8.0
+    },
+    "shields_collected": {
+      "mean": 2.48,
+      "median": 3.0,
+      "std": 1.7747112441183213,
+      "min": 0.0,
+      "max": 7.0
+    },
+    "boosts_collected": {
+      "mean": 3.69,
+      "median": 4.0,
+      "std": 2.2746208475260223,
+      "min": 0.0,
+      "max": 10.0
+    },
+    "gold_collected": {
+      "mean": 129.27,
+      "median": 140.0,
+      "std": 47.36704656192953,
+      "min": 5.0,
+      "max": 213.0
+    },
+    "diamonds_collected": {
+      "mean": 1.66,
+      "median": 1.0,
+      "std": 1.3727344972717777,
+      "min": 0.0,
+      "max": 6.0
+    },
+    "turbo_activations": {
+      "mean": 0.86,
+      "median": 1.0,
+      "std": 0.34698703145794946,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "terminal_distribution": {
+      "MaxDuration": 82,
+      "LivesExhausted": 18
+    },
+    "wall_seconds": 255.53045900000143,
+    "action_space": "Continuous",
+    "max_duration": 300.0,
+    "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+  }
+}

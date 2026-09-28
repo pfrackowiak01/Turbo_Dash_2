@@ -1,0 +1,130 @@
+{
+  "episodes": 100,
+  "final_score": {
+    "mean": 6456.438143005371,
+    "median": 1307.7510986328125,
+    "std": 9811.997342832787,
+    "min": 301.7755126953125,
+    "max": 29615.8203125
+  },
+  "survival_time": {
+    "mean": 103.96944408416748,
+    "median": 51.467369079589844,
+    "std": 106.99504667641116,
+    "min": 12.120182037353516,
+    "max": 304.3857727050781
+  },
+  "episode_reward": {
+    "mean": 63.109382107257844,
+    "median": 11.57750940322876,
+    "std": 98.39710433642767,
+    "min": 1.5177550315856934,
+    "max": 296.1581726074219
+  },
+  "life_loss_count": {
+    "mean": 2.91,
+    "median": 3.0,
+    "std": 0.8842510955605314,
+    "min": 0.0,
+    "max": 6.0
+  },
+  "collisions": {
+    "mean": 9.55,
+    "median": 4.0,
+    "std": 11.042984198123259,
+    "min": 3.0,
+    "max": 40.0
+  },
+  "obstacles_avoided": {
+    "mean": 58.81,
+    "median": 36.0,
+    "std": 52.65580594768254,
+    "min": 4.0,
+    "max": 255.0
+  },
+  "max_level": {
+    "mean": 6.87,
+    "median": 2.0,
+    "std": 9.71252284424598,
+    "min": 1.0,
+    "max": 30.0
+  },
+  "hearts_collected": {
+    "mean": 0.88,
+    "median": 0.0,
+    "std": 1.313620949893842,
+    "min": 0.0,
+    "max": 6.0
+  },
+  "shields_collected": {
+    "mean": 0.58,
+    "median": 0.0,
+    "std": 1.0409610943738483,
+    "min": 0.0,
+    "max": 6.0
+  },
+  "boosts_collected": {
+    "mean": 0.79,
+    "median": 0.0,
+    "std": 1.3659795020423988,
+    "min": 0.0,
+    "max": 7.0
+  },
+  "gold_collected": {
+    "mean": 53.4,
+    "median": 26.5,
+    "std": 59.96649064269144,
+    "min": 0.0,
+    "max": 218.0
+  },
+  "diamonds_collected": {
+    "mean": 0.67,
+    "median": 0.0,
+    "std": 1.0867842472174503,
+    "min": 0.0,
+    "max": 6.0
+  },
+  "turbo_activations": {
+    "mean": 0.26,
+    "median": 0.0,
+    "std": 0.4386342439892262,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "terminal_distribution": {
+    "LivesExhausted": 79,
+    "MaxDuration": 21
+  },
+  "wall_seconds": 91.20957989999442,
+  "action_space": "Continuous",
+  "max_duration": 300.0,
+  "episode_fitness": {
+    "mean": 63.10938143005371,
+    "median": 11.577510986328125,
+    "std": 98.39710356550792,
+    "min": 1.517755126953125,
+    "max": 296.158203125
+  },
+  "continuous_action": {
+    "decision_count": 207990,
+    "mean_abs_steering": 0.8945145016254431,
+    "mean_steering": 0.46798310377367347,
+    "steering_std": 0.7981658510970442,
+    "fraction_near_zero": 0.02581854896870042,
+    "fraction_near_max": 0.79490360113467,
+    "fraction_left": 0.2582287609981249,
+    "fraction_right": 0.7159526900331746,
+    "near_zero_rule": "abs(steering) < 0.1",
+    "near_max_rule": "abs(steering) > 0.9",
+    "left_rule": "steering < -0.1",
+    "right_rule": "steering > 0.1",
+    "role": "analytics_only_not_used_for_fitness_or_selection"
+  },
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION",
+  "algorithm": "NEAT",
+  "pipeline_version": 2,
+  "generation": 53,
+  "genome_id": 3039,
+  "training_fitness": 142.8821646118164,
+  "cumulative_training_transitions": 4561907
+}

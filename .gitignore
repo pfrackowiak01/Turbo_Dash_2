@@ -17,9 +17,9 @@ UserSettings/
 [Bb]uild/
 [Bb]uilds/
 
-# Local Python training environment and generated runs
+# Local Python environment and full run archive (curated Training/runs is published)
 Training/.venv/
-Training/runs/
+Training/runs-original/
 Training/.build-temp/
 Training/__pycache__/
 Training/**/*.pyc

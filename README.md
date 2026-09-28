@@ -42,10 +42,12 @@ Dokumentacja powstawała etapami. Starsze opisy architektury i audytu dotyczą w
 | [Training/configs/](Training/configs/) | Konfiguracje PPO oraz konfiguracje pipeline'ów i ewolucji NEAT |
 | [Training/tests/](Training/tests/) | Automatyczne testy Pythonowe protokołu, konfiguracji, adapterów, checkpointów i analizy |
 | [Training/final_test/](Training/final_test/) | Raport, protokół, manifesty, surowe dane, statystyki i wykresy końcowego porównania |
-| `Training/runs/` — lokalnie, poza Git | Pełne przebiegi: checkpointy, genomy, logi TensorBoard, walidacje i manifesty treningów |
+| [Training/runs/](Training/runs/README.md) — wersja dla recenzenta | Odchudzony zestaw artefaktów 15 głównych przebiegów, walidacji 500 s i specjacji; [indeks przebiegów](Training/runs/README.md) i [manifest eksportu z SHA-256](Training/runs/review_export_manifest.json) |
+| `Training/runs-original/` — lokalne archiwum | Pełne oryginały przebiegów, w tym logi diagnostyczne, pośrednie checkpointy i próby techniczne; wykluczone z Git |
 | [requirements.txt](Training/requirements.txt) / [requirements-lock.txt](Training/requirements-lock.txt) | Wymagania oraz zapis wersji zależności; historyczne środowiska konkretnych przebiegów opisują ich manifesty |
 | [Skrypty PowerShell](Training/) | Przygotowanie środowiska, build workera, treningi, walidacja, resume i diagnostyka |
 | [plot_w5_neat_species.py](Training/plot_w5_neat_species.py) | Generator wykresu liczby gatunków NEAT-D v1/v2 |
+| [export_review_runs.py](Training/export_review_runs.py) | Jawne reguły eksportu artefaktów dla recenzenta i weryfikacja kopii przez SHA-256; bez treningu i ewaluacji |
 
 ### Najważniejsze moduły implementacji
 
@@ -83,11 +85,26 @@ Konfiguracja bazowa może być nadpisana argumentami skryptu. Do opisu wykonaneg
 
 ## Przebiegi i dostępność artefaktów
 
-**Pełny katalog `Training/runs/` nie jest publikowany w Git** — wyklucza go [.gitignore](.gitignore). Samo sklonowanie repozytorium nie dostarcza wag PPO, genomów NEAT ani plików zdarzeń TensorBoard. Odwołania do tych lokalnych ścieżek w manifestach identyfikują artefakty eksperymentu; nie są linkami do dostępnych plików. Ponowne wykonanie inferencji zamrożonych modeli wymaga tych artefaktów oraz builda workera Unity.
+### Wersja dla recenzenta i pełne archiwum
 
-Identyfikatory serii pozwalające odnaleźć przebiegi w lokalnym archiwum:
+Przyjęto następujący układ, aby recenzent mógł przeglądać wykorzystane w pracy przebiegi bez pobierania całego archiwum, zajmującego prawie 2 GB:
 
-| Seria | Katalogi lokalne w `Training/runs/` | Zakres |
+- **[Training/runs/](Training/runs/README.md) — odchudzona wersja dla recenzenta.** Zawiera konfiguracje, manifesty, metryki treningu, wyniki walidacji, wybrane modele oraz logi TensorBoard potrzebne do prześledzenia eksperymentów i odtworzenia wykresów. Skopiowano 2931 plików źródłowych (70,23 MiB); dodatkowo dodano indeks i manifest eksportu.
+- **`Training/runs-original/` — pełne oryginały przechowywane lokalnie, poza Git.** Zachowuje wszystkie 20 909 plików (1,78 GiB), także obszerne logi workerów, pośrednie checkpointy, duplikaty diagnostycznych CSV oraz nieudane, przerwane i pomocnicze próby techniczne niewykorzystane w analizie pracy.
+
+Ograniczenie publikacji wynika z rozmiaru plików, nie z wyboru wyłącznie korzystnych wyników. Zestaw dla recenzenta obejmuje wszystkie trzy przebiegi każdej opisanej serii, również słabsze wyniki i historyczny pilot NEAT-D v1. Pominięcie nieudanych prób technicznych nie oznacza usuwania niekorzystnych epizodów z opisywanych eksperymentów ani ukrywania znanych ograniczeń — w szczególności [raport FAIL parity RuleBased](Training/final_test/rulebased_parity_verification.json) pozostaje dostępny. Dane końcowego TEST są publikowane oddzielnie w [Training/final_test/](Training/final_test/).
+
+**Weryfikacja eksportu:** oryginalny katalog został przeniesiony do `Training/runs-original/` bez usuwania plików. Wszystkie 2931 kopii porównano z oryginałami przez SHA-256 — zgodność 100%. [Manifest eksportu](Training/runs/review_export_manifest.json) podaje hash każdego skopiowanego pliku oraz liczbę i rozmiar pominiętych plików według katalogów. [.gitignore](.gitignore) wyklucza pełne archiwum, a [.gitattributes](.gitattributes) blokuje automatyczną konwersję końców linii w artefaktach `runs/`, aby zachować ich hashe po sklonowaniu. Eksport przygotowano lokalnie; publikacja wymaga dodania nowych plików do commita i wysłania go do repozytorium.
+
+Historyczne manifesty zawierają ścieżki z czasu wykonania eksperymentów, w tym bezwzględne ścieżki lokalne. Ich zawartości nie zmieniono. Odchudzony zestaw nie jest pełną kopią do wznowienia treningu z dowolnego checkpointu; inferencja wybranych modeli wymaga dodatkowo zależności Pythona i builda workera Unity. Skrypty treningowe nadal zapisują do `Training/runs/`, dlatego nowe eksperymenty należy wykonywać w osobnej kopii roboczej, a nie w katalogu publikacyjnym.
+
+Eksport można odtworzyć z lokalnego archiwum za pomocą [export_review_runs.py](Training/export_review_runs.py). Opcja `--dry-run` tylko pokazuje zakres; zapis wymaga nieistniejącego katalogu docelowego, np. `--destination Training/runs-review-copy`. Skrypt nie nadpisuje istniejącego eksportu i nie uruchamia Unity ani TEST. Testy bezpieczeństwa i doboru plików: [test_export_review_runs.py](Training/tests/test_export_review_runs.py).
+
+### Serie w zestawie dla recenzenta
+
+Nazwy przebiegów są takie same w obu katalogach; różni się zakres zachowanych plików. Bezpośrednie odnośniki do wszystkich przebiegów i walidacji zawiera [indeks](Training/runs/README.md).
+
+| Seria | Nazwy podkatalogów w `runs/` i `runs-original/` | Zakres |
 | --- | --- | --- |
 | PPO-D | `ppo-discrete-5m-run{1,2,3}` | Trzy przebiegi; cel 5 mln przejść każdy |
 | PPO-C | `ppo-continuous-5m-run{1,2,3}` | Trzy przebiegi; cel 5 mln przejść każdy |
@@ -97,7 +114,7 @@ Identyfikatory serii pozwalające odnaleźć przebiegi w lokalnym archiwum:
 
 Zapis `{1,2,3}` oznacza trzy osobne katalogi z odpowiednim numerem przebiegu.
 
-W katalogu przebiegu należy szukać `manifest.json`, `config.json`, `checkpoints/`, `best_model/` i wyników walidacji. PPO zapisuje ponadto `training_summary.csv` i `tensorboard/`; NEAT — `neat_config.ini`, `generation_metrics.csv`, `training_episodes.csv`, a w pipeline v2/C także `validation_archive/` i `selected_models/`. Strukturę opisują dokumenty [PPO](docs/PPO_TRAINING_PIPELINE.md) i [NEAT v2](docs/NEAT_DISCRETE_V2_PIPELINE.md).
+W pełnym archiwum przebiegu znajdują się m.in. `manifest.json`, `config.json`, `checkpoints/`, `best_model/` i wyniki walidacji. PPO zapisuje ponadto `training_summary.csv` i `tensorboard/`; NEAT — `neat_config.ini`, `generation_metrics.csv`, `training_episodes.csv`, a w pipeline v2/C także `validation_archive/` i `selected_models/`. Wersja dla recenzenta zachowuje te dane, genomy walidacyjne i wybrane modele, ale nie pełną historię pośrednich checkpointów ani obszerne logi techniczne. Pozostawiono dwa checkpointy PPO wskazane w zamrożonym manifeście wyboru finalnych modeli. Strukturę źródłową opisują dokumenty [PPO](docs/PPO_TRAINING_PIPELINE.md) i [NEAT v2](docs/NEAT_DISCRETE_V2_PIPELINE.md).
 
 Materiały dostępne bez lokalnego archiwum:
 
@@ -108,7 +125,7 @@ Materiały dostępne bez lokalnego archiwum:
 
 ### TensorBoard
 
-Przy dostępnych lokalnych logach i przygotowanym środowisku Pythona, z katalogu głównego repozytorium:
+Eksport zawiera logi TensorBoard wszystkich sześciu głównych przebiegów PPO. Przy przygotowanym środowisku Pythona, z katalogu głównego repozytorium:
 
 ```powershell
 .\Training\Start-TensorBoard.ps1

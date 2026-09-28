@@ -1,0 +1,285 @@
+{
+  "schema": 1,
+  "created_utc": "2026-09-14T09:12:57.350677+00:00",
+  "experiment": "PPO Continuous 3-run",
+  "selection_criterion": "maximum mean finalScore in 500 s validation on 100 VALIDATION seeds",
+  "wall_seconds": 15590.26752,
+  "runs": [
+    {
+      "run_id": "ppo-continuous-5m-run1",
+      "experiment_seed": 20260916,
+      "best_checkpoint_timestep": 500004,
+      "best_checkpoint": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\ppo-continuous-5m-run1\\checkpoints\\ppo_500000.zip",
+      "validation_300": {
+        "mean_finalScore": 18172.104870910644,
+        "median_finalScore": 24077.33203125,
+        "mean_survivalTime": 231.51973150253295,
+        "MaxDuration_count": 70
+      },
+      "validation_500": {
+        "mean_finalScore": 52598.32148742676,
+        "median_finalScore": 72940.0,
+        "std_finalScore": 36119.648625707276,
+        "mean_survivalTime": 357.69946365356446,
+        "median_survivalTime": 501.5130920410156,
+        "MaxDuration_count": 64,
+        "LivesExhausted_count": 36,
+        "lifeLossCount": {
+          "mean": 2.02,
+          "median": 2.0,
+          "std": 1.232720568498798,
+          "min": 0.0,
+          "max": 6.0
+        },
+        "collisions": {
+          "mean": 21.28,
+          "median": 26.0,
+          "std": 12.74290390766563,
+          "min": 3.0,
+          "max": 39.0
+        },
+        "obstaclesAvoided": {
+          "mean": 63.45,
+          "median": 77.0,
+          "std": 37.029819065180426,
+          "min": 7.0,
+          "max": 227.0
+        },
+        "maxLevel": {
+          "mean": 51.36,
+          "median": 71.0,
+          "std": 34.856712409520206,
+          "min": 1.0,
+          "max": 88.0
+        },
+        "Hearts": {
+          "mean": 2.42,
+          "median": 2.0,
+          "std": 2.0841305141473265,
+          "min": 0.0,
+          "max": 9.0
+        },
+        "Shields": {
+          "mean": 4.45,
+          "median": 5.0,
+          "std": 3.3537292675468007,
+          "min": 0.0,
+          "max": 11.0
+        },
+        "Boosts": {
+          "mean": 2.06,
+          "median": 2.0,
+          "std": 1.798999722067794,
+          "min": 0.0,
+          "max": 7.0
+        },
+        "Gold": {
+          "mean": 157.57,
+          "median": 197.5,
+          "std": 94.23452180597087,
+          "min": 1.0,
+          "max": 311.0
+        },
+        "Diamonds": {
+          "mean": 1.96,
+          "median": 2.0,
+          "std": 1.5742934923323542,
+          "min": 0.0,
+          "max": 7.0
+        },
+        "turboActivations": {
+          "mean": 0.72,
+          "median": 1.0,
+          "std": 0.4707440918375928,
+          "min": 0.0,
+          "max": 2.0
+        }
+      }
+    },
+    {
+      "run_id": "ppo-continuous-5m-run2",
+      "experiment_seed": 20260917,
+      "best_checkpoint_timestep": 1000002,
+      "best_checkpoint": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\ppo-continuous-5m-run2\\checkpoints\\ppo_1000000.zip",
+      "validation_300": {
+        "mean_finalScore": 19348.710065307616,
+        "median_finalScore": 25150.666015625,
+        "mean_survivalTime": 233.6129260444641,
+        "MaxDuration_count": 71
+      },
+      "validation_500": {
+        "mean_finalScore": 55867.3174230957,
+        "median_finalScore": 75454.6640625,
+        "std_finalScore": 36872.68010484928,
+        "mean_survivalTime": 364.4403604888916,
+        "median_survivalTime": 501.5381164550781,
+        "MaxDuration_count": 69,
+        "LivesExhausted_count": 31,
+        "lifeLossCount": {
+          "mean": 1.88,
+          "median": 2.0,
+          "std": 1.2749901960407382,
+          "min": 0.0,
+          "max": 5.0
+        },
+        "collisions": {
+          "mean": 25.94,
+          "median": 31.5,
+          "std": 15.967354195357476,
+          "min": 3.0,
+          "max": 58.0
+        },
+        "obstaclesAvoided": {
+          "mean": 61.0,
+          "median": 77.5,
+          "std": 30.82855818879631,
+          "min": 11.0,
+          "max": 164.0
+        },
+        "maxLevel": {
+          "mean": 54.41,
+          "median": 74.0,
+          "std": 35.52579203902427,
+          "min": 1.0,
+          "max": 88.0
+        },
+        "Hearts": {
+          "mean": 2.54,
+          "median": 2.0,
+          "std": 2.066010648568879,
+          "min": 0.0,
+          "max": 9.0
+        },
+        "Shields": {
+          "mean": 1.9,
+          "median": 2.0,
+          "std": 1.6583123951777,
+          "min": 0.0,
+          "max": 6.0
+        },
+        "Boosts": {
+          "mean": 4.01,
+          "median": 4.0,
+          "std": 3.0675560304581233,
+          "min": 0.0,
+          "max": 11.0
+        },
+        "Gold": {
+          "mean": 158.18,
+          "median": 200.0,
+          "std": 89.68705369226932,
+          "min": 10.0,
+          "max": 287.0
+        },
+        "Diamonds": {
+          "mean": 1.95,
+          "median": 2.0,
+          "std": 1.920286436967152,
+          "min": 0.0,
+          "max": 7.0
+        },
+        "turboActivations": {
+          "mean": 0.73,
+          "median": 1.0,
+          "std": 0.4659399102888698,
+          "min": 0.0,
+          "max": 2.0
+        }
+      }
+    },
+    {
+      "run_id": "ppo-continuous-5m-run3",
+      "experiment_seed": 20260918,
+      "best_checkpoint_timestep": 2000004,
+      "best_checkpoint": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\ppo-continuous-5m-run3\\checkpoints\\ppo_2000000.zip",
+      "validation_300": {
+        "mean_finalScore": 22419.92903137207,
+        "median_finalScore": 26254.666015625,
+        "mean_survivalTime": 264.61834049224854,
+        "MaxDuration_count": 82
+      },
+      "validation_500": {
+        "mean_finalScore": 72340.23536010743,
+        "median_finalScore": 80759.9921875,
+        "std_finalScore": 25259.035141106306,
+        "mean_survivalTime": 454.89216407775876,
+        "median_survivalTime": 503.1496887207031,
+        "MaxDuration_count": 89,
+        "LivesExhausted_count": 11,
+        "lifeLossCount": {
+          "mean": 1.54,
+          "median": 1.5,
+          "std": 1.0432641084595982,
+          "min": 0.0,
+          "max": 4.0
+        },
+        "collisions": {
+          "mean": 31.57,
+          "median": 34.5,
+          "std": 10.966544578854363,
+          "min": 3.0,
+          "max": 48.0
+        },
+        "obstaclesAvoided": {
+          "mean": 73.54,
+          "median": 80.0,
+          "std": 19.6887886879818,
+          "min": 11.0,
+          "max": 90.0
+        },
+        "maxLevel": {
+          "mean": 70.37,
+          "median": 78.0,
+          "std": 24.35637698837822,
+          "min": 1.0,
+          "max": 88.0
+        },
+        "Hearts": {
+          "mean": 3.96,
+          "median": 4.0,
+          "std": 2.3871321706181248,
+          "min": 0.0,
+          "max": 10.0
+        },
+        "Shields": {
+          "mean": 3.49,
+          "median": 3.5,
+          "std": 2.220337812135802,
+          "min": 0.0,
+          "max": 10.0
+        },
+        "Boosts": {
+          "mean": 5.24,
+          "median": 5.0,
+          "std": 2.932984827782101,
+          "min": 0.0,
+          "max": 14.0
+        },
+        "Gold": {
+          "mean": 190.79,
+          "median": 212.5,
+          "std": 63.068422368091625,
+          "min": 5.0,
+          "max": 269.0
+        },
+        "Diamonds": {
+          "mean": 2.53,
+          "median": 2.0,
+          "std": 1.9050196849376648,
+          "min": 0.0,
+          "max": 9.0
+        },
+        "turboActivations": {
+          "mean": 0.93,
+          "median": 1.0,
+          "std": 0.2551470164434615,
+          "min": 0.0,
+          "max": 1.0
+        }
+      }
+    }
+  ],
+  "best_ppo_continuous_run": "ppo-continuous-5m-run3",
+  "best_mean_finalScore_500": 72340.23536010743,
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+}

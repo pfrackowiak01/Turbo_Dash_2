@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "created_utc": "2026-09-15T17:49:50.876798+00:00",
+  "action_space": "Continuous",
+  "outputs": 1,
+  "experiment_seed": 20260925,
+  "population_size": 64,
+  "generations": 3,
+  "workers": 6,
+  "time_scale": 20.0,
+  "max_duration": 30.0,
+  "compatibility_threshold": 2.5,
+  "initial_connection": "partial_direct 0.10",
+  "initial_connection_count": {
+    "min": 24,
+    "mean": 24.0,
+    "max": 24
+  },
+  "species_history": [
+    3,
+    3,
+    3,
+    5
+  ],
+  "stable_species_range": [
+    2,
+    8
+  ],
+  "accepted": true,
+  "decision": "keep compatibility_threshold=2.5",
+  "threshold_alternatives_evaluated": [],
+  "total_training_transitions": 124950,
+  "wall_seconds": 58.955572400001984,
+  "generation_metrics": [
+    {
+      "generation": 1,
+      "seed_a": 59124598,
+      "seed_b": 24040383,
+      "species_before": 3,
+      "species_after": 3,
+      "generation_transitions": 43751,
+      "cumulative_transitions": 43751,
+      "fitness_min": 1.139652328491211,
+      "fitness_mean": 2.1875185775756836,
+      "fitness_max": 3.799283142089844
+    },
+    {
+      "generation": 2,
+      "seed_a": 22364719,
+      "seed_b": 66455628,
+      "species_before": 3,
+      "species_after": 3,
+      "generation_transitions": 43425,
+      "cumulative_transitions": 87176,
+      "fitness_min": 1.305263214111328,
+      "fitness_mean": 2.523247060775757,
+      "fitness_max": 5.069227294921875
+    },
+    {
+      "generation": 3,
+      "seed_a": 34303825,
+      "seed_b": 53050316,
+      "species_before": 3,
+      "species_after": 5,
+      "generation_transitions": 37774,
+      "cumulative_transitions": 124950,
+      "fitness_min": 1.1358421325683594,
+      "fitness_mean": 2.0096746814250945,
+      "fitness_max": 3.1478926086425782
+    }
+  ],
+  "source_config": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\configs\\neat_continuous_v1.ini",
+  "source_config_sha256": "7e981de7d75278d0cc5d18b7ad2f775153f788d8d7de3e7091e207e2d8022371",
+  "pipeline_config": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\configs\\neat_continuous_v1.json",
+  "pipeline_config_sha256": "6fa1da0138b4f9034860346b5568f448a9ad9e6ede20698a82059e554c8839ae",
+  "selection_basis": "species stability only; VALIDATION was not loaded or used",
+  "git": {
+    "commit": "aad1f9d0b7d6d2c93c4f1a9f444b2e7f9e722611",
+    "dirty": false,
+    "status_porcelain": []
+  },
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+}

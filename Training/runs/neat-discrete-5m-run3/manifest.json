@@ -1,0 +1,257 @@
+{
+  "manifest_schema": 1,
+  "run_id": "neat-discrete-5m-run3",
+  "purpose": "training",
+  "created_utc": "2026-09-14T15:42:48.329109+00:00",
+  "status": "complete",
+  "git": {
+    "commit": "1cf56da9987a382098902a2d4716a96f75de58c1",
+    "dirty": false,
+    "status_porcelain": []
+  },
+  "research_protocol": {
+    "transport_version": 1,
+    "version": 1,
+    "observation_schema": 2,
+    "observation_size": 236,
+    "fixed_timestep": 0.01,
+    "decision_interval": 0.05,
+    "reward": {
+      "score_scale": 0.01,
+      "life_loss_penalty": 0.5
+    }
+  },
+  "python": {
+    "version": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "executable": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\.venv\\Scripts\\python.exe",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "packages": {
+      "stable-baselines3": "2.9.0",
+      "gymnasium": "1.2.3",
+      "numpy": "2.4.6",
+      "tensorboard": "2.21.0",
+      "torch": "2.14.0",
+      "psutil": "7.2.2",
+      "neat-python": "2.0.0"
+    },
+    "pip_freeze": [
+      "Farama-Notifications==0.0.6",
+      "Jinja2==3.1.6",
+      "Markdown==3.10.3",
+      "MarkupSafe==3.0.3",
+      "Werkzeug==3.1.8",
+      "absl-py==2.5.0",
+      "cloudpickle==3.1.2",
+      "filelock==3.32.6",
+      "fsspec==2026.7.0",
+      "grpcio==1.83.1",
+      "gymnasium==1.2.3",
+      "mpmath==1.3.0",
+      "neat-python==2.0.0",
+      "networkx==3.6.1",
+      "numpy==2.4.6",
+      "packaging==26.3",
+      "pillow==12.3.0",
+      "pip==26.2.1",
+      "protobuf==7.36.1",
+      "psutil==7.2.2",
+      "setuptools==84.0.0",
+      "stable_baselines3==2.9.0",
+      "sympy==1.14.0",
+      "tensorboard-data-server==0.7.2",
+      "tensorboard==2.21.0",
+      "torch==2.14.0",
+      "typing_extensions==4.16.0"
+    ]
+  },
+  "configuration": {
+    "name": "NEAT Discrete v1",
+    "algorithm": "NEAT",
+    "library": "neat-python",
+    "library_version": "2.0.0",
+    "neat_config": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-5m-run3\\neat_config.ini",
+    "action_space": "Discrete",
+    "observation_size": 236,
+    "outputs": [
+      "LEFT",
+      "NONE",
+      "RIGHT"
+    ],
+    "episodes_per_genome": 2,
+    "population_size": 64,
+    "workers": 6,
+    "time_scale": 20.0,
+    "training_max_duration": 300.0,
+    "target_transitions": 5000000,
+    "validation_interval": 500000,
+    "validation_workers": 6,
+    "validation_max_duration": 300,
+    "experiment_seed": 20260921,
+    "checkpoint_each_generation": true,
+    "fitness": {
+      "score_divisor": 100,
+      "life_loss_penalty": 0.5
+    },
+    "purpose": "training"
+  },
+  "worker_executable": "D:\\Projekty\\Unity\\Turbo_Dash\\Builds\\ResearchWorker\\TurboDashResearchWorker.exe",
+  "seed_sources": {
+    "train": {
+      "path": "Assets\\Turbo_Dash\\Research\\Seeds\\train.json",
+      "sha256": "f4e1400c49df42c3aa64b6e79cceff867934748b78b2962d5e76bc10bcd375f5",
+      "count": 700
+    },
+    "validation": {
+      "path": "Assets\\Turbo_Dash\\Research\\Seeds\\validation.json",
+      "sha256": "8333b4e14134bfd7f3d487bbe914c7157d15d1dcbd7a65a21ceae3f342dd5b9f",
+      "count": 100
+    },
+    "test": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+  },
+  "parent_checkpoint": null,
+  "algorithm": "NEAT Discrete",
+  "checkpoint_schema": 1,
+  "progress": {
+    "generation": 58,
+    "cumulative_training_transitions": 5066882,
+    "target_transitions": 5000000,
+    "latest_checkpoint_state": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-5m-run3\\checkpoints\\neat-checkpoint-58.state.json",
+    "validations_completed": 11,
+    "best_validation_mean_final_score": 5669.757301330566
+  },
+  "finished_utc": "2026-09-14T16:34:51.158570+00:00",
+  "result": {
+    "termination_reason": "transition_budget_reached",
+    "initial_transitions": 0,
+    "cumulative_training_transitions": 5066882,
+    "target_transitions": 5000000,
+    "budget_overshoot_transitions": 66882,
+    "generation": 58,
+    "generations_this_invocation": 58,
+    "wall_seconds_this_invocation": 3122.9518301999997,
+    "training_transitions_per_second": 1622.465627231755,
+    "latest_checkpoint_state": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-5m-run3\\checkpoints\\neat-checkpoint-58.state.json",
+    "checkpoint_load_verified": true,
+    "best_validated_genome": {
+      "schema": 1,
+      "criterion": "maximum mean finalScore on all 100 VALIDATION seeds at MaxDuration=300",
+      "generation": 56,
+      "genome_id": 3417,
+      "training_fitness": 230.320712890625,
+      "cumulative_training_transitions": 4693575,
+      "genome_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-5m-run3\\best_model\\genome.pkl",
+      "genome_sha256": "7387d047d25d41fb4edd45fadb93bfe0fb46106ba14bcb71ab9d444ef12f80bd",
+      "config_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-5m-run3\\best_model\\config.ini",
+      "config_sha256": "ea6517de8fe5d42f516dd0e3387368ea05b28d39cf16e01856b1b4a7d40cef53",
+      "validation_mean_final_score": 5669.757301330566,
+      "summary": {
+        "episodes": 100,
+        "final_score": {
+          "mean": 5669.757301330566,
+          "median": 1245.968505859375,
+          "std": 9382.664259453715,
+          "min": 424.1186218261719,
+          "max": 29003.001953125
+        },
+        "survival_time": {
+          "mean": 95.38848123550414,
+          "median": 51.3373908996582,
+          "std": 101.49682073648728,
+          "min": 17.390302658081055,
+          "max": 306.5478820800781
+        },
+        "episode_reward": {
+          "mean": 55.227570030689236,
+          "median": 10.959685325622559,
+          "std": 94.08470285626011,
+          "min": 2.7411861419677734,
+          "max": 290.030029296875
+        },
+        "life_loss_count": {
+          "mean": 2.94,
+          "median": 3.0,
+          "std": 0.8224354077980836,
+          "min": 0.0,
+          "max": 7.0
+        },
+        "collisions": {
+          "mean": 9.57,
+          "median": 4.0,
+          "std": 11.967668945956017,
+          "min": 3.0,
+          "max": 42.0
+        },
+        "obstacles_avoided": {
+          "mean": 35.98,
+          "median": 28.0,
+          "std": 24.98118491985518,
+          "min": 9.0,
+          "max": 138.0
+        },
+        "max_level": {
+          "mean": 6.14,
+          "median": 2.0,
+          "std": 9.409590851891489,
+          "min": 1.0,
+          "max": 29.0
+        },
+        "hearts_collected": {
+          "mean": 0.57,
+          "median": 0.0,
+          "std": 1.0320368210485515,
+          "min": 0.0,
+          "max": 5.0
+        },
+        "shields_collected": {
+          "mean": 0.59,
+          "median": 0.0,
+          "std": 1.0207350292803712,
+          "min": 0.0,
+          "max": 4.0
+        },
+        "boosts_collected": {
+          "mean": 0.5,
+          "median": 0.0,
+          "std": 0.9110433579144299,
+          "min": 0.0,
+          "max": 4.0
+        },
+        "gold_collected": {
+          "mean": 44.09,
+          "median": 20.0,
+          "std": 51.54553229912366,
+          "min": 0.0,
+          "max": 186.0
+        },
+        "diamonds_collected": {
+          "mean": 0.57,
+          "median": 0.0,
+          "std": 1.0416813332300814,
+          "min": 0.0,
+          "max": 6.0
+        },
+        "turbo_activations": {
+          "mean": 0.25,
+          "median": 0.0,
+          "std": 0.4330127018922193,
+          "min": 0.0,
+          "max": 1.0
+        },
+        "terminal_distribution": {
+          "LivesExhausted": 82,
+          "MaxDuration": 18
+        },
+        "wall_seconds": 87.04588930000318,
+        "action_space": "Discrete",
+        "max_duration": 300.0,
+        "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION",
+        "algorithm": "NEAT",
+        "generation": 56,
+        "genome_id": 3417,
+        "training_fitness": 230.320712890625,
+        "cumulative_training_transitions": 4693575
+      }
+    },
+    "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+  }
+}

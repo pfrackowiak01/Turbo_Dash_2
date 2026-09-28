@@ -1,0 +1,108 @@
+{
+  "episodes": 100,
+  "final_score": {
+    "mean": 8622.062934570313,
+    "median": 1922.35498046875,
+    "std": 10733.697448773288,
+    "min": 388.920166015625,
+    "max": 26852.4375
+  },
+  "survival_time": {
+    "mean": 132.5794622039795,
+    "median": 75.05762481689453,
+    "std": 113.18609657260863,
+    "min": 15.640262603759766,
+    "max": 306.5979309082031
+  },
+  "episode_reward": {
+    "mean": 84.82562496185302,
+    "median": 17.223551750183105,
+    "std": 107.65133651573369,
+    "min": 2.3892014026641846,
+    "max": 268.0242919921875
+  },
+  "life_loss_count": {
+    "mean": 2.79,
+    "median": 3.0,
+    "std": 0.9197282207261013,
+    "min": 0.0,
+    "max": 5.0
+  },
+  "collisions": {
+    "mean": 12.15,
+    "median": 4.0,
+    "std": 12.582030837666867,
+    "min": 3.0,
+    "max": 40.0
+  },
+  "obstacles_avoided": {
+    "mean": 65.56,
+    "median": 47.5,
+    "std": 43.61153975727067,
+    "min": 7.0,
+    "max": 180.0
+  },
+  "max_level": {
+    "mean": 9.12,
+    "median": 2.0,
+    "std": 10.642631253595138,
+    "min": 1.0,
+    "max": 27.0
+  },
+  "hearts_collected": {
+    "mean": 0.98,
+    "median": 0.0,
+    "std": 1.3636715146984628,
+    "min": 0.0,
+    "max": 6.0
+  },
+  "shields_collected": {
+    "mean": 0.78,
+    "median": 0.0,
+    "std": 1.1625833303466897,
+    "min": 0.0,
+    "max": 5.0
+  },
+  "boosts_collected": {
+    "mean": 0.85,
+    "median": 0.0,
+    "std": 1.444818327679989,
+    "min": 0.0,
+    "max": 6.0
+  },
+  "gold_collected": {
+    "mean": 67.34,
+    "median": 37.0,
+    "std": 63.854713216801784,
+    "min": 0.0,
+    "max": 205.0
+  },
+  "diamonds_collected": {
+    "mean": 0.96,
+    "median": 0.0,
+    "std": 1.3108775686539151,
+    "min": 0.0,
+    "max": 6.0
+  },
+  "turbo_activations": {
+    "mean": 0.34,
+    "median": 0.0,
+    "std": 0.4737087712930804,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "terminal_distribution": {
+    "LivesExhausted": 71,
+    "MaxDuration": 29
+  },
+  "wall_seconds": 116.04045130001032,
+  "action_space": "Discrete",
+  "max_duration": 300.0,
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION",
+  "algorithm": "NEAT",
+  "pipeline_version": 2,
+  "generation": 131,
+  "genome_id": 7503,
+  "training_fitness": 142.5311407470703,
+  "cumulative_training_transitions": 17634143
+}

@@ -1,0 +1,108 @@
+{
+  "episodes": 100,
+  "final_score": {
+    "mean": 43328.87050292969,
+    "median": 72025.27734375,
+    "std": 37451.85232623782,
+    "min": 622.1622314453125,
+    "max": 86154.375
+  },
+  "survival_time": {
+    "mean": 308.8241674232483,
+    "median": 500.7373352050781,
+    "std": 216.82064023570422,
+    "min": 25.740493774414062,
+    "max": 506.6731262207031
+  },
+  "episode_reward": {
+    "mean": 432.1036778116226,
+    "median": 719.0026245117188,
+    "std": 374.8419510620837,
+    "min": 4.721622467041016,
+    "max": 860.5437622070312
+  },
+  "life_loss_count": {
+    "mean": 2.37,
+    "median": 3.0,
+    "std": 0.9555626614722867,
+    "min": 0.0,
+    "max": 4.0
+  },
+  "collisions": {
+    "mean": 33.46,
+    "median": 37.5,
+    "std": 29.11749302395383,
+    "min": 3.0,
+    "max": 89.0
+  },
+  "obstacles_avoided": {
+    "mean": 82.95,
+    "median": 101.0,
+    "std": 39.54778754873653,
+    "min": 16.0,
+    "max": 156.0
+  },
+  "max_level": {
+    "mean": 42.49,
+    "median": 70.0,
+    "std": 36.16724899684797,
+    "min": 1.0,
+    "max": 84.0
+  },
+  "hearts_collected": {
+    "mean": 1.78,
+    "median": 1.0,
+    "std": 1.9676381781211707,
+    "min": 0.0,
+    "max": 7.0
+  },
+  "shields_collected": {
+    "mean": 0.96,
+    "median": 0.0,
+    "std": 1.2563439019631528,
+    "min": 0.0,
+    "max": 5.0
+  },
+  "boosts_collected": {
+    "mean": 1.77,
+    "median": 1.0,
+    "std": 1.9942667825544305,
+    "min": 0.0,
+    "max": 8.0
+  },
+  "gold_collected": {
+    "mean": 135.55,
+    "median": 184.0,
+    "std": 95.70437555305399,
+    "min": 5.0,
+    "max": 293.0
+  },
+  "diamonds_collected": {
+    "mean": 1.82,
+    "median": 1.0,
+    "std": 1.7571567943698139,
+    "min": 0.0,
+    "max": 8.0
+  },
+  "turbo_activations": {
+    "mean": 0.59,
+    "median": 1.0,
+    "std": 0.4918333050943175,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "terminal_distribution": {
+    "LivesExhausted": 45,
+    "MaxDuration": 55
+  },
+  "wall_seconds": 269.4986304999984,
+  "action_space": "Discrete",
+  "max_duration": 500.0,
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION",
+  "algorithm": "NEAT",
+  "neat_python_version": "2.0.0",
+  "genome_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-5m-run2\\best_model\\genome.pkl",
+  "genome_sha256": "3cab477cdec3e384532dc3f1c4fc3793269c8da7e235b30431eab29f65e2b4cc",
+  "config_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-5m-run2\\best_model\\config.ini",
+  "config_sha256": "23d2040f5c960429496faa8e1a8a3688c4fde54bae041d22fe073b11cd6d796e"
+}

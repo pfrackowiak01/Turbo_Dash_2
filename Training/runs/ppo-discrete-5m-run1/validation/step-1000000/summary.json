@@ -1,0 +1,100 @@
+{
+  "episodes": 100,
+  "final_score": {
+    "mean": 16949.11571960449,
+    "median": 22664.1865234375,
+    "std": 10589.143793082214,
+    "min": 455.00469970703125,
+    "max": 29465.337890625
+  },
+  "survival_time": {
+    "mean": 225.9459140396118,
+    "median": 300.4169006347656,
+    "std": 107.21720540487273,
+    "min": 18.180320739746094,
+    "max": 306.4678039550781
+  },
+  "episode_reward": {
+    "mean": 168.45615146398544,
+    "median": 225.50868225097656,
+    "std": 106.34828076499224,
+    "min": 3.050046682357788,
+    "max": 294.6533508300781
+  },
+  "life_loss_count": {
+    "mean": 2.07,
+    "median": 2.0,
+    "std": 1.290387538687506,
+    "min": 0.0,
+    "max": 6.0
+  },
+  "collisions": {
+    "mean": 25.41,
+    "median": 32.0,
+    "std": 15.853766114081537,
+    "min": 3.0,
+    "max": 47.0
+  },
+  "obstacles_avoided": {
+    "mean": 139.08,
+    "median": 149.5,
+    "std": 70.42906786263751,
+    "min": 10.0,
+    "max": 271.0
+  },
+  "max_level": {
+    "mean": 17.34,
+    "median": 23.0,
+    "std": 10.481622011883466,
+    "min": 1.0,
+    "max": 30.0
+  },
+  "hearts_collected": {
+    "mean": 1.79,
+    "median": 2.0,
+    "std": 1.6869795493721909,
+    "min": 0.0,
+    "max": 6.0
+  },
+  "shields_collected": {
+    "mean": 4.39,
+    "median": 4.0,
+    "std": 3.130159740332752,
+    "min": 0.0,
+    "max": 13.0
+  },
+  "boosts_collected": {
+    "mean": 2.27,
+    "median": 2.0,
+    "std": 1.9588517044431923,
+    "min": 0.0,
+    "max": 7.0
+  },
+  "gold_collected": {
+    "mean": 121.55,
+    "median": 148.0,
+    "std": 65.02159256739256,
+    "min": 5.0,
+    "max": 215.0
+  },
+  "diamonds_collected": {
+    "mean": 1.66,
+    "median": 1.0,
+    "std": 1.5825296205758677,
+    "min": 0.0,
+    "max": 6.0
+  },
+  "turbo_activations": {
+    "mean": 0.81,
+    "median": 1.0,
+    "std": 0.523354564325181,
+    "min": 0.0,
+    "max": 2.0
+  },
+  "terminal_distribution": {
+    "LivesExhausted": 35,
+    "MaxDuration": 65
+  },
+  "wall_seconds": 286.35204199998407,
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+}

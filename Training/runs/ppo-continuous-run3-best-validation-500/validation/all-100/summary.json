@@ -1,0 +1,104 @@
+{
+  "episodes": 100,
+  "final_score": {
+    "mean": 72340.23536010743,
+    "median": 80759.9921875,
+    "std": 25259.035141106306,
+    "min": 730.3522338867188,
+    "max": 92198.6640625
+  },
+  "survival_time": {
+    "mean": 454.89216407775876,
+    "median": 503.1496887207031,
+    "std": 138.13779024971083,
+    "min": 32.210601806640625,
+    "max": 506.6731262207031
+  },
+  "episode_reward": {
+    "mean": 722.6323854064941,
+    "median": 807.0999755859375,
+    "std": 252.8795170564645,
+    "min": 5.803522109985352,
+    "max": 921.4866943359375
+  },
+  "life_loss_count": {
+    "mean": 1.54,
+    "median": 1.5,
+    "std": 1.0432641084595982,
+    "min": 0.0,
+    "max": 4.0
+  },
+  "collisions": {
+    "mean": 31.57,
+    "median": 34.5,
+    "std": 10.966544578854363,
+    "min": 3.0,
+    "max": 48.0
+  },
+  "obstacles_avoided": {
+    "mean": 73.54,
+    "median": 80.0,
+    "std": 19.6887886879818,
+    "min": 11.0,
+    "max": 90.0
+  },
+  "max_level": {
+    "mean": 70.37,
+    "median": 78.0,
+    "std": 24.35637698837822,
+    "min": 1.0,
+    "max": 88.0
+  },
+  "hearts_collected": {
+    "mean": 3.96,
+    "median": 4.0,
+    "std": 2.3871321706181248,
+    "min": 0.0,
+    "max": 10.0
+  },
+  "shields_collected": {
+    "mean": 3.49,
+    "median": 3.5,
+    "std": 2.220337812135802,
+    "min": 0.0,
+    "max": 10.0
+  },
+  "boosts_collected": {
+    "mean": 5.24,
+    "median": 5.0,
+    "std": 2.932984827782101,
+    "min": 0.0,
+    "max": 14.0
+  },
+  "gold_collected": {
+    "mean": 190.79,
+    "median": 212.5,
+    "std": 63.068422368091625,
+    "min": 5.0,
+    "max": 269.0
+  },
+  "diamonds_collected": {
+    "mean": 2.53,
+    "median": 2.0,
+    "std": 1.9050196849376648,
+    "min": 0.0,
+    "max": 9.0
+  },
+  "turbo_activations": {
+    "mean": 0.93,
+    "median": 1.0,
+    "std": 0.2551470164434615,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "terminal_distribution": {
+    "LivesExhausted": 11,
+    "MaxDuration": 89
+  },
+  "wall_seconds": 431.71801759999653,
+  "action_space": "Continuous",
+  "max_duration": 500.0,
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION",
+  "model_path": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\ppo-continuous-5m-run3\\best_model\\model.zip",
+  "model_sha256": "f2eb8e2464abd8719c9c624523032f0e74886695dede270edfa1c56fd5e9236e"
+}

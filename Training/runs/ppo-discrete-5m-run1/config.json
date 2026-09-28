@@ -1,0 +1,39 @@
+{
+  "name": "PPO Pilot v1",
+  "algorithm": "PPO",
+  "policy": "MlpPolicy",
+  "policy_kwargs": {
+    "activation_fn": "Tanh",
+    "net_arch": {
+      "pi": [
+        256,
+        256
+      ],
+      "vf": [
+        256,
+        256
+      ]
+    }
+  },
+  "learning_rate": 0.0003,
+  "gamma": 0.9995,
+  "gae_lambda": 0.95,
+  "clip_range": 0.2,
+  "ent_coef": 0.01,
+  "vf_coef": 0.5,
+  "max_grad_norm": 0.5,
+  "n_steps": 1024,
+  "batch_size": 512,
+  "n_epochs": 10,
+  "normalize_observation": false,
+  "normalize_reward": false,
+  "device": "cpu",
+  "workers": 6,
+  "time_scale": 20.0,
+  "experiment_seed": 20260913,
+  "checkpoint_interval": 250000,
+  "validation_interval": 500000,
+  "validation_workers": 4,
+  "total_timesteps": 5000000,
+  "action_space": "Discrete"
+}

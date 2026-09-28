@@ -1,0 +1,100 @@
+{
+  "episodes": 100,
+  "final_score": {
+    "mean": 10963.688389892579,
+    "median": 2468.133544921875,
+    "std": 11566.323919085235,
+    "min": 480.01898193359375,
+    "max": 30042.08203125
+  },
+  "survival_time": {
+    "mean": 153.41620908737184,
+    "median": 87.81534957885742,
+    "std": 119.5063104481286,
+    "min": 19.280345916748047,
+    "max": 304.6260070800781
+  },
+  "episode_reward": {
+    "mean": 108.33688211679458,
+    "median": 22.931334495544434,
+    "std": 116.09382866478167,
+    "min": 3.3001902103424072,
+    "max": 299.9208068847656
+  },
+  "life_loss_count": {
+    "mean": 2.6,
+    "median": 3.0,
+    "std": 1.1916375287812986,
+    "min": 0.0,
+    "max": 6.0
+  },
+  "collisions": {
+    "mean": 22.91,
+    "median": 7.0,
+    "std": 22.30968175478978,
+    "min": 3.0,
+    "max": 66.0
+  },
+  "obstacles_avoided": {
+    "mean": 91.31,
+    "median": 68.5,
+    "std": 65.33156893876038,
+    "min": 11.0,
+    "max": 215.0
+  },
+  "max_level": {
+    "mean": 11.35,
+    "median": 3.0,
+    "std": 11.520742163593455,
+    "min": 1.0,
+    "max": 31.0
+  },
+  "hearts_collected": {
+    "mean": 1.63,
+    "median": 1.0,
+    "std": 1.911308452343577,
+    "min": 0.0,
+    "max": 8.0
+  },
+  "shields_collected": {
+    "mean": 3.77,
+    "median": 2.0,
+    "std": 3.6629359808765427,
+    "min": 0.0,
+    "max": 14.0
+  },
+  "boosts_collected": {
+    "mean": 1.8,
+    "median": 1.0,
+    "std": 2.0149441679609885,
+    "min": 0.0,
+    "max": 7.0
+  },
+  "gold_collected": {
+    "mean": 82.51,
+    "median": 48.0,
+    "std": 71.63595396168044,
+    "min": 0.0,
+    "max": 240.0
+  },
+  "diamonds_collected": {
+    "mean": 1.21,
+    "median": 1.0,
+    "std": 1.5510963864312237,
+    "min": 0.0,
+    "max": 6.0
+  },
+  "turbo_activations": {
+    "mean": 0.51,
+    "median": 0.5,
+    "std": 0.5195190083144215,
+    "min": 0.0,
+    "max": 2.0
+  },
+  "terminal_distribution": {
+    "LivesExhausted": 63,
+    "MaxDuration": 37
+  },
+  "wall_seconds": 196.1919400000188,
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+}

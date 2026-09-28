@@ -1,0 +1,136 @@
+{
+  "manifest_schema": 1,
+  "run_id": "ppo-discrete-5m-run1",
+  "purpose": "training",
+  "created_utc": "2026-09-13T05:57:32.825222+00:00",
+  "status": "complete",
+  "git": {
+    "commit": "dde122f7ab7456c2c4f8f3f98aef45b6fdd62426",
+    "dirty": false,
+    "status_porcelain": []
+  },
+  "research_protocol": {
+    "transport_version": 1,
+    "version": 1,
+    "observation_schema": 2,
+    "observation_size": 236,
+    "fixed_timestep": 0.01,
+    "decision_interval": 0.05,
+    "reward": {
+      "score_scale": 0.01,
+      "life_loss_penalty": 0.5
+    }
+  },
+  "python": {
+    "version": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "executable": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\.venv\\Scripts\\python.exe",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "packages": {
+      "stable-baselines3": "2.9.0",
+      "gymnasium": "1.2.3",
+      "numpy": "2.4.6",
+      "tensorboard": "2.21.0",
+      "torch": "2.14.0",
+      "psutil": "7.2.2"
+    },
+    "pip_freeze": [
+      "Farama-Notifications==0.0.6",
+      "Jinja2==3.1.6",
+      "Markdown==3.10.3",
+      "MarkupSafe==3.0.3",
+      "Werkzeug==3.1.8",
+      "absl-py==2.5.0",
+      "cloudpickle==3.1.2",
+      "filelock==3.32.6",
+      "fsspec==2026.7.0",
+      "grpcio==1.83.1",
+      "gymnasium==1.2.3",
+      "mpmath==1.3.0",
+      "networkx==3.6.1",
+      "numpy==2.4.6",
+      "packaging==26.3",
+      "pillow==12.3.0",
+      "pip==26.2.1",
+      "protobuf==7.36.1",
+      "psutil==7.2.2",
+      "setuptools==84.0.0",
+      "stable_baselines3==2.9.0",
+      "sympy==1.14.0",
+      "tensorboard-data-server==0.7.2",
+      "tensorboard==2.21.0",
+      "torch==2.14.0",
+      "typing_extensions==4.16.0"
+    ]
+  },
+  "configuration": {
+    "name": "PPO Pilot v1",
+    "algorithm": "PPO",
+    "policy": "MlpPolicy",
+    "policy_kwargs": {
+      "activation_fn": "Tanh",
+      "net_arch": {
+        "pi": [
+          256,
+          256
+        ],
+        "vf": [
+          256,
+          256
+        ]
+      }
+    },
+    "learning_rate": 0.0003,
+    "gamma": 0.9995,
+    "gae_lambda": 0.95,
+    "clip_range": 0.2,
+    "ent_coef": 0.01,
+    "vf_coef": 0.5,
+    "max_grad_norm": 0.5,
+    "n_steps": 1024,
+    "batch_size": 512,
+    "n_epochs": 10,
+    "normalize_observation": false,
+    "normalize_reward": false,
+    "device": "cpu",
+    "workers": 6,
+    "time_scale": 20.0,
+    "experiment_seed": 20260913,
+    "checkpoint_interval": 250000,
+    "validation_interval": 500000,
+    "validation_workers": 4,
+    "total_timesteps": 5000000,
+    "action_space": "Discrete"
+  },
+  "worker_executable": "D:\\Projekty\\Unity\\Turbo_Dash\\Builds\\ResearchWorker\\TurboDashResearchWorker.exe",
+  "seed_sources": {
+    "train": {
+      "path": "Assets\\Turbo_Dash\\Research\\Seeds\\train.json",
+      "sha256": "f4e1400c49df42c3aa64b6e79cceff867934748b78b2962d5e76bc10bcd375f5",
+      "count": 700
+    },
+    "validation": {
+      "path": "Assets\\Turbo_Dash\\Research\\Seeds\\validation.json",
+      "sha256": "8333b4e14134bfd7f3d487bbe914c7157d15d1dcbd7a65a21ceae3f342dd5b9f",
+      "count": 100
+    },
+    "test": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+  },
+  "parent_checkpoint": null,
+  "finished_utc": "2026-09-13T07:32:01.411374+00:00",
+  "result": {
+    "initial_timesteps": 0,
+    "total_timesteps": 5001216,
+    "wall_seconds": 5667.745373399986,
+    "transitions_per_second": 882.3995556351124,
+    "initial_policy_sha256": "9c999212b438fff28ec7ab2f47dd8648047e33ac99ed4f199648b57eef529ffc",
+    "final_policy_sha256": "ae4bceb5cd4d06b14c4b7ccba45b22f7bc3dab60e3f1b4eb43327fdf2694deb5",
+    "weights_updated": true,
+    "checkpoint": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\ppo-discrete-5m-run1\\checkpoints\\ppo_final_5001216.zip",
+    "checkpoint_load_verified": true,
+    "tensorboard_event_files": [
+      "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\ppo-discrete-5m-run1\\tensorboard\\PPO_Pilot_v1_1\\events.out.tfevents.1789279064.DESKTOP-EHVT39E.18564.0"
+    ],
+    "finite_observations_rewards_and_logged_losses": true,
+    "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+  }
+}

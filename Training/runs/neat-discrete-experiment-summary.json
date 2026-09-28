@@ -1,0 +1,288 @@
+{
+  "schema": 1,
+  "created_utc": "2026-09-14T16:44:04.595800+00:00",
+  "experiment": "NEAT Discrete 3-run",
+  "selection_criterion": "maximum mean finalScore in 500 s validation on 100 VALIDATION seeds",
+  "wall_seconds": 10127.7735653,
+  "runs": [
+    {
+      "run_id": "neat-discrete-5m-run1",
+      "experiment_seed": 20260919,
+      "training_transitions": 5000215,
+      "best_generation": 61,
+      "best_genome": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-5m-run1\\best_model\\genome.pkl",
+      "validation_300": {
+        "mean_finalScore": 11254.201082763671,
+        "median_finalScore": 2023.0955200195312,
+        "mean_survivalTime": 159.0734268951416,
+        "MaxDuration_count": 41
+      },
+      "validation_500": {
+        "mean_finalScore": 26772.685793762208,
+        "median_finalScore": 2034.3209228515625,
+        "std_finalScore": 35994.01470000812,
+        "mean_survivalTime": 206.27782514572144,
+        "median_survivalTime": 79.3735466003418,
+        "MaxDuration_count": 33,
+        "LivesExhausted_count": 67,
+        "lifeLossCount": {
+          "mean": 2.75,
+          "median": 3.0,
+          "std": 0.9733961166965892,
+          "min": 0.0,
+          "max": 5.0
+        },
+        "collisions": {
+          "mean": 25.77,
+          "median": 4.0,
+          "std": 31.21661576788874,
+          "min": 3.0,
+          "max": 89.0
+        },
+        "obstaclesAvoided": {
+          "mean": 60.07,
+          "median": 43.0,
+          "std": 38.59462527347558,
+          "min": 10.0,
+          "max": 159.0
+        },
+        "maxLevel": {
+          "mean": 26.43,
+          "median": 3.0,
+          "std": 34.71577595272789,
+          "min": 1.0,
+          "max": 87.0
+        },
+        "Hearts": {
+          "mean": 1.37,
+          "median": 0.0,
+          "std": 1.8636254988596823,
+          "min": 0.0,
+          "max": 7.0
+        },
+        "Shields": {
+          "mean": 0.87,
+          "median": 0.0,
+          "std": 1.5208878985645196,
+          "min": 0.0,
+          "max": 7.0
+        },
+        "Boosts": {
+          "mean": 1.05,
+          "median": 0.0,
+          "std": 1.479019945774904,
+          "min": 0.0,
+          "max": 5.0
+        },
+        "Gold": {
+          "mean": 92.16,
+          "median": 36.5,
+          "std": 95.01491672363872,
+          "min": 3.0,
+          "max": 293.0
+        },
+        "Diamonds": {
+          "mean": 1.43,
+          "median": 1.0,
+          "std": 1.909214498164101,
+          "min": 0.0,
+          "max": 8.0
+        },
+        "turboActivations": {
+          "mean": 0.38,
+          "median": 0.0,
+          "std": 0.4853864439804639,
+          "min": 0.0,
+          "max": 1.0
+        }
+      }
+    },
+    {
+      "run_id": "neat-discrete-5m-run2",
+      "experiment_seed": 20260920,
+      "training_transitions": 5008235,
+      "best_generation": 58,
+      "best_genome": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-5m-run2\\best_model\\genome.pkl",
+      "validation_300": {
+        "mean_finalScore": 13755.654839477538,
+        "median_finalScore": 22369.380859375,
+        "mean_survivalTime": 190.01982265472412,
+        "MaxDuration_count": 52
+      },
+      "validation_500": {
+        "mean_finalScore": 43328.87050292969,
+        "median_finalScore": 72025.27734375,
+        "std_finalScore": 37451.85232623782,
+        "mean_survivalTime": 308.8241674232483,
+        "median_survivalTime": 500.7373352050781,
+        "MaxDuration_count": 55,
+        "LivesExhausted_count": 45,
+        "lifeLossCount": {
+          "mean": 2.37,
+          "median": 3.0,
+          "std": 0.9555626614722867,
+          "min": 0.0,
+          "max": 4.0
+        },
+        "collisions": {
+          "mean": 33.46,
+          "median": 37.5,
+          "std": 29.11749302395383,
+          "min": 3.0,
+          "max": 89.0
+        },
+        "obstaclesAvoided": {
+          "mean": 82.95,
+          "median": 101.0,
+          "std": 39.54778754873653,
+          "min": 16.0,
+          "max": 156.0
+        },
+        "maxLevel": {
+          "mean": 42.49,
+          "median": 70.0,
+          "std": 36.16724899684797,
+          "min": 1.0,
+          "max": 84.0
+        },
+        "Hearts": {
+          "mean": 1.78,
+          "median": 1.0,
+          "std": 1.9676381781211707,
+          "min": 0.0,
+          "max": 7.0
+        },
+        "Shields": {
+          "mean": 0.96,
+          "median": 0.0,
+          "std": 1.2563439019631528,
+          "min": 0.0,
+          "max": 5.0
+        },
+        "Boosts": {
+          "mean": 1.77,
+          "median": 1.0,
+          "std": 1.9942667825544305,
+          "min": 0.0,
+          "max": 8.0
+        },
+        "Gold": {
+          "mean": 135.55,
+          "median": 184.0,
+          "std": 95.70437555305399,
+          "min": 5.0,
+          "max": 293.0
+        },
+        "Diamonds": {
+          "mean": 1.82,
+          "median": 1.0,
+          "std": 1.7571567943698139,
+          "min": 0.0,
+          "max": 8.0
+        },
+        "turboActivations": {
+          "mean": 0.59,
+          "median": 1.0,
+          "std": 0.4918333050943175,
+          "min": 0.0,
+          "max": 1.0
+        }
+      }
+    },
+    {
+      "run_id": "neat-discrete-5m-run3",
+      "experiment_seed": 20260921,
+      "training_transitions": 5066882,
+      "best_generation": 56,
+      "best_genome": "D:\\Projekty\\Unity\\Turbo_Dash\\Training\\runs\\neat-discrete-5m-run3\\best_model\\genome.pkl",
+      "validation_300": {
+        "mean_finalScore": 5669.757301330566,
+        "median_finalScore": 1245.968505859375,
+        "mean_survivalTime": 95.38848123550414,
+        "MaxDuration_count": 18
+      },
+      "validation_500": {
+        "mean_finalScore": 7806.135218811035,
+        "median_finalScore": 1148.6109008789062,
+        "std_finalScore": 21477.250516418128,
+        "mean_survivalTime": 88.52551355361939,
+        "median_survivalTime": 46.48820495605469,
+        "MaxDuration_count": 8,
+        "LivesExhausted_count": 92,
+        "lifeLossCount": {
+          "mean": 3.05,
+          "median": 3.0,
+          "std": 0.7794228634059948,
+          "min": 0.0,
+          "max": 7.0
+        },
+        "collisions": {
+          "mean": 8.81,
+          "median": 4.0,
+          "std": 15.655475080622754,
+          "min": 3.0,
+          "max": 72.0
+        },
+        "obstaclesAvoided": {
+          "mean": 35.72,
+          "median": 28.0,
+          "std": 28.588487193274148,
+          "min": 9.0,
+          "max": 158.0
+        },
+        "maxLevel": {
+          "mean": 8.06,
+          "median": 2.0,
+          "std": 20.850333330668843,
+          "min": 1.0,
+          "max": 86.0
+        },
+        "Hearts": {
+          "mean": 0.46,
+          "median": 0.0,
+          "std": 0.876584280032445,
+          "min": 0.0,
+          "max": 4.0
+        },
+        "Shields": {
+          "mean": 0.6,
+          "median": 0.0,
+          "std": 1.2,
+          "min": 0.0,
+          "max": 5.0
+        },
+        "Boosts": {
+          "mean": 0.43,
+          "median": 0.0,
+          "std": 0.9301075206662938,
+          "min": 0.0,
+          "max": 5.0
+        },
+        "Gold": {
+          "mean": 38.85,
+          "median": 19.5,
+          "std": 57.04005171806912,
+          "min": 0.0,
+          "max": 251.0
+        },
+        "Diamonds": {
+          "mean": 0.4,
+          "median": 0.0,
+          "std": 0.7874007874011811,
+          "min": 0.0,
+          "max": 4.0
+        },
+        "turboActivations": {
+          "mean": 0.19,
+          "median": 0.0,
+          "std": 0.41701318923986086,
+          "min": 0.0,
+          "max": 2.0
+        }
+      }
+    }
+  ],
+  "best_neat_discrete_run": "neat-discrete-5m-run2",
+  "best_mean_finalScore_500": 43328.87050292969,
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+}

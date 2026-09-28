@@ -1,0 +1,102 @@
+{
+  "episodes": 100,
+  "final_score": {
+    "mean": 13423.168589782716,
+    "median": 2625.381103515625,
+    "std": 12854.885368212748,
+    "min": 257.5038146972656,
+    "max": 30977.33203125
+  },
+  "survival_time": {
+    "mean": 172.07843698501586,
+    "median": 104.07882308959961,
+    "std": 124.9806166392489,
+    "min": 12.410188674926758,
+    "max": 306.4678039550781
+  },
+  "episode_reward": {
+    "mean": 132.99667177915572,
+    "median": 24.503808975219727,
+    "std": 128.93842044192812,
+    "min": 1.075038194656372,
+    "max": 309.7732849121094
+  },
+  "life_loss_count": {
+    "mean": 2.47,
+    "median": 3.0,
+    "std": 1.0904586191139947,
+    "min": 0.0,
+    "max": 5.0
+  },
+  "collisions": {
+    "mean": 19.52,
+    "median": 7.0,
+    "std": 17.031429769693442,
+    "min": 3.0,
+    "max": 54.0
+  },
+  "obstacles_avoided": {
+    "mean": 30.14,
+    "median": 23.0,
+    "std": 19.12956873533745,
+    "min": 4.0,
+    "max": 98.0
+  },
+  "max_level": {
+    "mean": 13.71,
+    "median": 3.0,
+    "std": 12.656456850161502,
+    "min": 1.0,
+    "max": 31.0
+  },
+  "hearts_collected": {
+    "mean": 1.26,
+    "median": 1.0,
+    "std": 1.527219696049,
+    "min": 0.0,
+    "max": 6.0
+  },
+  "shields_collected": {
+    "mean": 1.62,
+    "median": 1.0,
+    "std": 1.8803191218513946,
+    "min": 0.0,
+    "max": 7.0
+  },
+  "boosts_collected": {
+    "mean": 1.87,
+    "median": 1.0,
+    "std": 2.1617354139672136,
+    "min": 0.0,
+    "max": 9.0
+  },
+  "gold_collected": {
+    "mean": 86.33,
+    "median": 48.5,
+    "std": 68.99406568684006,
+    "min": 0.0,
+    "max": 197.0
+  },
+  "diamonds_collected": {
+    "mean": 0.95,
+    "median": 1.0,
+    "std": 1.107925990308017,
+    "min": 0.0,
+    "max": 5.0
+  },
+  "turbo_activations": {
+    "mean": 0.54,
+    "median": 1.0,
+    "std": 0.4983974317750845,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "terminal_distribution": {
+    "LivesExhausted": 54,
+    "MaxDuration": 46
+  },
+  "wall_seconds": 175.22112229999766,
+  "action_space": "Continuous",
+  "max_duration": 300.0,
+  "test_status": "UNUSED FOR TRAINING/TUNING/EVALUATION"
+}
