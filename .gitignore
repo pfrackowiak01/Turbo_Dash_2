@@ -27,3 +27,6 @@ Training/**/*.pyc
 # OS
 .DS_Store
 Thumbs.db
+
+# Agents
+AGENTS.md
